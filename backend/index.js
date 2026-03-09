@@ -5,7 +5,7 @@ import cors from "cors";
 
 //Files
 import connectDB from "./Config/db.js";
-
+import userRoutes from "./Routes/userRoutes.js";
 
 //Configuration
 dotenv.config();
@@ -27,6 +27,7 @@ const PORT = process.env.PORT || 3000;
 
 //Routes
 
+app.use("/api/users", userRoutes);
 
 
 
