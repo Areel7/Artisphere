@@ -88,5 +88,48 @@ const logoutUser = async (req, res) => {
   }
 };
 
+const getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find().select("-password");
+    res.status(200).json(users);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ errors: [{ msg: "Server error" }] });
+  }
+};
 
-export { createUser, loginUser, logoutUser };
+const getCurrentUserProfile = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id).select("-password");
+    res.status(200).json(user);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ errors: [{ msg: "Server error" }] });
+  }
+};
+
+const updateCurrentUserProfile = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id).select("-password");
+    if (!user) {
+      return res.status(404).json({ errors: [{ msg: "User not found" }] });
+    }
+    user.username = req.body.username || user.username;
+    user.email = req.body.email || user.email;
+    user.password = req.body.password || user.password;
+    await user.save();
+    res.status(200).json(user);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ errors: [{ msg: "Server error" }] });
+  }
+};
+
+export {
+  createUser,
+  loginUser,
+  logoutUser,
+  getAllUsers,
+  getCurrentUserProfile,
+  updateCurrentUserProfile,
+};

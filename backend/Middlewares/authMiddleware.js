@@ -29,4 +29,22 @@ const curator = (req, res, next) => {
   next();
 };
 
-export { protect, curator };
+const artist = (req, res, next) => {
+  if (!req.user || req.user.role !== "artist") {
+    return res
+      .status(403)
+      .json({ errors: [{ msg: "Not authorized as an artist" }] });
+  }
+  next();
+};
+
+const artistAndCurator = (req, res, next) => {
+  if (!req.user || req.user.role !== "artist" || req.user.role !== "curator") {
+    return res
+      .status(403)
+      .json({ errors: [{ msg: "Not authorized as an artist or curator" }] });
+  }
+  next();
+};
+
+export { protect, curator, artist, artistAndCurator };
