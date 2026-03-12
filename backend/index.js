@@ -9,6 +9,7 @@ import connectDB from "./Config/db.js";
 import userRoutes from "./Routes/userRoutes.js";
 import artWorkRoutes from "./Routes/artWorkRoutes.js";
 import uploadRoutes from "./Routes/uploadRoutes.js";
+import exibitionRoutes from "./Routes/exibitionRoutes.js";
 
 //Configuration
 dotenv.config();
@@ -30,6 +31,7 @@ const PORT = process.env.PORT || 3000;
 app.use("/api/users", userRoutes);
 app.use("/api/artworks", artWorkRoutes);
 app.use("/api/upload", uploadRoutes);
+app.use("/api/exibitions", exibitionRoutes);
 
 const __dirname = path.resolve();
 app.use("/uploads", express.static(path.join(__dirname + "/uploads")));
