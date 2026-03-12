@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Box, Search, ShoppingCart, Menu, X } from "lucide-react";
 import SignInandSignUp from "../pages/Auth/SignInandSignUp";
+import { Link } from "react-router-dom";
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -74,12 +75,14 @@ const Header = () => {
                 2
               </span>
             </button>
+            <Link to="/auth/login">
             <button
-              onClick={() => openAuth("signin")}
+              onClick={() => openAuth("signin") }
               className="text-sm font-medium text-white/80 hover:text-white transition-colors"
             >
               Sign In
             </button>
+            </Link>
           </div>
 
           <button

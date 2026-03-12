@@ -1,5 +1,6 @@
 import React from 'react'
 import { X, User, Mail, Lock } from 'lucide-react'
+import { Link } from 'react-router-dom'
 
 const SignInandSignUp = ({isAuthModalOpen, setIsAuthModalOpen, authMode, setAuthMode}) => {
   return (
@@ -8,12 +9,14 @@ const SignInandSignUp = ({isAuthModalOpen, setIsAuthModalOpen, authMode, setAuth
       {isAuthModalOpen && (
         <div className="fixed inset-0 z-[100] bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
           <div className="relative w-full max-w-md bg-zinc-950 border border-white/10 rounded-2xl p-8 shadow-[0_0_50px_rgba(0,0,0,0.5)]">
+            <Link to="/">
             <button 
               onClick={() => setIsAuthModalOpen(false)}
               className="absolute top-4 right-4 text-white/50 hover:text-white transition-colors"
             >
               <X className="w-5 h-5" />
             </button>
+            </Link>
             
             <div className="text-center mb-8">
               <h2 className="text-3xl font-bold mb-2">
@@ -59,12 +62,14 @@ const SignInandSignUp = ({isAuthModalOpen, setIsAuthModalOpen, authMode, setAuth
             <div className="mt-8 text-center border-t border-white/10 pt-6">
               <p className="text-sm text-white/50">
                 {authMode === 'signin' ? "Don't have an account? " : "Already have an account? "}
+                <Link to={`/auth/${authMode === 'signin' ? 'register' : 'login'}`}>
                 <button 
                   onClick={() => setAuthMode(authMode === 'signin' ? 'signup' : 'signin')}
                   className="text-white hover:text-zinc-300 font-semibold underline underline-offset-4"
                 >
                   {authMode === 'signin' ? 'Sign Up' : 'Sign In'}
                 </button>
+                </Link>
               </p>
             </div>
           </div>

@@ -1,8 +1,21 @@
-import React from "react";
+import React, { useState } from "react";
+import SignInandSignUp from "../pages/Auth/SignInandSignUp";
+import { Link } from "react-router-dom";
 
 const Cta = () => {
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [authMode, setAuthMode] = useState("signup");
+
   return (
     <>
+      {/* Auth Modal */}
+      <SignInandSignUp
+        isAuthModalOpen={isAuthModalOpen}
+        setIsAuthModalOpen={setIsAuthModalOpen}
+        authMode={authMode}
+        setAuthMode={setAuthMode}
+      />
+
       {/* CTA Section */}
       <section className="py-32 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-transparent to-zinc-900 pointer-events-none" />
@@ -15,9 +28,17 @@ const Cta = () => {
             collector seeking the next masterpiece.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <button className="w-full sm:w-auto px-8 py-4 bg-white text-black rounded-full font-semibold hover:bg-zinc-200 transition-colors">
+            <Link to="/auth/register">
+            <button
+              onClick={() => {
+                setAuthMode("signup");
+                setIsAuthModalOpen(true);
+              }}
+              className="w-full sm:w-auto px-8 py-4 bg-white text-black rounded-full font-semibold hover:bg-zinc-200 transition-colors"
+            >
               Create Free Account
             </button>
+            </Link>
             <button className="w-full sm:w-auto px-8 py-4 border border-white/20 text-white rounded-full font-semibold hover:bg-white/5 transition-colors">
               Apply as Artist
             </button>
