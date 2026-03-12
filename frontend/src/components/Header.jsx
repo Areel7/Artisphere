@@ -1,9 +1,20 @@
 import React, { useState, useEffect } from "react";
 import { Box, Search, ShoppingCart, Menu, X } from "lucide-react";
+import SignInandSignUp from "../pages/Auth/SignInandSignUp";
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  // Auth Modal State
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [authMode, setAuthMode] = useState('signin'); // 'signin' or 'signup'
+
+  const openAuth = (mode) => {
+    setAuthMode(mode);
+    setIsAuthModalOpen(true);
+    setIsMobileMenuOpen(false); // Close mobile menu if open
+  };
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 50);
@@ -12,6 +23,16 @@ const Header = () => {
   }, []);
   return (
     <>
+
+    <SignInandSignUp
+      isAuthModalOpen={isAuthModalOpen}
+      setIsAuthModalOpen={setIsAuthModalOpen}
+      authMode={authMode}
+      setAuthMode={setAuthMode}
+    />
+
+
+
       {/* Minimal Chrome Navigation */}
       <nav
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
@@ -53,8 +74,10 @@ const Header = () => {
                 2
               </span>
             </button>
-            <div className="w-[1px] h-4 bg-white/20" />
-            <button className="text-sm font-medium text-white/80 hover:text-white transition-colors">
+            <button
+              onClick={() => openAuth("signin")}
+              className="text-sm font-medium text-white/80 hover:text-white transition-colors"
+            >
               Sign In
             </button>
           </div>
@@ -79,23 +102,24 @@ const Header = () => {
         }`}
       >
         <div className="flex flex-col items-center gap-8 text-2xl font-light">
-          {[
-            "Discovery",
-            "Exhibitions",
-            "3D Spaces",
-            "Artists",
-            "Cart",
-            "Sign In",
-          ].map((item) => (
-            <a
-              key={item}
-              href={`#${item.toLowerCase()}`}
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="hover:text-white/60 transition-colors"
-            >
-              {item}
-            </a>
-          ))}
+          {["Discovery", "Exhibitions", "3D Spaces", "Artists", "Cart"].map(
+            (item) => (
+              <a
+                key={item}
+                href={`#${item.toLowerCase()}`}
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="hover:text-white/60 transition-colors"
+              >
+                {item}
+              </a>
+            ),
+          )}
+          <button
+            onClick={() => openAuth("signin")}
+            className="hover:text-white/60 transition-colors"
+          >
+            Sign In
+          </button>
         </div>
       </div>
     </>
