@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Box, Search, ShoppingCart, Menu, X } from "lucide-react";
+import { Box, Search, ShoppingCart, Menu, X, User } from "lucide-react";
 import SignInandSignUp from "../pages/Auth/SignInandSignUp";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -9,7 +10,9 @@ const Header = () => {
 
   // Auth Modal State
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-  const [authMode, setAuthMode] = useState('signin'); // 'signin' or 'signup'
+  const [authMode, setAuthMode] = useState("signin"); // 'signin' or 'signup'
+
+  const { userInfo } = useSelector((state) => state.auth);
 
   const openAuth = (mode) => {
     setAuthMode(mode);
@@ -22,17 +25,17 @@ const Header = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  console.log(userInfo);
+
   return (
     <>
-
-    <SignInandSignUp
-      isAuthModalOpen={isAuthModalOpen}
-      setIsAuthModalOpen={setIsAuthModalOpen}
-      authMode={authMode}
-      setAuthMode={setAuthMode}
-    />
-
-
+      <SignInandSignUp
+        isAuthModalOpen={isAuthModalOpen}
+        setIsAuthModalOpen={setIsAuthModalOpen}
+        authMode={authMode}
+        setAuthMode={setAuthMode}
+      />
 
       {/* Minimal Chrome Navigation */}
       <nav
@@ -75,14 +78,22 @@ const Header = () => {
                 2
               </span>
             </button>
-            <Link to="/auth/login">
-            <button
-              onClick={() => openAuth("signin") }
-              className="text-sm font-medium text-white/80 hover:text-white transition-colors"
-            >
-              Sign In
-            </button>
-            </Link>
+            {!userInfo && (
+              <Link to="/auth/login">
+                <button
+                  onClick={() => openAuth("signin")}
+                  className="text-sm font-medium text-white/80 hover:text-white transition-colors"
+                >
+                  Sign In
+                </button>
+              </Link>
+            )}
+
+            {userInfo && (
+              <button className="text-white/70 hover:text-white transition-colors">
+                <User className="w-5 h-5" />
+              </button>
+            )}
           </div>
 
           <button
@@ -117,12 +128,18 @@ const Header = () => {
               </a>
             ),
           )}
-          <button
-            onClick={() => openAuth("signin")}
-            className="hover:text-white/60 transition-colors"
-          >
-            Sign In
-          </button>
+          {userInfo ? (
+            <button>
+              <User className="w-5 h-5" />
+            </button>
+          ) : (
+            <button
+              onClick={() => openAuth("signin")}
+              className="hover:text-white/60 transition-colors"
+            >
+              Sign In
+            </button>
+          )}
         </div>
       </div>
     </>
