@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { X, User, Mail, Lock } from "lucide-react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { setCredentials } from "../../redux/features/auth/authSlice.js";
 import { useLoginMutation, useRegisterMutation } from "../../redux/api/user";
 import { toast } from "react-toastify";
@@ -25,17 +25,12 @@ const SignInandSignUp = ({
 
   const [register, { isLoading: registerLoading }] = useRegisterMutation();
 
-  const { userInfo } = useSelector((state) => state.auth);
 
   const { search } = useLocation();
   const sp = new URLSearchParams(search);
   const redirect = sp.get("redirect") || "/";
 
-  useEffect(() => {
-    if (userInfo) {
-      navigate(redirect);
-    }
-  }, [userInfo, redirect, navigate]);
+  // Redirect already handled in submitHandler after login/register
 
   const submitHandler = async (e) => {
     e.preventDefault();
