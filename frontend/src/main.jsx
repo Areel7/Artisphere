@@ -20,12 +20,21 @@ import CreateArtwork from "./pages/Artist/CreateArtwork.jsx";
 import CuratorRoutes from "./pages/Curator/CuratorRoutes.jsx";
 import CreateExhibition from "./pages/Curator/CreateExhibition.jsx";
 
+//User Routes
+import PrivateRoutes from "./pages/Auth/PrivateRoutes.jsx";
+import Profile from "./pages/User/Profile.jsx";
+
+
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<App />}>
       <Route index={true} path="/" element={<Home />} />
       <Route path="/auth/login" element={<Home />} />
       <Route path="/auth/register" element={<Home />} />
+
+      <Route path="" element={<PrivateRoutes />}>
+        <Route path="/profile" element={<Profile />} />
+      </Route>
 
       <Route path="" element={<ArtistRoutes />}>
         <Route path="artist/create-artwork" element={<CreateArtwork />} />

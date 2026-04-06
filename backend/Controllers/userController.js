@@ -110,15 +110,29 @@ const getCurrentUserProfile = async (req, res) => {
 
 const updateCurrentUserProfile = async (req, res) => {
   try {
-    const user = await User.findById(req.user._id).select("-password");
+    // Fetch WITHOUT excluding password so the existing hash is available
+    const user = await User.findById(req.user._id);
     if (!user) {
       return res.status(404).json({ errors: [{ msg: "User not found" }] });
     }
+
     user.username = req.body.username || user.username;
     user.email = req.body.email || user.email;
-    user.password = req.body.password || user.password;
+
+    // Only hash and update password when a new one is explicitly sent
+    if (req.body.password) {
+      const salt = await bcrypt.genSalt(10);
+      user.password = await bcrypt.hash(req.body.password, salt);
+    }
+
     await user.save();
-    res.status(200).json(user);
+
+    res.status(200).json({
+      _id: user._id,
+      username: user.username,
+      email: user.email,
+      role: user.role,
+    });
   } catch (error) {
     console.log(error);
     res.status(500).json({ errors: [{ msg: "Server error" }] });
