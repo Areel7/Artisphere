@@ -11,9 +11,13 @@ import {
   AlertCircle,
   CheckCircle2,
 } from "lucide-react";
+import { useCreateArtworkMutation, useUploadImageMutation } from "../../redux/api/artwork.js";
 
 const CreateArtwork = () => {
   const [status, setStatus] = useState({ message: "", type: "" });
+
+  const [createArtwork] = useCreateArtworkMutation();
+  const [uploadImage] = useUploadImageMutation();
 
   const formik = useFormik({
     initialValues: {
@@ -43,13 +47,34 @@ const CreateArtwork = () => {
       image: Yup.mixed().required("Image is required"),
     }),
 
-    onSubmit: (values, { resetForm }) => {
-      console.log(values);
+    onSubmit: async (values, { resetForm }) => {
+      try {
+        const formData = new FormData();
+        formData.append("image", values.image);
 
-      setStatus({
-        message: "Artwork created successfully!",
-        type: "success",
-      });
+        const imageResponse = await uploadImage(formData).unwrap();
+        const imageUrl = imageResponse.image;
+
+        const artworkData = {
+          title: values.title,
+          description: values.description,
+          image: imageUrl,
+          price: values.price,
+          tags: values.tags.split(",").map((tag) => tag.trim()),
+        };
+
+        await createArtwork(artworkData).unwrap();
+
+        setStatus({
+          message: "Artwork created successfully!",
+          type: "success",
+        });
+      } catch (error) {
+        setStatus({
+          message: error.message || "Failed to create artwork",
+          type: "error",
+        });
+      }
 
       resetForm();
     },

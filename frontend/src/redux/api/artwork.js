@@ -1,5 +1,6 @@
 import { apiSlice } from "./apiSlice.js";
 import { ARTWORK_URL } from "../constants.js";
+import { UPLOAD_URL } from "../constants.js";
 
 export const artworkApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -41,6 +42,13 @@ export const artworkApiSlice = apiSlice.injectEndpoints({
         method: "GET",
       }),
     }),
+    uploadImage: builder.mutation({
+      query: (data) => ({
+        url: `${UPLOAD_URL}`,
+        method: "POST",
+        body: data,
+      }),
+    }),
   }),
 });
 
@@ -51,4 +59,5 @@ export const {
   useUpdateArtworkMutation,
   useDeleteArtworkMutation,
   useGetArtworksbyArtistIdQuery,
+  useUploadImageMutation,
 } = artworkApiSlice;

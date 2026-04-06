@@ -124,7 +124,7 @@ const Header = () => {
       >
         <div className="max-w-[90rem] mx-auto px-6 flex items-center justify-between">
           <div className="flex items-center gap-3 cursor-pointer group">
-            <Box className="w-7 h-7 text-white group-hover:rotate-180 transition-transform duration-700" />
+            <Box  onClick={() => navigate("/")}className="w-7 h-7 text-white group-hover:rotate-180 transition-transform duration-700" />
             <span className="text-xl font-bold tracking-widest uppercase">
               Artisphere
             </span>

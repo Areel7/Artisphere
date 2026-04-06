@@ -39,7 +39,10 @@ const artist = (req, res, next) => {
 };
 
 const artistAndCurator = (req, res, next) => {
-  if (!req.user || req.user.role !== "artist" || req.user.role !== "curator") {
+  if (
+    !req.user ||
+    (req.user.role !== "artist" && req.user.role !== "curator")
+  ) {
     return res
       .status(403)
       .json({ errors: [{ msg: "Not authorized as an artist or curator" }] });

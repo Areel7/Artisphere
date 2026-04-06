@@ -50,7 +50,7 @@ const deleteArtWork = async (req, res) => {
 
 const getAllArtWorks = async (req, res) => {
   try {
-    const artworks = await ArtWork.find();
+    const artworks = await ArtWork.find().populate("artistId", "username");
     res.json(artworks);
   } catch (error) {
     console.log(error);
@@ -60,7 +60,7 @@ const getAllArtWorks = async (req, res) => {
 
 const getSingleArtWork = async (req, res) => {
   try {
-    const artwork = await ArtWork.findById(req.params.id);
+    const artwork = await ArtWork.findById(req.params.id).populate("artistId", "username");
     if (!artwork) {
       return res.status(404).json({ errors: [{ msg: "Artwork not found" }] });
     }
@@ -98,7 +98,7 @@ const updateArtWork = async (req, res) => {
 
 const getArtWorksByArtistId = async (req, res) => {
   try {
-    const artworks = await ArtWork.find({ artistId: req.params.id });
+    const artworks = await ArtWork.find({ artistId: req.params.id }).populate("artistId", "username");
     res.json(artworks);
   } catch (error) {
     console.log(error);
