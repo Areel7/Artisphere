@@ -10,4 +10,7 @@ export default defineConfig({
       "/api": "http://localhost:3000",
     },
   },
+  build: {
+    chunkSizeWarningLimit: 1000 // size in KB (here: 1 MB)
+  },
 });
