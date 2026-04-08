@@ -24,6 +24,7 @@ import CreateExhibition from "./pages/Curator/CreateExhibition.jsx";
 //User Routes
 import PrivateRoutes from "./pages/Auth/PrivateRoutes.jsx";
 import Profile from "./pages/User/Profile.jsx";
+import Cart from "./pages/User/Cart.jsx";
 import AllArtWorks from "./pages/Artworks/AllArtWorks.jsx";
 
 
@@ -37,6 +38,7 @@ const router = createBrowserRouter(
       <Route path="" element={<PrivateRoutes />}>
         <Route path="/profile" element={<Profile />} />
         <Route path="/artworks" element={<AllArtWorks />} />
+        <Route path="/cart" element={<Cart />} />
       </Route>
 
       <Route path="" element={<ArtistRoutes />}>

@@ -8,7 +8,7 @@ const ARTWORKS = [
     title: "Ethereal Echoes",
     artist: "Elena Rostova",
     image:
-      "https://images.unsplash.com/photo-1541961017774-22349e4a1262?auto=format&fit=crop&q=80&w=800",
+      "/uploads/image-1775504396143.jpeg",
     category: "Abstract Oil",
     price: 1200,
     likes: 342,
@@ -19,7 +19,7 @@ const ARTWORKS = [
     title: "Neon Genesis",
     artist: "Marcus Chen",
     image:
-      "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?auto=format&fit=crop&q=80&w=800",
+      "/uploads/image-1775504396143.jpeg",
     category: "Digital 3D",
     price: 850,
     likes: 891,
@@ -30,7 +30,7 @@ const ARTWORKS = [
     title: "Monolithic Serenity",
     artist: "Sarah Jenkins",
     image:
-      "https://images.unsplash.com/photo-1544965850-6f8a61d1fb1b?auto=format&fit=crop&q=80&w=800",
+      "/uploads/image-1775504396143.jpeg",
     category: "Sculpture",
     price: 3400,
     likes: 124,
@@ -41,7 +41,7 @@ const ARTWORKS = [
     title: "Chromatic Variance",
     artist: "David Osei",
     image:
-      "https://images.unsplash.com/photo-1501472312248-a8335f639cb2?auto=format&fit=crop&q=80&w=800",
+      "/uploads/image-1775504396143.jpeg",
     category: "Mixed Media",
     price: 650,
     likes: 456,
@@ -52,7 +52,7 @@ const ARTWORKS = [
     title: "Void Architecture",
     artist: "Aisha Patel",
     image:
-      "https://images.unsplash.com/photo-1604871000636-074fa5117945?auto=format&fit=crop&q=80&w=800",
+      "/uploads/image-1775504396143.jpeg",
     category: "Generative",
     price: 1100,
     likes: 678,
@@ -63,7 +63,7 @@ const ARTWORKS = [
     title: "Liquid Gold",
     artist: "Jean-Paul Dubois",
     image:
-      "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?auto=format&fit=crop&q=80&w=800",
+      "/uploads/image-1775504396143.jpeg",
     category: "Fluid Acrylic",
     price: 920,
     likes: 533,

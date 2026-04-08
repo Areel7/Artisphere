@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useGetArtworksbyArtistIdQuery, useDeleteArtworkMutation } from "../../redux/api/artwork";
 import TiltCard from "../../components/TiltCard";
 import { useSelector } from "react-redux";
@@ -6,8 +6,12 @@ import { toast } from "react-toastify";
 
 const MyArtWorks = () => {
   const { userInfo } = useSelector((state) => state.auth);
-  const { data: artworks, isLoading, error } = useGetArtworksbyArtistIdQuery(userInfo._id);
+  const { data: artworks, isLoading, error, refetch } = useGetArtworksbyArtistIdQuery(userInfo._id);
   const [deleteArtwork] = useDeleteArtworkMutation();
+
+  useEffect(() => {
+    refetch();
+  }, [artworks]);
 
   const handleDelete = async (id) => {
     try {

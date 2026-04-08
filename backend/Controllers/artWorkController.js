@@ -60,7 +60,10 @@ const getAllArtWorks = async (req, res) => {
 
 const getSingleArtWork = async (req, res) => {
   try {
-    const artwork = await ArtWork.findById(req.params.id).populate("artistId", "username");
+    const artwork = await ArtWork.findById(req.params.id).populate(
+      "artistId",
+      "username",
+    );
     if (!artwork) {
       return res.status(404).json({ errors: [{ msg: "Artwork not found" }] });
     }
@@ -98,34 +101,16 @@ const updateArtWork = async (req, res) => {
 
 const getArtWorksByArtistId = async (req, res) => {
   try {
-    const artworks = await ArtWork.find({ artistId: req.params.id }).populate("artistId", "username");
+    const artworks = await ArtWork.find({ artistId: req.params.id }).populate(
+      "artistId",
+      "username",
+    );
     res.json(artworks);
   } catch (error) {
     console.log(error);
     res.status(500).json({ errors: [{ msg: "Internal server error" }] });
   }
 };
-
-// const favoriteArtWork = async (req, res) => {
-//   try {
-//     const artwork = await ArtWork.findById(req.params.id);
-//     if (!artwork) {
-//       return res.status(404).json({ errors: [{ msg: "Artwork not found" }] });
-//     }
-//     if (artwork.artistId.toString() === req.user._id.toString()) {
-//       artwork.isFavorite = !artwork.isFavorite;
-//       await artwork.save();
-//       res.json(artwork);
-//     } else {
-//       return res
-//         .status(403)
-//         .json({ errors: [{ msg: "Not authorized to favorite this artwork" }] });
-//     }
-//   } catch (error) {
-//     console.log(error);
-//     res.status(500).json({ errors: [{ msg: "Internal server error" }] });
-//   }
-// };
 
 export {
   createArtWork,

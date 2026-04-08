@@ -149,7 +149,7 @@ const Header = () => {
             <button className="text-white/70 hover:text-white transition-colors">
               <Search className="w-5 h-5" />
             </button>
-            <button className="text-white/70 hover:text-white transition-colors relative">
+            <button onClick={() => navigate("/cart")}className="text-white/70 hover:text-white transition-colors relative">
               <ShoppingCart className="w-5 h-5" />
               <span className="absolute -top-1.5 -right-2 bg-white text-black text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
                 2

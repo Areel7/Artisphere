@@ -1,12 +1,24 @@
 import React, { useRef, useState, useCallback } from "react";
 import { Layers, Heart, Maximize, ShoppingCart, Trash } from "lucide-react";
 import { useLocation } from "react-router-dom";
+import { useAddToCartMutation } from "../redux/api/cart";
+import { toast } from "react-toastify";
 
 const TiltCard = ({ artwork, handleDelete }) => {
   const cardRef = useRef(null);
   const [rotation, setRotation] = useState({ x: 0, y: 0 });
   const [isHovering, setIsHovering] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
+  const [addToCart] = useAddToCartMutation();
+
+  const handleAddToCart = async (id) => {
+    try {
+      await addToCart({ artworkId: id }).unwrap();
+      toast.success("Artwork added to cart");
+    } catch (error) {
+      toast.error(error.data.message);
+    }
+  };
 
   const handleMouseMove = useCallback((e) => {
     if (!cardRef.current) return;
@@ -128,7 +140,7 @@ const TiltCard = ({ artwork, handleDelete }) => {
                 <Trash className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
               </button>
             ) : (
-              <button className="flex items-center gap-2 text-sm font-medium text-white/80 hover:text-white group/btn">
+              <button onClick={() => handleAddToCart(artwork._id)} className="flex items-center gap-2 text-sm font-medium text-white/80 hover:text-white group/btn">
                 Add to Cart
                 <ShoppingCart className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
               </button>

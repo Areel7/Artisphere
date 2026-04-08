@@ -7,8 +7,7 @@ const ARTWORKS = [
     id: 1,
     title: "Ethereal Echoes",
     artist: "Elena Rostova",
-    image:
-      "https://images.unsplash.com/photo-1541961017774-22349e4a1262?auto=format&fit=crop&q=80&w=800",
+    image: "/uploads/image-1775504396143.jpeg",
     category: "Abstract Oil",
     price: 1200,
     likes: 342,
