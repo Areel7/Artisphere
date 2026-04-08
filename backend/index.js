@@ -22,7 +22,10 @@ const app = express();
 //Middleware
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors());
+app.use(cors({
+  origin: "https://artisphere-git-main-areel7s-projects.vercel.app",
+  credentials: true
+}));
 app.use(express.urlencoded({ extended: true }));
 
 const PORT = process.env.PORT || 3000;

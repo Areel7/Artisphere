@@ -3,6 +3,14 @@ import Favorite from "../Models/Favorite.js";
 const addFavorite = async (req, res) => {
     try {
         const { artworkId } = req.body;
+
+        const artwork = await ArtWork.findById(artworkId);
+        
+        if (!artwork) {
+            return res.status(404).json({ errors: [{ msg: "Artwork not found" }] });
+        }
+
+        
         const favorite = new Favorite({ userId: req.user._id, artworkId });
         await favorite.save();
         res.status(201).json(favorite);
