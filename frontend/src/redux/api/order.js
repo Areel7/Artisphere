@@ -10,6 +10,12 @@ export const orderApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["Cart", "Order"],
     }),
+    createPaymentIntent: builder.mutation({
+      query: () => ({
+        url: `${ORDER_URL}/create-payment-intent`,
+        method: "POST",
+      }),
+    }),
     getUserOrders: builder.query({
       query: () => ({
         url: `${ORDER_URL}`,
@@ -20,4 +26,4 @@ export const orderApiSlice = apiSlice.injectEndpoints({
   }),
 });
 
-export const { useCheckoutOrderMutation, useGetUserOrdersQuery } = orderApiSlice;
+export const { useCheckoutOrderMutation, useCreatePaymentIntentMutation, useGetUserOrdersQuery } = orderApiSlice;

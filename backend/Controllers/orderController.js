@@ -1,5 +1,8 @@
 import Order from "../Models/Order.js";
 import Cart from "../Models/Cart.js";
+import Stripe from "stripe";
+
+let stripe;
 
 const proceedToCheckout = async (req, res) => {
   try {
@@ -50,4 +53,38 @@ const getUserOrders = async (req, res) => {
     }
 };
 
-export { proceedToCheckout, getUserOrders };
+const createPaymentIntent = async (req, res) => {
+  try {
+    if (!stripe) {
+      stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+    }
+
+    const userId = req.user._id;
+    const cartItems = await Cart.find({ userId });
+
+    if (!cartItems || cartItems.length === 0) {
+      return res.status(400).json({ errors: [{ msg: "Cart is empty" }] });
+    }
+
+    // Calculate absolute order threshold entirely on server to eliminate UI manipulation
+    const amount = cartItems.reduce((acc, item) => acc + item.price, 0);
+
+    // Create a PaymentIntent with the final calculated cart threshold amount
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: Math.round(amount * 100), // Stripe expects cents, not floating dollars
+      currency: "usd",
+      automatic_payment_methods: {
+        enabled: true,
+      },
+    });
+
+    res.send({
+      clientSecret: paymentIntent.client_secret,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ errors: [{ msg: "Failed to generate secure payment intent" }] });
+  }
+};
+
+export { proceedToCheckout, getUserOrders, createPaymentIntent };

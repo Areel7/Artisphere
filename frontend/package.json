@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.11.2",
+    "@stripe/react-stripe-js": "^6.1.0",
+    "@stripe/stripe-js": "^9.1.0",
     "@tailwindcss/vite": "^4.2.1",
     "formik": "^2.4.9",
     "lucide-react": "^0.577.0",
