@@ -6,6 +6,7 @@ import {
   loginUser,
   logoutUser,
   updateCurrentUserProfile,
+  getArtists,
 } from "../Controllers/userController.js";
 import { registerValidation, loginValidation } from "../Helper/validations.js";
 import { protect, curator } from "../Middlewares/authMiddleware.js";
@@ -18,5 +19,6 @@ router.post("/auth/logout", logoutUser);
 router.get("/all_users", protect, curator, getAllUsers);
 router.get("/profile", protect, getCurrentUserProfile);
 router.put("/profile_update", protect, updateCurrentUserProfile);
+router.get("/artists", getArtists);
 
 export default router;

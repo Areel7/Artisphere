@@ -139,6 +139,16 @@ const updateCurrentUserProfile = async (req, res) => {
   }
 };
 
+const getArtists = async (req, res) => {
+  try {
+    const artists = await User.find({ role: "artist" });
+    res.status(200).json(artists);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ errors: [{ msg: "Server error" }] });
+  }
+};
+
 export {
   createUser,
   loginUser,
@@ -146,4 +156,5 @@ export {
   getAllUsers,
   getCurrentUserProfile,
   updateCurrentUserProfile,
+  getArtists,
 };

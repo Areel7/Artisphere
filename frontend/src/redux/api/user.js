@@ -36,6 +36,12 @@ export const userApiSlice = apiSlice.injectEndpoints({
         body: data,
       }),
     }),
+    getArtists: builder.query({
+      query: () => ({
+        url: `${USER_URL}/artists`,
+        method: "GET",
+      }),
+    }),
   }),
 });
 
@@ -45,4 +51,5 @@ export const {
   useLogoutMutation,
   useGetProfileQuery,
   useUpdateProfileMutation,
+  useGetArtistsQuery,
 } = userApiSlice;

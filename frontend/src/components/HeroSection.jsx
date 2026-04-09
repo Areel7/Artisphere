@@ -2,6 +2,10 @@ import React from "react";
 import { Box, Search } from "lucide-react";
 import TiltCard from "./TiltCard";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import { useGetArtistsQuery } from "../redux/api/user";
+import { useGetAllArtworksQuery } from "../redux/api/artwork";
 
 const ARTWORKS = [
   {
@@ -17,7 +21,10 @@ const ARTWORKS = [
 ];
 
 const HeroSection = () => {
+  const { userInfo } = useSelector((state) => state.auth);
   const navigate = useNavigate();
+  const { data: artists, isLoading, error } = useGetArtistsQuery();
+  const { data: artworks, isLoading: artworksLoading, error: artworksError } = useGetAllArtworksQuery();
   return (
     <>
       {/* Hero Section */}
@@ -45,7 +52,7 @@ const HeroSection = () => {
             </p>
 
             <div className="flex flex-wrap items-center gap-4 mt-2">
-              <button onClick={() => navigate('/gallery')} className="group flex items-center gap-2 px-8 py-4 bg-white text-black rounded-full font-semibold hover:bg-zinc-200 transition-colors duration-300">
+              <button onClick={() => !userInfo ? toast.error('Please login to enter the gallery') : navigate('/gallery')} className="group flex items-center gap-2 px-8 py-4 bg-white text-black rounded-full font-semibold hover:bg-zinc-200 transition-colors duration-300">
                 Enter 3D Gallery
                 <Box className="w-4 h-4 group-hover:rotate-12 transition-transform" />
               </button>
@@ -58,10 +65,21 @@ const HeroSection = () => {
             {/* Stats */}
             <div className="grid grid-cols-3 gap-8 mt-8 pt-8 border-t border-white/10 w-full max-w-lg">
               <div>
-                <h4 className="text-2xl font-bold">12k+</h4>
-                <p className="text-xs text-white/50 uppercase tracking-widest mt-1">
-                  Artworks
-                </p>
+                {artworksLoading ? (
+                  <div className="animate-pulse">
+                    <div className="h-8 w-16 bg-white/10 rounded mb-2"></div>
+                    <div className="h-3 w-12 bg-white/10 rounded"></div>
+                  </div>
+                ) : artworksError ? (
+                  <div className="text-red-400 text-sm">Error loading artworks</div>
+                ) : (
+                  <>
+                    <h4 className="text-2xl font-bold">{artworks?.length}</h4>
+                    <p className="text-xs text-white/50 uppercase tracking-widest mt-1">
+                      Artworks
+                    </p>
+                  </>
+                )}
               </div>
               <div>
                 <h4 className="text-2xl font-bold">3D</h4>
@@ -70,10 +88,21 @@ const HeroSection = () => {
                 </p>
               </div>
               <div>
-                <h4 className="text-2xl font-bold">850</h4>
-                <p className="text-xs text-white/50 uppercase tracking-widest mt-1">
-                  Artists
-                </p>
+                {isLoading ? (
+                  <div className="animate-pulse">
+                    <div className="h-8 w-16 bg-white/10 rounded mb-2"></div>
+                    <div className="h-3 w-12 bg-white/10 rounded"></div>
+                  </div>
+                ) : error ? (
+                  <div className="text-red-400 text-sm">Error loading artists</div>
+                ) : (
+                  <>
+                    <h4 className="text-2xl font-bold">{artists?.length}</h4>
+                    <p className="text-xs text-white/50 uppercase tracking-widest mt-1">
+                      Artists
+                    </p>
+                  </>
+                )}
               </div>
             </div>
           </div>

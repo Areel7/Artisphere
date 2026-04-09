@@ -63,9 +63,13 @@ const ThreeDModal = ({ imageSrc, onClose }) => {
 
   useEffect(() => {
     if (!isLoaded || !mountRef.current) return;
+    
+    // Capture the ref value so the cleanup function has a stable reference
+    const mountNode = mountRef.current;
+    
     const THREE = window.THREE;
-    const width = mountRef.current.clientWidth;
-    const height = mountRef.current.clientHeight;
+    const width = mountNode.clientWidth;
+    const height = mountNode.clientHeight;
 
     const scene = new THREE.Scene();
     sceneRef.current = scene;
@@ -77,7 +81,7 @@ const ThreeDModal = ({ imageSrc, onClose }) => {
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    mountRef.current.appendChild(renderer.domElement);
+    mountNode.appendChild(renderer.domElement);
     rendererRef.current = renderer;
 
     const controls = new THREE.OrbitControls(camera, renderer.domElement);
@@ -111,9 +115,9 @@ const ThreeDModal = ({ imageSrc, onClose }) => {
     animate();
 
     const handleResize = () => {
-      if (!mountRef.current) return;
-      const w = mountRef.current.clientWidth;
-      const h = mountRef.current.clientHeight;
+      if (!mountNode) return;
+      const w = mountNode.clientWidth;
+      const h = mountNode.clientHeight;
       camera.aspect = w / h;
       camera.updateProjectionMatrix();
       renderer.setSize(w, h);
@@ -123,8 +127,8 @@ const ThreeDModal = ({ imageSrc, onClose }) => {
     return () => {
       window.removeEventListener('resize', handleResize);
       if (frameIdRef.current) cancelAnimationFrame(frameIdRef.current);
-      if (mountRef.current && renderer.domElement) {
-        mountRef.current.removeChild(renderer.domElement);
+      if (mountNode && renderer.domElement && renderer.domElement.parentNode === mountNode) {
+        mountNode.removeChild(renderer.domElement);
       }
       controls.dispose();
       geometry.dispose();
@@ -188,7 +192,7 @@ const ThreeDModal = ({ imageSrc, onClose }) => {
       style={{ top: `${headerHeight}px` }}
     >
       {/* Control bar — sits right below the nav */}
-      <div className="flex items-center justify-between px-4 py-3 bg-neutral-900/80 border-b border-neutral-800 shrink-0">
+      <div className="flex items-center justify-between px-4 py-3 bg-zinc-900/80 border-b border-zinc-800 shrink-0">
       
         
         <span className="text-sm text-neutral-400 font-medium tracking-wide">

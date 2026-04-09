@@ -11,6 +11,7 @@ import {
 import { createBrowserRouter } from "react-router-dom";
 
 import Home from "./pages/Home.jsx";
+import AboutUs from "./pages/AboutUs/AboutUs.jsx";
 import View3D from "./pages/Artworks/View3D.jsx";
 
 //Artist Routes
@@ -37,6 +38,7 @@ const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<App />}>
       <Route index={true} path="/" element={<Home />} />
+      <Route path="/about" element={<AboutUs />} />
       <Route path="/auth/login" element={<Home />} />
       <Route path="/auth/register" element={<Home />} />
       <Route path="/view-3d/:id" element={<View3D />} />

@@ -4,7 +4,6 @@ import { ArrowLeft, Layers } from 'lucide-react';
 import { useGetAllArtworksQuery } from '../../redux/api/artwork';
 import ThreeDGallery from '../../components/ThreeDGallery';
 import ThreeDModal from '../../components/ThreeDModal';
-import ParticleBackground from '../../components/ParticleBackground';
 
 const GalleryPage = () => {
   const { data: artworks, isLoading, error } = useGetAllArtworksQuery();
@@ -85,7 +84,7 @@ const GalleryPage = () => {
       </div>
 
       {/* ── 3D Canvas fills remaining height ────────────────────────────────── */}
-      <div className="flex-1 px-4 pb-4 min-h-[600px] flex flex-col">
+      <div className="flex-1 px-4 pb-4 min-h-[600px] mb-10 flex flex-col">
         {isLoading ? (
           <div className="flex-1 w-full rounded-2xl border border-white/5 bg-white/2 flex flex-col items-center justify-center gap-4">
             <div className="w-12 h-12 rounded-full border-4 border-white/10 border-t-violet-400 animate-spin" />
@@ -109,10 +108,10 @@ const GalleryPage = () => {
         )}
       </div>
 
-      {/* ── Footer hint ─────────────────────────────────────────────────────── */}
+      {/* ── Footer hint ───────────────────────────────────────────────────────
       <div className="flex-none text-center py-2.5 text-zinc-700 text-xs border-t border-white/5">
         Drag to orbit &nbsp;·&nbsp; Scroll to zoom &nbsp;·&nbsp; Click artwork to view in 3D
-      </div>
+      </div> */}
 
       {/* ── 3D detail modal ─────────────────────────────────────────────────── */}
       {selectedImage && (

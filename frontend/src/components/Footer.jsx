@@ -1,5 +1,6 @@
-import React from 'react'
-import {Box, Instagram, Twitter, Github} from "lucide-react"
+import React from 'react';
+import { Box, Instagram, Twitter, Github } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
@@ -27,7 +28,7 @@ const Footer = () => {
             <div>
               <h4 className="font-semibold mb-4 text-sm uppercase tracking-widest text-white/80">Platform</h4>
               <ul className="space-y-3 text-sm">
-                {['Discover Art', '3D Exhibitions', 'Curators', 'Sell Art'].map(item => (
+                {['Discover Art', '3D Exhibitions', 'Curators'].map(item => (
                   <li key={item}><a href="#" className="text-white/50 hover:text-white transition-colors">{item}</a></li>
                 ))}
               </ul>
@@ -35,10 +36,11 @@ const Footer = () => {
 
             <div>
               <h4 className="font-semibold mb-4 text-sm uppercase tracking-widest text-white/80">Company</h4>
-              <ul className="space-y-3 text-sm">
-                {['About Us', 'Terms & Privacy', 'GDPR Compliance', 'Support'].map(item => (
-                  <li key={item}><a href="#" className="text-white/50 hover:text-white transition-colors">{item}</a></li>
-                ))}
+              <ul className="space-y-3 text-sm flex flex-col items-start">
+                <li><Link to="/about" className="text-white/50 hover:text-white transition-colors">About Us</Link></li>
+                <li><a href="#" className="text-white/50 hover:text-white transition-colors">Terms & Privacy</a></li>
+                <li><a href="#" className="text-white/50 hover:text-white transition-colors">GDPR Compliance</a></li>
+                <li><a href="#" className="text-white/50 hover:text-white transition-colors">Support</a></li>
               </ul>
             </div>
           </div>

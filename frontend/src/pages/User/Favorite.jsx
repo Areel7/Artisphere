@@ -106,7 +106,7 @@ const Favorite = () => {
                       <p className="text-sm text-zinc-500 mt-1 mb-4">${fav.artworkId.price}</p>
                       
                       <Link
-                        to={`/artwork/${fav.artworkId._id}`}
+                        to={`/view-3d/${fav.artworkId._id}`}
                         className="mt-auto w-full border border-white/10 text-white font-medium py-3 rounded-xl flex items-center justify-center gap-2 hover:bg-white/5 transition-all text-sm"
                       >
                         View Artwork
