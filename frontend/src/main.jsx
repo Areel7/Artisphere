@@ -29,7 +29,7 @@ import MyArtWorks from "./pages/Artist/MyArtWorks.jsx";
 //Curator Routes
 import CuratorRoutes from "./pages/Curator/CuratorRoutes.jsx";
 import CreateExhibition from "./pages/Curator/CreateExhibition.jsx";
-import GetRequests from "./pages/Curator/getRequest.jsx";
+import GetRequests from "./pages/Curator/GetRequest.jsx";
 import SelectExhibitionArtworks from "./pages/Curator/SelectExhibitionArtworks.jsx";
 
 //User Routes
