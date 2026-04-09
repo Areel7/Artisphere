@@ -37,6 +37,7 @@ app.use(
     origin: [
       "http://localhost:5173",
       "http://127.0.0.1:5173",
+      "https://artisphere.onrender.com",
     ],
   }),
 );
@@ -63,12 +64,22 @@ const io = new Server(httpServer, {
     origin: [
       "http://localhost:5173",
       "http://127.0.0.1:5173",
+      "https://artisphere.onrender.com",
     ],
     credentials: true,
     methods: ["GET", "POST"],
   },
 });
 attachExhibitionChat(io);
+
+// Serve built React frontend in production
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname, "../frontend/dist")));
+  // Catch-all: send React app for any unmatched route (enables React Router)
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "../frontend/dist/index.html"));
+  });
+}
 
 httpServer.listen(PORT, () =>
   console.log(`Server is running on port ${PORT} (HTTP + Socket.IO)`),

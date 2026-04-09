@@ -104,7 +104,7 @@ const Order = () => {
         try {
           const res = await createPaymentIntent().unwrap();
           setClientSecret(res.clientSecret);
-        } catch (error) {
+        } catch {
           toast.error("Failed to initialize payment gateway");
         } finally {
           setIsIntentLoading(false);
