@@ -1,10 +1,25 @@
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Filter as FilterIcon } from "lucide-react";
 import TiltCard from "./TiltCard";
 import { useGetAllArtworksQuery } from "../redux/api/artwork";
+import { useDispatch, useSelector } from "react-redux";
+import { setArtFilter } from "../redux/features/artwork/artSlice";
+import { useNavigate } from "react-router-dom";
 
 
 const Artwork = () => {
   const { data: artworks, isLoading, isError } = useGetAllArtworksQuery();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { artFilter } = useSelector((state) => state.artworks);
+
+  // Extract up to 4 popular tags dynamically safely
+  const categories = artworks ? [...new Set(artworks.flatMap(a => a.tags || []).filter(Boolean))].slice(0, 4) : [];
+
+  // Local filter
+  const filteredArtworks = artworks?.filter((artwork) => {
+    return artFilter.selectedTag === "" || artwork.tags?.includes(artFilter.selectedTag);
+  });
+
   return (
     <>
       {/* Discovery Module (Artwork Catalog) */}
@@ -20,11 +35,27 @@ const Artwork = () => {
                 imagery, story layers, and acquire physical or digital pieces.
               </p>
             </div>
-            <div className="flex gap-4">
-              <button className="px-6 py-2 rounded-full border border-white/20 text-sm hover:bg-white hover:text-black transition-colors">
-                Filters
-              </button>
-              <button className="flex items-center gap-2 text-white pb-2 border-b border-white hover:border-zinc-500 transition-colors">
+            <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center mt-6 lg:mt-0">
+              <div className="flex flex-wrap items-center gap-2">
+                <FilterIcon className="w-4 h-4 text-white/40 mr-2" />
+                <button 
+                  onClick={() => dispatch(setArtFilter({ selectedTag: "" }))}
+                  className={`px-4 py-1.5 rounded-full border text-xs font-semibold uppercase tracking-widest transition-colors ${artFilter.selectedTag === "" ? 'bg-white text-black border-white' : 'border-white/20 text-white/50 hover:border-white/50 hover:text-white'}`}
+                >
+                  All
+                </button>
+                {categories.map((cat) => (
+                  <button 
+                    key={cat}
+                    onClick={() => dispatch(setArtFilter({ selectedTag: artFilter.selectedTag === cat ? "" : cat }))}
+                    className={`px-4 py-1.5 rounded-full border text-xs font-semibold uppercase tracking-widest transition-colors ${artFilter.selectedTag === cat ? 'bg-indigo-500 text-white border-indigo-500' : 'border-white/20 text-white/50 hover:border-white/50 hover:text-white'}`}
+                  >
+                    {cat}
+                  </button>
+                ))}
+              </div>
+              
+              <button onClick={() => navigate('/search')} className="flex items-center gap-2 text-white pb-1 border-b border-white hover:border-zinc-500 transition-colors sm:ml-4 whitespace-nowrap">
                 View Catalog <ArrowRight className="w-4 h-4" />
               </button>
             </div>
@@ -42,9 +73,15 @@ const Artwork = () => {
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 gap-y-12">
-              {artworks?.map((artwork) => (
-                <TiltCard key={artwork._id} artwork={artwork} />
-              ))}
+              {filteredArtworks?.length === 0 ? (
+                <div className="col-span-full py-16 text-center border-dashed border border-white/10 rounded-2xl text-white/50">
+                  No artworks found for this category.
+                </div>
+              ) : (
+                filteredArtworks?.map((artwork) => (
+                  <TiltCard key={artwork._id} artwork={artwork} />
+                ))
+              )}
             </div>
           )}
         </div>

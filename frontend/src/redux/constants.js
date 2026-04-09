@@ -5,3 +5,4 @@ export const UPLOAD_URL = "/api/upload";
 export const CART_URL = "/api/cart";
 export const ORDER_URL = "/api/orders";
 export const FAVORITE_URL = "/api/favorites";
+export const REQUEST_URL = "/api/requests";

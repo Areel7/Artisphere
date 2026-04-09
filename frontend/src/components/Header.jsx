@@ -106,6 +106,11 @@ const Header = () => {
           label: "My Exhibitions",
           to: "/curator/my-exhibitions",
         },
+        userInfo.role === "curator" && {
+          icon: Building2,
+          label: "Requests",
+          to: "/curator/requests",
+        },
         { icon: Package, label: "My Orders", to: "/order-detail" },
       ].filter(Boolean)
     : [];
@@ -139,14 +144,19 @@ const Header = () => {
           </div>
 
           <div className="hidden md:flex items-center gap-8 bg-white/5 px-8 py-3 rounded-full border border-white/5 backdrop-blur-md">
-            {["Discovery", "Exhibitions", "3D Spaces", "Artists"].map(
+            {[
+              { name: "Discovery", path: "/search" },
+              { name: "Exhibitions", path: "/exhibitions" },
+              { name: "3D Spaces", path: "/gallery" },
+              { name: "Artists", path: "/artists" }
+            ].map(
               (item) => (
                 <Link
-                  key={item}
-                  to={`/gallery`}
+                  key={item.name}
+                  to={item.path}
                   className="text-xs font-semibold uppercase tracking-widest text-white/60 hover:text-white transition-colors relative group"
                 >
-                  {item}
+                  {item.name}
                   <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-0 h-[1px] bg-white transition-all duration-300 group-hover:w-full" />
                 </Link>
               ),
@@ -154,7 +164,7 @@ const Header = () => {
           </div>
 
           <div className="hidden md:flex items-center gap-6">
-            <button className="text-white/70 hover:text-white transition-colors">
+            <button onClick={() => navigate("/search")} className="text-white/70 hover:text-white transition-colors">
               <Search className="w-5 h-5" />
             </button>
             <button
@@ -295,15 +305,21 @@ const Header = () => {
         }`}
       >
         <div className="flex flex-col items-center gap-8 text-2xl font-light">
-          {["Discovery", "Exhibitions", "3D Spaces", "Artists", "Cart"].map(
+            {[
+              { name: "Discovery", path: "/artworks" },
+              { name: "Exhibitions", path: "/#exhibitions" },
+              { name: "3D Spaces", path: "/gallery" },
+              { name: "Artists", path: "/artists" },
+              { name: "Cart", path: "/cart" }
+            ].map(
             (item) => (
               <a
-                key={item}
-                href={`#${item.toLowerCase()}`}
+                key={item.name}
+                href={item.path}
                 onClick={() => setIsMobileMenuOpen(false)}
                 className="hover:text-white/60 transition-colors"
               >
-                {item}
+                {item.name}
               </a>
             ),
           )}

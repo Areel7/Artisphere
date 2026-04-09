@@ -2,11 +2,27 @@ import React, { useState } from "react";
 import SignInandSignUp from "../pages/Auth/SignInandSignUp";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { useCreateRequestMutation } from "../redux/api/request.js"
+import { toast } from "react-toastify";
+
 
 const Cta = () => {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [authMode, setAuthMode] = useState("signup");
   const userInfo = useSelector((state) => state.auth.userInfo);
+  const [createRequest] = useCreateRequestMutation();
+
+
+
+
+  const handleApplyAsArtist = async () => {
+    try {
+      await createRequest({}).unwrap();
+      toast.success("Request sent successfully");
+    } catch (error) {
+      toast.error(error?.data?.message || "already send request");
+    }
+  };
 
   return (
     <>
@@ -61,7 +77,7 @@ const Cta = () => {
             collector seeking the next masterpiece.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-               <button className="w-full sm:w-auto px-8 py-4 border border-white/20 text-white rounded-full font-semibold hover:bg-white/5 transition-colors">
+               <button onClick={handleApplyAsArtist} className="w-full sm:w-auto px-8 py-4 border border-white/20 text-white rounded-full font-semibold hover:bg-white/5 transition-colors">
                 Apply as Artist
               </button>
           </div>

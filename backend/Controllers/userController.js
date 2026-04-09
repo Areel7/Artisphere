@@ -149,6 +149,16 @@ const getArtists = async (req, res) => {
   }
 };
 
+const getAllCurators = async (req, res) => {
+  try {
+    const curators = await User.find({ role: "curator" });
+    res.status(200).json(curators);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ errors: [{ msg: "Server error" }] });
+  }
+};
+
 export {
   createUser,
   loginUser,
@@ -157,4 +167,5 @@ export {
   getCurrentUserProfile,
   updateCurrentUserProfile,
   getArtists,
+  getAllCurators,
 };

@@ -42,6 +42,12 @@ export const userApiSlice = apiSlice.injectEndpoints({
         method: "GET",
       }),
     }),
+    getCurators: builder.query({
+      query: () => ({
+        url: `${USER_URL}/curators`,
+        method: "GET",
+      }),
+    }),
   }),
 });
 
@@ -52,4 +58,5 @@ export const {
   useGetProfileQuery,
   useUpdateProfileMutation,
   useGetArtistsQuery,
+  useGetCuratorsQuery,
 } = userApiSlice;

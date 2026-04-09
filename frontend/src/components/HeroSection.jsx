@@ -56,7 +56,7 @@ const HeroSection = () => {
                 Enter 3D Gallery
                 <Box className="w-4 h-4 group-hover:rotate-12 transition-transform" />
               </button>
-              <button className="group flex items-center gap-3 px-8 py-4 bg-zinc-900 border border-white/10 text-white rounded-full font-semibold hover:bg-zinc-800 transition-colors duration-300">
+              <button onClick={() => navigate('/search')} className="group flex items-center gap-3 px-8 py-4 bg-zinc-900 border border-white/10 text-white rounded-full font-semibold hover:bg-zinc-800 transition-colors duration-300">
                 <Search className="w-4 h-4 text-white/60" />
                 Discover Artworks
               </button>
