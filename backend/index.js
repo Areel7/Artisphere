@@ -31,14 +31,16 @@ const app = express();
 //Middleware
 app.use(express.json());
 app.use(cookieParser());
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://127.0.0.1:5173",
+  process.env.FRONTEND_URL,
+].filter(Boolean);
+
 app.use(
   cors({
     credentials: true,
-    origin: [
-      "http://localhost:5173",
-      "http://127.0.0.1:5173",
-      "https://artisphere.onrender.com",
-    ],
+    origin: allowedOrigins,
   }),
 );
 app.use(express.urlencoded({ extended: true }));
@@ -61,25 +63,12 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: {
-    origin: [
-      "http://localhost:5173",
-      "http://127.0.0.1:5173",
-      "https://artisphere.onrender.com",
-    ],
+    origin: allowedOrigins,
     credentials: true,
     methods: ["GET", "POST"],
   },
 });
 attachExhibitionChat(io);
-
-// Serve built React frontend in production
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname, "../frontend/dist")));
-  // Catch-all: send React app for any unmatched route (enables React Router)
-  app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "../frontend/dist/index.html"));
-  });
-}
 
 httpServer.listen(PORT, () =>
   console.log(`Server is running on port ${PORT} (HTTP + Socket.IO)`),
