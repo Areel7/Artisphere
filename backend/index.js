@@ -21,8 +21,8 @@ import cartRoutes from "./Routes/cartRoutes.js";
 import orderRoutes from "./Routes/orderRoutes.js";
 import requestRoutes from "./Routes/requestRoutes.js";
 
-//Configuration — load backend/.env when npm is run from repo root
-dotenv.config({ path: path.join(__dirname, ".env") });
+//Configuration — load the root .env regardless of executing directory
+dotenv.config({ path: path.resolve(__dirname, "../.env") });
 
 connectDB();
 
@@ -49,7 +49,7 @@ const PORT = process.env.PORT || 3000;
 app.use("/api/users", userRoutes);
 app.use("/api/artworks", artWorkRoutes);
 app.use("/api/upload", uploadRoutes);
-app.use("/api/exibitions", exibitionRoutes);
+app.use("/api/exhibitions", exibitionRoutes);
 app.use("/api/favorites", favoriteRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/orders", orderRoutes);

@@ -1,11 +1,11 @@
 import { apiSlice } from "./apiSlice.js";
-import { EXIBITION_URL } from "../constants.js";
+import { EXHIBITION_URL } from "../constants.js";
 
 export const exhibitionApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     createExhibition: builder.mutation({
       query: (body) => ({
-        url: EXIBITION_URL,
+        url: EXHIBITION_URL,
         method: "POST",
         body,
       }),
@@ -13,7 +13,7 @@ export const exhibitionApiSlice = apiSlice.injectEndpoints({
     }),
     getExhibitions: builder.query({
       query: () => ({
-        url: EXIBITION_URL,
+        url: EXHIBITION_URL,
         method: "GET",
       }),
       refetchOnMountOrArgChange: true,
@@ -31,7 +31,7 @@ export const exhibitionApiSlice = apiSlice.injectEndpoints({
     }),
     getExhibitionById: builder.query({
       query: (id) => ({
-        url: `${EXIBITION_URL}/${id}`,
+        url: `${EXHIBITION_URL}/${id}`,
         method: "GET",
       }),
       refetchOnMountOrArgChange: true,
