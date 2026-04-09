@@ -18,9 +18,9 @@ const router = express.Router();
 router
   .route("/")
   .post(protect, artist, createArtWork)
-  .get(protect, getAllArtWorks);
+  .get(getAllArtWorks);
 router.route("/delete/:id").delete(protect, artistAndCurator, deleteArtWork);
-router.route("/:id").get(protect, getSingleArtWork);
+router.route("/:id").get(getSingleArtWork);
 router.route("/update/:id").put(protect, artist, updateArtWork);
 router.route("/artist/:id").get(protect, getArtWorksByArtistId);
 

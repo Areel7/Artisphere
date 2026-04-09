@@ -1,22 +1,54 @@
 import React, { useRef, useState, useCallback } from "react";
 import { Layers, Heart, Maximize, ShoppingCart, Trash } from "lucide-react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useAddToCartMutation } from "../redux/api/cart";
+import { useGetFavoritesQuery, useAddFavoriteMutation, useRemoveFavoriteMutation } from "../redux/api/favorite";
 import { toast } from "react-toastify";
+import { useSelector } from "react-redux";
 
 const TiltCard = ({ artwork, handleDelete }) => {
   const cardRef = useRef(null);
   const [rotation, setRotation] = useState({ x: 0, y: 0 });
   const [isHovering, setIsHovering] = useState(false);
-  const [isLiked, setIsLiked] = useState(false);
+  const userInfo = useSelector((state) => state.auth.userInfo);
+  
   const [addToCart] = useAddToCartMutation();
+  const { data: favorites } = useGetFavoritesQuery();
+  const [addFavorite] = useAddFavoriteMutation();
+  const [removeFavorite] = useRemoveFavoriteMutation();
+  const navigate = useNavigate();
+
+  const isLiked = favorites?.some((fav) => fav.artworkId && fav.artworkId._id === artwork._id);
 
   const handleAddToCart = async (id) => {
+    if(!userInfo){
+      toast.error("Please login to add to cart");
+      return;
+    }
     try {
       await addToCart({ artworkId: id }).unwrap();
       toast.success("Artwork added to cart");
     } catch (error) {
-      toast.error(error.data.message);
+      toast.error(error?.data?.message || error?.data?.errors?.[0]?.msg || "Error");
+    }
+  };
+
+  const handleFavoriteToggle = async (e) => {
+    e.preventDefault();
+    if(!userInfo){
+      toast.error("Please login to add to favorites");
+      return;
+    }
+    try {
+      if (isLiked) {
+        await removeFavorite({ artworkId: artwork._id }).unwrap();
+        toast.success("Removed from favorites");
+      } else {
+        await addFavorite({ artworkId: artwork._id }).unwrap();
+        toast.success("Added to favorites");
+      }
+    } catch (error) {
+      toast.error(error?.data?.errors?.[0]?.msg || "Failed to update favorites");
     }
   };
 
@@ -86,14 +118,11 @@ const TiltCard = ({ artwork, handleDelete }) => {
           {location.pathname === "/artist/my-artworks" ? (
             ""
           ): (<button
-              onClick={(e) => {
-                e.preventDefault();
-                setIsLiked(!isLiked);
-              }}
+              onClick={handleFavoriteToggle}
               className="pointer-events-auto p-2 rounded-full bg-black/40 backdrop-blur-md hover:bg-white/20 transition-colors border border-white/10"
             >
               <Heart
-                className={`w-4 h-4 ${isLiked ? "fill-red-500 text-red-500" : "text-white"}`}
+                className={`w-4 h-4 transition-colors ${isLiked ? "fill-red-500 text-red-500" : "text-white"}`}
               />
             </button>)}
         </div>
@@ -103,7 +132,7 @@ const TiltCard = ({ artwork, handleDelete }) => {
           className="absolute inset-0 flex flex-col items-center justify-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20 pointer-events-none"
           style={{ transform: "translateZ(60px)" }}
         >
-          <button className="pointer-events-auto flex items-center gap-2 px-6 py-3 bg-white text-black rounded-full font-medium hover:scale-105 transition-transform">
+          <button onClick={() => navigate(`/view-3d/${artwork._id}`)} className="pointer-events-auto flex items-center gap-2 px-6 py-3 bg-white text-black rounded-full font-medium hover:scale-105 transition-transform">
             <Maximize className="w-4 h-4" /> View in 3D
           </button>
         </div>

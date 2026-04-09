@@ -3,8 +3,7 @@ import { useGetAllArtworksQuery } from '../../redux/api/artwork'
 import TiltCard from '../../components/TiltCard'
 
 const AllArtWorks = () => {
-
-    const { data: artworks, isLoading, error } = useGetAllArtworksQuery()
+  const { data: artworks, isLoading, error } = useGetAllArtworksQuery()
 
   return (
     <>

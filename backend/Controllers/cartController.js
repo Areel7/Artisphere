@@ -48,15 +48,14 @@ const addToCart = async (req, res) => {
 
 const removeCartItem = async (req, res) => {
     try {
-        const { artworkId } = req.params; // It's best if we check params first
-        const idToRemove = artworkId || req.body.artworkId;
+        const { id } = req.params;
 
-        const cartItem = await Cart.findOne({ userId: req.user._id, artworkId: idToRemove });
+        const cartItem = await Cart.findOne({ _id: id, userId: req.user._id });
         if (!cartItem) {
             return res.status(404).json({ errors: [{ msg: "Cart item not found" }] });
         }
         
-        await Cart.findByIdAndDelete(cartItem._id);
+        await Cart.findByIdAndDelete(id);
         res.status(200).json({ msg: "Item removed from cart successfully" });
     } catch (error) {
         console.log(error);

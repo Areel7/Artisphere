@@ -9,7 +9,7 @@ const favoriteSchema = new mongoose.Schema(
     },
     artworkId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Artwork",
+      ref: "ArtWork",
       required: true,
     },
   },

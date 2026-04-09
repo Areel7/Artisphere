@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   ShoppingCart,
   Trash2,
@@ -18,10 +18,11 @@ const Cart = () => {
   const { data, isLoading, isError, refetch } = useGetUserCartQuery();
   const [removeCartItem, { isLoading: isRemoving }] = useRemoveCartItemMutation();
   const [clearCart, { isLoading: isClearing }] = useClearCartMutation();
+  const navigate = useNavigate();
 
-  const handleRemoveItem = async (artworkId) => {
+  const handleRemoveItem = async (id) => {
     try {
-      await removeCartItem(artworkId).unwrap();
+      await removeCartItem(id).unwrap();
       toast.success("Item removed from cart");
       refetch();
     } catch (err) {
@@ -39,9 +40,13 @@ const Cart = () => {
     }
   };
 
+  const handleCheckout = () => {
+    navigate("/order");
+  };
+
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-black">
+      <div className="min-h-screen flex items-center justify-center">
         <Loader2 className="w-8 h-8 text-violet-500 animate-spin" />
       </div>
     );
@@ -49,7 +54,7 @@ const Cart = () => {
 
   if (isError) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-black text-rose-400 gap-4">
+      <div className="min-h-screen flex flex-col items-center justify-center text-rose-400 gap-4">
         <AlertCircle className="w-12 h-12" />
         <p className="font-semibold text-lg">Failed to load cart</p>
         <button
@@ -65,7 +70,7 @@ const Cart = () => {
   const { cartItems = [], totalPrice = 0 } = data || {};
 
   return (
-    <div className="min-h-screen bg-black text-zinc-100 p-6 pt-28">
+    <div className="min-h-screen text-zinc-100 p-6 pt-28">
       <div className="max-w-5xl mx-auto flex flex-col lg:flex-row gap-8">
         {/* Cart Items Section */}
         <div className="flex-1">
@@ -101,13 +106,14 @@ const Cart = () => {
                   key={item._id}
                   className="flex items-center gap-6 p-4 rounded-2xl bg-zinc-900/40 border border-white/5 hover:border-white/10 transition-colors group relative overflow-hidden"
                 >
+                  <div className="shrink-0 relative overflow-hidden rounded-xl">
                     <img
                       src={`${import.meta.env.VITE_BASE_URL}${item.artworkId.image}`}
                       alt={item.artworkId.title}
                       className="w-28 h-28 object-cover group-hover:scale-105 transition-transform duration-500"
                     />
-                    <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors" />
-                
+                    <div className="absolute inset-0 bg-black/20 pointer-events-none group-hover:bg-transparent transition-colors" />
+                  </div>
 
                   <div className="flex-1 min-w-0">
                     {/* <Link
@@ -121,7 +127,7 @@ const Cart = () => {
                   </div>
 
                   <button
-                    onClick={() => handleRemoveItem(item.artworkId._id)}
+                    onClick={() => handleRemoveItem(item._id)}
                     disabled={isRemoving}
                     className="p-3 text-zinc-500 hover:text-rose-500 hover:bg-rose-500/10 rounded-xl transition-all mr-2"
                     title="Remove item"
@@ -169,7 +175,9 @@ const Cart = () => {
                 <span className="text-3xl font-light">${totalPrice}</span>
               </div>
 
-              <button className="w-full bg-white text-black font-semibold py-4 rounded-xl flex items-center justify-center gap-2 hover:bg-zinc-200 transition-all group mb-4">
+              <button 
+                onClick={handleCheckout}
+                className="w-full bg-white text-black font-semibold py-4 rounded-xl flex items-center justify-center gap-2 hover:bg-zinc-200 transition-all group mb-4">
                 Proceed to Checkout
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </button>

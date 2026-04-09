@@ -1,10 +1,11 @@
 import React from "react";
 import { Box, Search } from "lucide-react";
 import TiltCard from "./TiltCard";
+import { useNavigate } from "react-router-dom";
 
 const ARTWORKS = [
   {
-    id: 1,
+    id: "66nnnjbb",
     title: "Ethereal Echoes",
     artist: "Elena Rostova",
     image: "/uploads/image-1775504396143.jpeg",
@@ -16,6 +17,7 @@ const ARTWORKS = [
 ];
 
 const HeroSection = () => {
+  const navigate = useNavigate();
   return (
     <>
       {/* Hero Section */}
@@ -43,7 +45,7 @@ const HeroSection = () => {
             </p>
 
             <div className="flex flex-wrap items-center gap-4 mt-2">
-              <button className="group flex items-center gap-2 px-8 py-4 bg-white text-black rounded-full font-semibold hover:bg-zinc-200 transition-colors duration-300">
+              <button onClick={() => navigate('/gallery')} className="group flex items-center gap-2 px-8 py-4 bg-white text-black rounded-full font-semibold hover:bg-zinc-200 transition-colors duration-300">
                 Enter 3D Gallery
                 <Box className="w-4 h-4 group-hover:rotate-12 transition-transform" />
               </button>

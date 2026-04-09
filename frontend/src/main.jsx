@@ -11,6 +11,7 @@ import {
 import { createBrowserRouter } from "react-router-dom";
 
 import Home from "./pages/Home.jsx";
+import View3D from "./pages/Artworks/View3D.jsx";
 
 //Artist Routes
 import ArtistRoutes from "./pages/Artist/ArtistRoutes.jsx";
@@ -25,7 +26,11 @@ import CreateExhibition from "./pages/Curator/CreateExhibition.jsx";
 import PrivateRoutes from "./pages/Auth/PrivateRoutes.jsx";
 import Profile from "./pages/User/Profile.jsx";
 import Cart from "./pages/User/Cart.jsx";
+import Order from "./pages/User/Order.jsx";
+import OrderDetail from "./pages/User/OrderDetail.jsx";
+import Favorite from "./pages/User/Favorite.jsx";
 import AllArtWorks from "./pages/Artworks/AllArtWorks.jsx";
+import GalleryPage from "./pages/Gallery/GalleryPage.jsx";
 
 
 const router = createBrowserRouter(
@@ -34,11 +39,16 @@ const router = createBrowserRouter(
       <Route index={true} path="/" element={<Home />} />
       <Route path="/auth/login" element={<Home />} />
       <Route path="/auth/register" element={<Home />} />
+      <Route path="/view-3d/:id" element={<View3D />} />
 
       <Route path="" element={<PrivateRoutes />}>
         <Route path="/profile" element={<Profile />} />
         <Route path="/artworks" element={<AllArtWorks />} />
+        <Route path="/gallery" element={<GalleryPage />} />
         <Route path="/cart" element={<Cart />} />
+        <Route path="/order" element={<Order />} />
+        <Route path="/order-detail" element={<OrderDetail />} />
+        <Route path="/favorites" element={<Favorite />} />
       </Route>
 
       <Route path="" element={<ArtistRoutes />}>

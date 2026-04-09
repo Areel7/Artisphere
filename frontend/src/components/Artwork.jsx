@@ -1,77 +1,10 @@
-import React from "react";
 import { ArrowRight } from "lucide-react";
 import TiltCard from "./TiltCard";
+import { useGetAllArtworksQuery } from "../redux/api/artwork";
 
-const ARTWORKS = [
-  {
-    id: 1,
-    title: "Ethereal Echoes",
-    artist: "Elena Rostova",
-    image:
-      "/uploads/image-1775504396143.jpeg",
-    category: "Abstract Oil",
-    price: 1200,
-    likes: 342,
-    hasStory: true,
-  },
-  {
-    id: 2,
-    title: "Neon Genesis",
-    artist: "Marcus Chen",
-    image:
-      "/uploads/image-1775504396143.jpeg",
-    category: "Digital 3D",
-    price: 850,
-    likes: 891,
-    hasStory: false,
-  },
-  {
-    id: 3,
-    title: "Monolithic Serenity",
-    artist: "Sarah Jenkins",
-    image:
-      "/uploads/image-1775504396143.jpeg",
-    category: "Sculpture",
-    price: 3400,
-    likes: 124,
-    hasStory: true,
-  },
-  {
-    id: 4,
-    title: "Chromatic Variance",
-    artist: "David Osei",
-    image:
-      "/uploads/image-1775504396143.jpeg",
-    category: "Mixed Media",
-    price: 650,
-    likes: 456,
-    hasStory: true,
-  },
-  {
-    id: 5,
-    title: "Void Architecture",
-    artist: "Aisha Patel",
-    image:
-      "/uploads/image-1775504396143.jpeg",
-    category: "Generative",
-    price: 1100,
-    likes: 678,
-    hasStory: false,
-  },
-  {
-    id: 6,
-    title: "Liquid Gold",
-    artist: "Jean-Paul Dubois",
-    image:
-      "/uploads/image-1775504396143.jpeg",
-    category: "Fluid Acrylic",
-    price: 920,
-    likes: 533,
-    hasStory: true,
-  },
-];
 
 const Artwork = () => {
+  const { data: artworks, isLoading, isError } = useGetAllArtworksQuery();
   return (
     <>
       {/* Discovery Module (Artwork Catalog) */}
@@ -97,11 +30,23 @@ const Artwork = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 gap-y-12">
-            {ARTWORKS.slice(0, 6).map((artwork) => (
-              <TiltCard key={artwork.id} artwork={artwork} />
-            ))}
-          </div>
+          {isLoading ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 gap-y-12">
+              {[...Array(4)].map((_, i) => (
+                <div key={i} className="aspect-[3/4] bg-white/5 rounded-2xl animate-pulse border border-white/5" />
+              ))}
+            </div>
+          ) : isError ? (
+            <div className="py-20 text-center border border-dashed border-white/10 rounded-3xl">
+              <p className="text-white/40 font-light">Unable to load artworks at the moment.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 gap-y-12">
+              {artworks?.map((artwork) => (
+                <TiltCard key={artwork._id} artwork={artwork} />
+              ))}
+            </div>
+          )}
         </div>
       </section>
     </>

@@ -13,12 +13,14 @@ import {
   Package,
   LogOut,
   ChevronRight,
+  Boxes,
 } from "lucide-react";
 import SignInandSignUp from "../pages/Auth/SignInandSignUp";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { logOut } from "../redux/features/auth/authSlice";
 import { useLogoutMutation } from "../redux/api/user";
+import { useGetUserCartQuery } from "../redux/api/cart";
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -36,6 +38,8 @@ const Header = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [logoutApiCall] = useLogoutMutation();
+  const { data: cartData } = useGetUserCartQuery();
+  const cartItemCount = cartData?.cartItems?.length || 0;
 
   const openAuth = (mode) => {
     setAuthMode(mode);
@@ -80,7 +84,8 @@ const Header = () => {
     ? [
         { icon: User, label: "My Profile", to: "/profile" },
         { icon: Heart, label: "Favorites", to: "/favorites" },
-        { icon: Image, label: "All Artworks", to: "/artworks"},
+        { icon: Image, label: "All Artworks", to: "/artworks" },
+        { icon: Boxes, label: "3D Gallery", to: "/gallery" },
         userInfo.role === "artist" && {
           icon: Palette,
           label: "Create Artwork",
@@ -101,7 +106,7 @@ const Header = () => {
           label: "My Exhibitions",
           to: "/curator/my-exhibitions",
         },
-        { icon: Package, label: "My Orders", to: "/orders" },
+        { icon: Package, label: "My Orders", to: "/order-detail" },
       ].filter(Boolean)
     : [];
 
@@ -124,7 +129,10 @@ const Header = () => {
       >
         <div className="max-w-[90rem] mx-auto px-6 flex items-center justify-between">
           <div className="flex items-center gap-3 cursor-pointer group">
-            <Box  onClick={() => navigate("/")}className="w-7 h-7 text-white group-hover:rotate-180 transition-transform duration-700" />
+            <Box
+              onClick={() => navigate("/")}
+              className="w-7 h-7 text-white group-hover:rotate-180 transition-transform duration-700"
+            />
             <span className="text-xl font-bold tracking-widest uppercase">
               Artisphere
             </span>
@@ -133,14 +141,14 @@ const Header = () => {
           <div className="hidden md:flex items-center gap-8 bg-white/5 px-8 py-3 rounded-full border border-white/5 backdrop-blur-md">
             {["Discovery", "Exhibitions", "3D Spaces", "Artists"].map(
               (item) => (
-                <a
+                <Link
                   key={item}
-                  href={`#${item.toLowerCase()}`}
+                  to={`/gallery`}
                   className="text-xs font-semibold uppercase tracking-widest text-white/60 hover:text-white transition-colors relative group"
                 >
                   {item}
                   <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-0 h-[1px] bg-white transition-all duration-300 group-hover:w-full" />
-                </a>
+                </Link>
               ),
             )}
           </div>
@@ -149,10 +157,13 @@ const Header = () => {
             <button className="text-white/70 hover:text-white transition-colors">
               <Search className="w-5 h-5" />
             </button>
-            <button onClick={() => navigate("/cart")}className="text-white/70 hover:text-white transition-colors relative">
+            <button
+              onClick={() => navigate("/cart")}
+              className="text-white/70 hover:text-white transition-colors relative"
+            >
               <ShoppingCart className="w-5 h-5" />
               <span className="absolute -top-1.5 -right-2 bg-white text-black text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
-                2
+                {cartItemCount}
               </span>
             </button>
             {!userInfo && (

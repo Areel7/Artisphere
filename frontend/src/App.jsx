@@ -11,7 +11,7 @@ const App = () => {
       <ParticleBackground />
       <ToastContainer />
       <Header />
-      <main className="relative z-10">
+      <main className="relative z-20 flex-1 flex flex-col">
         <Outlet />
       </main>
       <Footer />
