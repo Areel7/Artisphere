@@ -24,7 +24,7 @@ const exibitionSchema = new mongoose.Schema({
   artworkIds: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Artwork",
+      ref: "ArtWork",
     },
   ],
 }, {timestamps: true});

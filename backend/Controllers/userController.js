@@ -28,13 +28,14 @@ const createUser = async (req, res) => {
 
     await newUser.save();
 
-    genrateToken(res, newUser._id);
+    const token = genrateToken(res, newUser._id);
 
     res.status(201).json({
       _id: newUser._id,
       username: newUser.username,
       email: newUser.email,
       role: newUser.role,
+      token,
     });
   } catch (error) {
     console.log(error);
@@ -61,13 +62,14 @@ const loginUser = async (req, res) => {
       return res.status(400).json({ errors: [{ msg: "Invalid credentials" }] });
     }
 
-    genrateToken(res, user._id);
+    const token = genrateToken(res, user._id);
 
     res.status(200).json({
       _id: user._id,
       username: user.username,
       email: user.email,
       role: user.role,
+      token,
     });
   } catch (error) {
     console.log(error);

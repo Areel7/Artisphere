@@ -1,8 +1,14 @@
 import express from "express";
+import { createServer } from "http";
+import { Server } from "socket.io";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import path from "path";
+import { fileURLToPath } from "url";
+import { attachExhibitionChat } from "./sockets/exhibitionChatSocket.js";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 //Files
 import connectDB from "./Config/db.js";
@@ -14,8 +20,8 @@ import favoriteRoutes from "./Routes/favoriteRoutes.js";
 import cartRoutes from "./Routes/cartRoutes.js";
 import orderRoutes from "./Routes/orderRoutes.js";
 
-//Configuration
-dotenv.config();
+//Configuration — load backend/.env when npm is run from repo root
+dotenv.config({ path: path.join(__dirname, ".env") });
 
 connectDB();
 
@@ -24,7 +30,15 @@ const app = express();
 //Middleware
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors());
+app.use(
+  cors({
+    credentials: true,
+    origin: [
+      "http://localhost:5173",
+      "http://127.0.0.1:5173",
+    ],
+  }),
+);
 app.use(express.urlencoded({ extended: true }));
 
 const PORT = process.env.PORT || 3000;
@@ -39,7 +53,21 @@ app.use("/api/favorites", favoriteRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/orders", orderRoutes);
 
-const __dirname = path.resolve();
-app.use("/uploads", express.static(path.join(__dirname + "/uploads")));
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
+const httpServer = createServer(app);
+const io = new Server(httpServer, {
+  cors: {
+    origin: [
+      "http://localhost:5173",
+      "http://127.0.0.1:5173",
+    ],
+    credentials: true,
+    methods: ["GET", "POST"],
+  },
+});
+attachExhibitionChat(io);
+
+httpServer.listen(PORT, () =>
+  console.log(`Server is running on port ${PORT} (HTTP + Socket.IO)`),
+);

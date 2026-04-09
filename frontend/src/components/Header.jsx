@@ -98,8 +98,8 @@ const Header = () => {
         },
         userInfo.role === "curator" && {
           icon: Building2,
-          label: "Create Exhibition",
-          to: "/curator/create-exhibition",
+          label: "Add Exhibition",
+          to: "/curator/select-exhibition-artworks",
         },
         userInfo.role === "curator" && {
           icon: Building2,

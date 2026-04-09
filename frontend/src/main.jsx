@@ -22,6 +22,7 @@ import MyArtWorks from "./pages/Artist/MyArtWorks.jsx";
 //Curator Routes
 import CuratorRoutes from "./pages/Curator/CuratorRoutes.jsx";
 import CreateExhibition from "./pages/Curator/CreateExhibition.jsx";
+import SelectExhibitionArtworks from "./pages/Curator/SelectExhibitionArtworks.jsx";
 
 //User Routes
 import PrivateRoutes from "./pages/Auth/PrivateRoutes.jsx";
@@ -32,6 +33,7 @@ import OrderDetail from "./pages/User/OrderDetail.jsx";
 import Favorite from "./pages/User/Favorite.jsx";
 import AllArtWorks from "./pages/Artworks/AllArtWorks.jsx";
 import GalleryPage from "./pages/Gallery/GalleryPage.jsx";
+import ExhibitionRoomPage from "./pages/Exhibition/ExhibitionRoomPage.jsx";
 
 
 const router = createBrowserRouter(
@@ -42,6 +44,10 @@ const router = createBrowserRouter(
       <Route path="/auth/login" element={<Home />} />
       <Route path="/auth/register" element={<Home />} />
       <Route path="/view-3d/:id" element={<View3D />} />
+      <Route
+        path="/exhibition/:id/room"
+        element={<ExhibitionRoomPage />}
+      />
 
       <Route path="" element={<PrivateRoutes />}>
         <Route path="/profile" element={<Profile />} />
@@ -59,6 +65,10 @@ const router = createBrowserRouter(
       </Route>
 
       <Route path="" element={<CuratorRoutes />}>
+        <Route
+          path="curator/select-exhibition-artworks"
+          element={<SelectExhibitionArtworks />}
+        />
         <Route
           path="curator/create-exhibition"
           element={<CreateExhibition />}

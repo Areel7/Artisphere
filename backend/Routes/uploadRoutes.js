@@ -1,12 +1,21 @@
+import fs from "fs";
 import path from "path";
+import { fileURLToPath } from "url";
 import express from "express";
 import multer from "multer";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+/** Same folder as `express.static` in index.js — not `process.cwd()/uploads` */
+const uploadsDir = path.join(__dirname, "..", "uploads");
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
 
 const router = express.Router();
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "uploads/");
+    cb(null, uploadsDir);
   },
   filename: (req, file, cb) => {
     const extname = path.extname(file.originalname);
@@ -38,9 +47,10 @@ router.post("/", (req, res) => {
     if (err) {
       res.status(400).send({ message: err.message });
     } else if (req.file) {
+      // Use filename only — req.file.path is absolute on Windows and breaks URLs
       res.status(200).send({
         message: "Image uploaded successfully",
-        image: `/${req.file.path}`,
+        image: `/uploads/${req.file.filename}`,
       });
     } else {
       res.status(400).send({ message: "No image file provided" });
@@ -58,7 +68,7 @@ router.post("/multiple", (req, res) => {
     } else if (req.files && req.files.length > 0) {
       res.status(200).send({
         message: "Images uploaded successfully",
-        images: req.files.map((file) => `/${file.path}`),
+        images: req.files.map((file) => `/uploads/${file.filename}`),
       });
     } else {
       res.status(400).send({ message: "No image files provided" });
