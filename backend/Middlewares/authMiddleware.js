@@ -1,8 +1,17 @@
 import jwt from "jsonwebtoken";
 import User from "../Models/User.js";
 
+const readToken = (req) => {
+  if (req.cookies?.jwt) return req.cookies.jwt;
+  const h = req.headers.authorization;
+  if (typeof h === "string" && h.startsWith("Bearer ")) {
+    return h.slice(7).trim();
+  }
+  return null;
+};
+
 const protect = async (req, res, next) => {
-  const token = req.cookies.jwt;
+  const token = readToken(req);
 
   if (!token) {
     return res

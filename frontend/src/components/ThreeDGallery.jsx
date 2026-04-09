@@ -231,7 +231,7 @@ const ThreeDGallery = ({ artworks = [], onSelect }) => {
 
       // Load artwork texture
       const imageUrl = art.image
-        ? `${import.meta.env.VITE_BASE_URL}${art.image}`
+        ? (art.image.startsWith('http') ? art.image : `${import.meta.env.VITE_BASE_URL}${art.image}`)
         : null;
 
       if (imageUrl) {

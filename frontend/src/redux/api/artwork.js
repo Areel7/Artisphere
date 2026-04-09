@@ -10,18 +10,27 @@ export const artworkApiSlice = apiSlice.injectEndpoints({
         method: "POST",
         body: data,
       }),
+      invalidatesTags: [{ type: "Artwork", id: "LIST" }],
     }),
     getAllArtworks: builder.query({
       query: () => ({
         url: ARTWORK_URL,
         method: "GET",
       }),
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.map(({ _id }) => ({ type: "Artwork", id: _id })),
+              { type: "Artwork", id: "LIST" },
+            ]
+          : [{ type: "Artwork", id: "LIST" }],
     }),
     getSingleArtwork: builder.query({
       query: (id) => ({
         url: `${ARTWORK_URL}/${id}`,
         method: "GET",
       }),
+      providesTags: (_r, _e, id) => [{ type: "Artwork", id }],
     }),
     updateArtwork: builder.mutation({
       query: ({ id, data }) => ({
@@ -29,18 +38,27 @@ export const artworkApiSlice = apiSlice.injectEndpoints({
         method: "PUT",
         body: data,
       }),
+      invalidatesTags: (_r, _e, { id }) => [
+        { type: "Artwork", id },
+        { type: "Artwork", id: "LIST" },
+      ],
     }),
     deleteArtwork: builder.mutation({
       query: (id) => ({
         url: `${ARTWORK_URL}/delete/${id}`,
         method: "DELETE",
       }),
+      invalidatesTags: (_r, _e, id) => [
+        { type: "Artwork", id },
+        { type: "Artwork", id: "LIST" },
+      ],
     }),
     getArtworksbyArtistId: builder.query({
       query: (id) => ({
         url: `${ARTWORK_URL}/artist/${id}`,
         method: "GET",
       }),
+      providesTags: [{ type: "Artwork", id: "LIST" }],
     }),
     uploadImage: builder.mutation({
       query: (data) => ({

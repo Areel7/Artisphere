@@ -1,6 +1,7 @@
 import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useGetSingleArtworkQuery } from "../../redux/api/artwork";
+import { artistLabel, artworkTitle } from "../../utils/artworkMeta.js";
 import ThreeDModal from "../../components/ThreeDModal";
 
 const View3D = () => {
@@ -30,10 +31,16 @@ const View3D = () => {
     );
   }
 
+  const src = artwork.image?.startsWith("http")
+    ? artwork.image
+    : `${import.meta.env.VITE_BASE_URL}${artwork.image}`;
+
   return (
     <div className="min-h-screen bg-zinc-950">
       <ThreeDModal
-        imageSrc={`${import.meta.env.VITE_BASE_URL}${artwork.image}`}
+        imageSrc={src}
+        title={artworkTitle(artwork)}
+        artistName={artistLabel(artwork) || undefined}
         onClose={() => navigate(-1)}
       />
     </div>

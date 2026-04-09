@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { RotateCw, ZoomIn, X } from 'lucide-react';
 import ParticleBackground from './ParticleBackground';
 
-const ThreeDModal = ({ imageSrc, onClose }) => {
+const ThreeDModal = ({ imageSrc, onClose, title, artistName }) => {
   const mountRef = useRef(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
@@ -195,11 +195,22 @@ const ThreeDModal = ({ imageSrc, onClose }) => {
       <div className="flex items-center justify-between px-4 py-3 bg-zinc-900/80 border-b border-zinc-800 shrink-0">
       
         
-        <span className="text-sm text-neutral-400 font-medium tracking-wide">
-          3D Viewer
-        </span>
+        <div className="min-w-0 flex-1 pr-4">
+          {title ? (
+            <>
+              <p className="text-sm font-semibold text-white truncate">{title}</p>
+              {artistName ? (
+                <p className="text-xs text-neutral-500 truncate">by {artistName}</p>
+              ) : null}
+            </>
+          ) : (
+            <span className="text-sm text-neutral-400 font-medium tracking-wide">
+              3D Viewer
+            </span>
+          )}
+        </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 shrink-0">
           <button
             onClick={() => setAutoRotate(!autoRotate)}
             className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
@@ -223,7 +234,7 @@ const ThreeDModal = ({ imageSrc, onClose }) => {
 
         <button
           onClick={onClose}
-          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-red-500/20 text-red-400 hover:bg-red-500 hover:text-white transition-all text-sm font-medium"
+          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-red-500/20 text-red-400 hover:bg-red-500 hover:text-white transition-all text-sm font-medium shrink-0"
         >
           <X size={16} />
           Exit
