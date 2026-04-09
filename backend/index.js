@@ -31,18 +31,25 @@ const app = express();
 //Middleware
 app.use(express.json());
 app.use(cookieParser());
-const allowedOrigins = [
-  "http://localhost:5173",
-  "http://127.0.0.1:5173",
-  process.env.FRONTEND_URL,
-].filter(Boolean);
+// Dynamic CORS: checked live on each request so env vars are always current
+const corsOptions = {
+  credentials: true,
+  origin: (origin, callback) => {
+    // Allow requests with no origin (mobile apps, curl, Postman)
+    if (!origin) return callback(null, true);
 
-app.use(
-  cors({
-    credentials: true,
-    origin: allowedOrigins,
-  }),
-);
+    const allowed =
+      origin === process.env.FRONTEND_URL ||
+      origin === "http://localhost:5173" ||
+      origin === "http://127.0.0.1:5173" ||
+      origin.endsWith(".vercel.app");
+
+    if (allowed) return callback(null, true);
+    return callback(new Error(`CORS blocked: ${origin}`));
+  },
+};
+
+app.use(cors(corsOptions));
 app.use(express.urlencoded({ extended: true }));
 
 const PORT = process.env.PORT || 3000;
@@ -63,7 +70,16 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: {
-    origin: allowedOrigins,
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true);
+      const allowed =
+        origin === process.env.FRONTEND_URL ||
+        origin === "http://localhost:5173" ||
+        origin === "http://127.0.0.1:5173" ||
+        origin.endsWith(".vercel.app");
+      if (allowed) return callback(null, true);
+      return callback(new Error(`CORS blocked: ${origin}`));
+    },
     credentials: true,
     methods: ["GET", "POST"],
   },
