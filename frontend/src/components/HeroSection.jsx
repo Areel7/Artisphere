@@ -7,18 +7,8 @@ import { toast } from "react-toastify";
 import { useGetArtistsQuery } from "../redux/api/user";
 import { useGetAllArtworksQuery } from "../redux/api/artwork";
 
-const ARTWORKS = [
-  {
-    id: "66nnnjbb",
-    title: "Ethereal Echoes",
-    artist: "Elena Rostova",
-    image: "/uploads/image-1775504396143.jpeg",
-    category: "Abstract Oil",
-    price: 1200,
-    likes: 342,
-    hasStory: true,
-  },
-];
+
+
 
 const HeroSection = () => {
   const { userInfo } = useSelector((state) => state.auth);
@@ -110,7 +100,12 @@ const HeroSection = () => {
           {/* Hero Interactive Element */}
           <div className="lg:col-span-5 relative w-full max-w-md mx-auto z-10 hidden md:block">
             <div className="absolute inset-0 bg-gradient-to-tr from-blue-500/10 via-transparent to-purple-500/10 blur-3xl rounded-full" />
-            <TiltCard artwork={ARTWORKS[0]} />
+            {artworks?.at(-1) ? (
+              <TiltCard artwork={artworks.at(-1)} />
+            ) : (
+              // Skeleton placeholder while artwork loads
+              <div className="w-full aspect-[3/4] rounded-xl bg-white/5 border border-white/10 animate-pulse" />
+            )}
           </div>
         </div>
       </section>
