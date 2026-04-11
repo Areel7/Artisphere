@@ -30,7 +30,25 @@ const Footer = () => {
               <h4 className="font-semibold mb-4 text-sm uppercase tracking-widest text-white/80">Platform</h4>
               <ul className="space-y-3 text-sm">
                 <li><Link to="/search" className="text-white/50 hover:text-white transition-colors">Discover Art</Link></li>
-                <li><Link to="/gallery" className="text-white/50 hover:text-white transition-colors">3D Exhibitions</Link></li>
+                <li>
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      const el = document.getElementById("exhibitions");
+                      if (el) {
+                        el.scrollIntoView({ behavior: "smooth" });
+                      } else {
+                        navigate("/");
+                        setTimeout(() => {
+                          document.getElementById("exhibitions")?.scrollIntoView({ behavior: "smooth" });
+                        }, 300);
+                      }
+                    }}
+                    className="text-white/50 hover:text-white transition-colors"
+                  >
+                    3D Exhibitions
+                  </button>
+                </li>
                 <li><Link to="/curators" className="text-white/50 hover:text-white transition-colors">Curators</Link></li>
               </ul>
             </div>

@@ -4,8 +4,22 @@ import { useGetAllArtworksQuery } from "../redux/api/artwork";
 import { useDispatch, useSelector } from "react-redux";
 import { setArtFilter } from "../redux/features/artwork/artSlice";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 
+const fadeUp = {
+  hidden: { opacity: 0, y: 30 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
+};
 
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.15,
+    },
+  },
+};
 const Artwork = () => {
   const { data: artworks, isLoading, isError } = useGetAllArtworksQuery();
   const dispatch = useDispatch();
@@ -23,14 +37,20 @@ const Artwork = () => {
   return (
     <>
       {/* Discovery Module (Artwork Catalog) */}
-      <section className="py-32 px-6" id="discovery">
+      <section className="py-24 md:py-32 px-6" id="discovery">
         <div className="max-w-[90rem] mx-auto">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16">
+          <motion.div 
+            className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.8 }}
+          >
             <div className="max-w-2xl">
-              <h2 className="text-4xl md:text-5xl font-bold mb-4 tracking-tight">
+              <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 tracking-tight">
                 Personalized Discovery
               </h2>
-              <p className="text-white/60 text-lg font-light">
+              <p className="text-white/60 text-lg md:text-xl font-light">
                 Curated recommendations based on your taste. Explore high-res
                 imagery, story layers, and acquire physical or digital pieces.
               </p>
@@ -59,31 +79,40 @@ const Artwork = () => {
                 View Catalog <ArrowRight className="w-4 h-4" />
               </button>
             </div>
-          </div>
+          </motion.div>
 
-          {isLoading ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 gap-y-12">
-              {[...Array(4)].map((_, i) => (
-                <div key={i} className="aspect-[3/4] bg-white/5 rounded-2xl animate-pulse border border-white/5" />
-              ))}
-            </div>
-          ) : isError ? (
-            <div className="py-20 text-center border border-dashed border-white/10 rounded-3xl">
-              <p className="text-white/40 font-light">Unable to load artworks at the moment.</p>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 gap-y-12">
-              {filteredArtworks?.length === 0 ? (
-                <div className="col-span-full py-16 text-center border-dashed border border-white/10 rounded-2xl text-white/50">
-                  No artworks found for this category.
-                </div>
-              ) : (
-                filteredArtworks?.map((artwork) => (
-                  <TiltCard key={artwork._id} artwork={artwork} />
-                ))
-              )}
-            </div>
-          )}
+          <motion.div 
+             variants={staggerContainer}
+             initial="hidden"
+             whileInView="visible"
+             viewport={{ once: true, margin: "-100px" }}
+          >
+            {isLoading ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 gap-y-12">
+                {[...Array(4)].map((_, i) => (
+                  <motion.div variants={fadeUp} key={i} className="aspect-[3/4] bg-white/5 rounded-2xl animate-pulse border border-white/5" />
+                ))}
+              </div>
+            ) : isError ? (
+              <div className="py-20 text-center border border-dashed border-white/10 rounded-3xl">
+                <p className="text-white/40 font-light">Unable to load artworks at the moment.</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 gap-y-12">
+                {filteredArtworks?.length === 0 ? (
+                  <div className="col-span-full py-16 text-center border-dashed border border-white/10 rounded-2xl text-white/50">
+                    No artworks found for this category.
+                  </div>
+                ) : (
+                  filteredArtworks?.map((artwork) => (
+                    <motion.div variants={fadeUp} key={artwork._id}>
+                      <TiltCard artwork={artwork} />
+                    </motion.div>
+                  ))
+                )}
+              </div>
+            )}
+          </motion.div>
         </div>
       </section>
     </>

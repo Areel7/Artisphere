@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Box, Search } from "lucide-react";
 import TiltCard from "./TiltCard";
 import { useNavigate } from "react-router-dom";
@@ -6,9 +6,39 @@ import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { useGetArtistsQuery } from "../redux/api/user";
 import { useGetAllArtworksQuery } from "../redux/api/artwork";
+import { motion, animate } from "framer-motion";
 
+const fadeUp = {
+  hidden: { opacity: 0, y: 30 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } },
+};
 
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.2,
+    },
+  },
+};
 
+const CountUp = ({ to }) => {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    const controls = animate(0, to, {
+      duration: 2,
+      ease: "circOut",
+      onUpdate: (value) => {
+        setCount(Math.floor(value));
+      }
+    });
+    return () => controls.stop();
+  }, [to]);
+
+  return <>{count}</>;
+};
 
 const HeroSection = () => {
   const { userInfo } = useSelector((state) => state.auth);
@@ -18,30 +48,35 @@ const HeroSection = () => {
   return (
     <>
       {/* Hero Section */}
-      <section className="min-h-screen flex items-center pt-24 pb-12 px-6">
-        <div className="max-w-[90rem] mx-auto w-full grid lg:grid-cols-12 gap-12 lg:gap-8 items-center">
-          <div className="lg:col-span-7 flex flex-col items-start gap-8 z-10">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm">
+      <section className="min-h-screen flex items-center pt-32 pb-24 px-6 overflow-hidden">
+        <div className="max-w-[90rem] mx-auto w-full grid lg:grid-cols-12 gap-16 lg:gap-12 items-center">
+          <motion.div 
+            className="lg:col-span-7 flex flex-col items-start gap-8 z-10"
+            variants={staggerContainer}
+            initial="hidden"
+            animate="visible"
+          >
+            <motion.div variants={fadeUp} className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm">
               <span className="w-2 h-2 rounded-full bg-blue-400 animate-pulse" />
               <span className="text-[10px] font-semibold tracking-widest uppercase text-white/80">
                 Interactive Gallery v1.0
               </span>
-            </div>
+            </motion.div>
 
-            <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-[5.5rem] font-bold leading-[1.05] tracking-tight">
+            <motion.h1 variants={fadeUp} className="text-5xl sm:text-6xl md:text-7xl lg:text-[6rem] font-bold leading-[1.05] tracking-tight">
               Where art meets <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-zinc-400 to-zinc-600 italic">
                 engagement.
               </span>
-            </h1>
+            </motion.h1>
 
-            <p className="text-lg md:text-xl text-white/60 max-w-xl font-light leading-relaxed">
+            <motion.p variants={fadeUp} className="text-lg md:text-xl text-white/60 max-w-xl font-light leading-relaxed">
               Browse, explore, interact, and experience art online. Step into
               interactive 3D spaces, uncover artist stories, and curate your
               personal collection.
-            </p>
+            </motion.p>
 
-            <div className="flex flex-wrap items-center gap-4 mt-2">
+            <motion.div variants={fadeUp} className="flex flex-wrap items-center gap-4 mt-4">
               <button onClick={() => !userInfo ? toast.error('Please login to enter the gallery') : navigate('/gallery')} className="group flex items-center gap-2 px-8 py-4 bg-white text-black rounded-full font-semibold hover:bg-zinc-200 transition-colors duration-300">
                 Enter 3D Gallery
                 <Box className="w-4 h-4 group-hover:rotate-12 transition-transform" />
@@ -50,10 +85,10 @@ const HeroSection = () => {
                 <Search className="w-4 h-4 text-white/60" />
                 Discover Artworks
               </button>
-            </div>
+            </motion.div>
 
             {/* Stats */}
-            <div className="grid grid-cols-3 gap-8 mt-8 pt-8 border-t border-white/10 w-full max-w-lg">
+            <motion.div variants={fadeUp} className="grid grid-cols-3 gap-8 mt-12 pt-8 border-t border-white/10 w-full max-w-lg">
               <div>
                 {artworksLoading ? (
                   <div className="animate-pulse">
@@ -64,7 +99,7 @@ const HeroSection = () => {
                   <div className="text-red-400 text-sm">Error loading artworks</div>
                 ) : (
                   <>
-                    <h4 className="text-2xl font-bold">{artworks?.length}</h4>
+                    <h4 className="text-2xl font-bold"><CountUp to={artworks?.length || 0} /></h4>
                     <p className="text-xs text-white/50 uppercase tracking-widest mt-1">
                       Artworks
                     </p>
@@ -87,18 +122,23 @@ const HeroSection = () => {
                   <div className="text-red-400 text-sm">Error loading artists</div>
                 ) : (
                   <>
-                    <h4 className="text-2xl font-bold">{artists?.length}</h4>
+                    <h4 className="text-2xl font-bold"><CountUp to={artists?.length || 0} /></h4>
                     <p className="text-xs text-white/50 uppercase tracking-widest mt-1">
                       Artists
                     </p>
                   </>
                 )}
               </div>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
 
           {/* Hero Interactive Element */}
-          <div className="lg:col-span-5 relative w-full max-w-md mx-auto z-10 hidden md:block">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9, x: 20 }}
+            animate={{ opacity: 1, scale: 1, x: 0 }}
+            transition={{ duration: 1, delay: 0.5, ease: "easeOut" }}
+            className="lg:col-span-5 relative w-full max-w-md mx-auto z-10 hidden md:block"
+          >
             <div className="absolute inset-0 bg-gradient-to-tr from-blue-500/10 via-transparent to-purple-500/10 blur-3xl rounded-full" />
             {artworks?.at(-1) ? (
               <TiltCard artwork={artworks.at(-1)} />
@@ -106,7 +146,7 @@ const HeroSection = () => {
               // Skeleton placeholder while artwork loads
               <div className="w-full aspect-[3/4] rounded-xl bg-white/5 border border-white/10 animate-pulse" />
             )}
-          </div>
+          </motion.div>
         </div>
       </section>
     </>

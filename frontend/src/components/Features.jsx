@@ -1,12 +1,34 @@
 import React from "react";
 import { Maximize, Layers, ShoppingCart } from "lucide-react";
+import { motion } from "framer-motion";
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 30 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
+};
+
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.15,
+    },
+  },
+};
 
 const Features = () => {
   return (
     <>
       {/* Value Proposition / Features */}
-      <section className="py-8 border-y border-white/5 bg-black/20 backdrop-blur-sm">
-        <div className="max-w-[90rem] mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-8">
+      <section className="py-16 border-y border-white/5 bg-black/20 backdrop-blur-sm overflow-hidden">
+        <motion.div 
+          className="max-w-[90rem] mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-8"
+          variants={staggerContainer}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-50px" }}
+        >
           {[
             {
               icon: Maximize,
@@ -24,16 +46,17 @@ const Features = () => {
               desc: "Secure purchases directly from artists and curators.",
             },
           ].map((feature, idx) => (
-            <div
+            <motion.div
               key={idx}
+              variants={fadeUp}
               className="flex flex-col gap-3 opacity-70 hover:opacity-100 transition-opacity p-6 rounded-2xl hover:bg-white/5"
             >
               <feature.icon className="w-6 h-6 text-white" />
               <h4 className="font-semibold text-lg">{feature.title}</h4>
               <p className="text-sm text-white/60 font-light">{feature.desc}</p>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </section>
     </>
   );

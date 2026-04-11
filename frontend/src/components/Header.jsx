@@ -146,7 +146,6 @@ const Header = () => {
           <div className="hidden md:flex items-center gap-8 bg-white/5 px-8 py-3 rounded-full border border-white/5 backdrop-blur-md">
             {[
               { name: "Discovery", path: "/search" },
-              { name: "Exhibitions", path: "/exhibitions" },
               { name: "3D Spaces", path: "/gallery" },
               { name: "Artists", path: "/artists" }
             ].map(
@@ -161,6 +160,24 @@ const Header = () => {
                 </Link>
               ),
             )}
+            <button
+               onClick={(e) => {
+                e.preventDefault();
+                const el = document.getElementById("exhibitions");
+                if (el) {
+                  el.scrollIntoView({ behavior: "smooth" });
+                } else {
+                  navigate("/");
+                  setTimeout(() => {
+                    document.getElementById("exhibitions")?.scrollIntoView({ behavior: "smooth" });
+                  }, 300);
+                }
+              }}
+              className="text-xs font-semibold uppercase tracking-widest text-white/60 hover:text-white transition-colors relative group"
+            >
+              Exhibitions
+              <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-0 h-[1px] bg-white transition-all duration-300 group-hover:w-full" />
+            </button>
           </div>
 
           <div className="hidden md:flex items-center gap-6">
