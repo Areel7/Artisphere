@@ -13,7 +13,9 @@ const TiltCard = ({ artwork, handleDelete }) => {
   const userInfo = useSelector((state) => state.auth.userInfo);
   
   const [addToCart] = useAddToCartMutation();
-  const { data: favorites } = useGetFavoritesQuery();
+  const { data: favorites } = useGetFavoritesQuery(undefined, {
+    skip: !userInfo?.token,
+  });
   const [addFavorite] = useAddFavoriteMutation();
   const [removeFavorite] = useRemoveFavoriteMutation();
   const navigate = useNavigate();
@@ -80,7 +82,7 @@ const TiltCard = ({ artwork, handleDelete }) => {
         onMouseMove={handleMouseMove}
         onMouseEnter={() => setIsHovering(true)}
         onMouseLeave={handleMouseLeave}
-        className="relative w-full aspect-[3/4] rounded-xl transition-all duration-300 ease-out bg-zinc-900 border border-white/5"
+        className="relative w-full aspect-[3/4] rounded-xl transition-all duration-300 ease-out bg-zinc-200 dark:bg-zinc-900 border border-zinc-200/80 dark:border-white/5"
         style={{
           transform: `rotateX(${rotation.x}deg) rotateY(${rotation.y}deg) scale(${isHovering ? 1.02 : 1})`,
           transformStyle: "preserve-3d",

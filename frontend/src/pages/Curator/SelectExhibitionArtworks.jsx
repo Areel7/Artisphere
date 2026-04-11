@@ -56,27 +56,27 @@ const SelectExhibitionArtworks = () => {
   };
 
   return (
-    <div className="min-h-screen text-zinc-100 pt-24 pb-32 px-4 md:px-8">
+    <div className="min-h-screen text-zinc-900 dark:text-zinc-100 pt-24 pb-32 px-4 md:px-8">
       <div className="max-w-6xl mx-auto">
         <div className="mb-8 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
           <div>
             <Link
               to="/"
-              className="inline-flex items-center gap-2 text-sm text-zinc-500 hover:text-white mb-4 transition-colors"
+              className="inline-flex items-center gap-2 text-sm text-zinc-600 hover:text-zinc-900 dark:text-zinc-500 dark:hover:text-white mb-4 transition-colors"
             >
               <ArrowLeft className="w-4 h-4" />
               Back to home
             </Link>
-            <h1 className="text-3xl md:text-4xl font-light tracking-tight text-white">
+            <h1 className="text-3xl md:text-4xl font-light tracking-tight text-zinc-900 dark:text-white">
               Select{" "}
               <span className="font-serif italic">artworks</span>
             </h1>
-            <p className="text-zinc-500 mt-2 max-w-xl">
+            <p className="text-zinc-600 dark:text-zinc-500 mt-2 max-w-xl">
               Tap images to include them in your exhibition. You’ll add title,
               dates, and description on the next step.
             </p>
           </div>
-          <div className="flex items-center gap-2 text-zinc-400 text-sm">
+          <div className="flex items-center gap-2 text-zinc-600 dark:text-zinc-400 text-sm">
             <Image className="w-4 h-4" />
             <span>{selectedIds.size} selected</span>
           </div>
@@ -92,7 +92,7 @@ const SelectExhibitionArtworks = () => {
             Could not load artworks. Is the API running?
           </p>
         ) : list.length === 0 ? (
-          <p className="text-center text-zinc-500 py-20 border border-dashed border-zinc-800 rounded-2xl">
+          <p className="text-center text-zinc-600 dark:text-zinc-500 py-20 border border-dashed border-zinc-300 dark:border-zinc-800 rounded-2xl">
             No artworks yet. Ask artists to publish pieces first.
           </p>
         ) : (
@@ -107,22 +107,22 @@ const SelectExhibitionArtworks = () => {
                   onClick={() => toggle(id)}
                   className={`relative text-left rounded-2xl overflow-hidden border-2 transition-all ${
                     on
-                      ? "border-white shadow-[0_0_0_1px_rgba(255,255,255,0.2)] ring-2 ring-white/25 scale-[1.02]"
-                      : "border-zinc-800/80 hover:border-zinc-600 opacity-90 hover:opacity-100"
+                      ? "border-violet-600 dark:border-white shadow-md dark:shadow-[0_0_0_1px_rgba(255,255,255,0.2)] ring-2 ring-violet-300 dark:ring-white/25 scale-[1.02]"
+                      : "border-zinc-300 dark:border-zinc-800/80 hover:border-zinc-500 dark:hover:border-zinc-600 opacity-90 hover:opacity-100"
                   }`}
                 >
-                  <div className="aspect-square bg-zinc-900">
+                  <div className="aspect-square bg-zinc-200 dark:bg-zinc-900">
                     <img
                       src={`${imgBase}${art.image}`}
                       alt={art.title}
                       className="w-full h-full object-cover"
                     />
                   </div>
-                  <div className="p-3 bg-zinc-950/90 border-t border-white/5">
-                    <p className="text-sm text-white font-medium truncate">
+                  <div className="p-3 bg-white/95 dark:bg-zinc-950/90 border-t border-zinc-200 dark:border-white/5">
+                    <p className="text-sm text-zinc-900 dark:text-white font-medium truncate">
                       {artworkTitle(art)}
                     </p>
-                    <p className="text-xs text-zinc-400 truncate mt-0.5">
+                    <p className="text-xs text-zinc-600 dark:text-zinc-400 truncate mt-0.5">
                       {artistLabel(art)
                         ? `by ${artistLabel(art)}`
                         : "Artist unknown"}
@@ -139,9 +139,9 @@ const SelectExhibitionArtworks = () => {
           </div>
         )}
 
-        <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-white/10 bg-zinc-950/95 backdrop-blur-md px-4 py-4 md:py-5">
+        <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-zinc-200 dark:border-white/10 bg-white/95 dark:bg-zinc-950/95 backdrop-blur-md px-4 py-4 md:py-5">
           <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
-            <p className="text-sm text-zinc-400 text-center sm:text-left">
+            <p className="text-sm text-zinc-600 dark:text-zinc-400 text-center sm:text-left">
               {selectedIds.size === 0
                 ? "Select at least one artwork to continue."
                 : `${selectedIds.size} artwork${selectedIds.size === 1 ? "" : "s"} will be in this exhibition.`}

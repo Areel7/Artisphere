@@ -42,8 +42,8 @@ const Cta = () => {
 
       {/* CTA Section */}
       {!userInfo && (
-      <section className="py-24 px-6 relative bg-zinc-950/50 border-t border-white/5">
-        <div className="max-w-5xl mx-auto rounded-[3rem] bg-gradient-to-tr from-white/5 via-white/5 to-transparent border border-white/10 p-12 md:p-24 relative overflow-hidden shadow-2xl backdrop-blur-sm">
+      <section className="py-24 px-6 relative bg-zinc-100/70 dark:bg-zinc-950/50 border-t border-zinc-200 dark:border-white/5 text-zinc-900 dark:text-white">
+        <div className="max-w-5xl mx-auto rounded-[3rem] bg-gradient-to-tr from-zinc-200/40 via-white/60 to-transparent dark:from-white/5 dark:via-white/5 border border-zinc-200/80 dark:border-white/10 p-12 md:p-24 relative overflow-hidden shadow-2xl backdrop-blur-sm">
           {/* Decorative glow inside CTA */}
           <div className="absolute -top-1/2 -right-1/2 w-full h-full bg-indigo-500/10 blur-[120px] pointer-events-none" />
           
@@ -54,10 +54,10 @@ const Cta = () => {
             whileInView="visible"
             viewport={{ once: true, margin: "-50px" }}
           >
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 tracking-tight">
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 tracking-tight text-zinc-900 dark:text-white">
               Join the Artisphere
             </h2>
-            <p className="text-lg md:text-xl text-white/60 mb-10 font-light max-w-2xl mx-auto">
+            <p className="text-lg md:text-xl text-zinc-600 dark:text-white/60 mb-10 font-light max-w-2xl mx-auto">
               Whether you are an artist ready to build a 3D gallery, or a
               collector seeking the next masterpiece.
             </p>
@@ -82,8 +82,8 @@ const Cta = () => {
 
 
 {userInfo?.role === "visitor" && (
-      <section className="py-24 px-6 relative bg-zinc-950/50 border-t border-white/5">
-        <div className="max-w-5xl mx-auto rounded-[3rem] bg-gradient-to-tr from-white/5 via-white/5 to-transparent border border-white/10 p-12 md:p-24 relative overflow-hidden shadow-2xl backdrop-blur-sm">
+      <section className="py-24 px-6 relative bg-zinc-100/70 dark:bg-zinc-950/50 border-t border-zinc-200 dark:border-white/5 text-zinc-900 dark:text-white">
+        <div className="max-w-5xl mx-auto rounded-[3rem] bg-gradient-to-tr from-zinc-200/40 via-white/60 to-transparent dark:from-white/5 dark:via-white/5 border border-zinc-200/80 dark:border-white/10 p-12 md:p-24 relative overflow-hidden shadow-2xl backdrop-blur-sm">
           {/* Decorative glow inside CTA */}
           <div className="absolute -top-1/2 -right-1/2 w-full h-full bg-indigo-500/10 blur-[120px] pointer-events-none" />
           
@@ -94,15 +94,15 @@ const Cta = () => {
             whileInView="visible"
             viewport={{ once: true, margin: "-50px" }}
           >
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 tracking-tight">
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 tracking-tight text-zinc-900 dark:text-white">
               Join the Artisphere
             </h2>
-            <p className="text-lg md:text-xl text-white/60 mb-10 font-light max-w-2xl mx-auto">
+            <p className="text-lg md:text-xl text-zinc-600 dark:text-white/60 mb-10 font-light max-w-2xl mx-auto">
               Whether you are an artist ready to build a 3D gallery, or a
               collector seeking the next masterpiece.
             </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-               <button onClick={handleApplyAsArtist} className="w-full sm:w-auto px-8 py-4 border border-white/20 text-white rounded-full font-semibold hover:bg-white/5 transition-colors">
+               <button onClick={handleApplyAsArtist} className="w-full sm:w-auto px-8 py-4 border border-zinc-300 text-zinc-900 rounded-full font-semibold hover:bg-zinc-100 dark:border-white/20 dark:text-white dark:hover:bg-white/5 transition-colors">
                 Apply as Artist
               </button>
             </div>

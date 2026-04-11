@@ -49,7 +49,7 @@ const Exibition = () => {
   const exhibitions = useMemo(() => (Array.isArray(data) ? data : []), [data]);
 
   return (
-    <section className="relative py-20 md:py-28 px-6 bg-zinc-950 border-t border-white/5 overflow-hidden" id="exhibitions">
+    <section className="relative py-20 md:py-28 px-6 bg-zinc-100/90 dark:bg-zinc-950 border-t border-zinc-200 dark:border-white/5 overflow-hidden text-zinc-900 dark:text-white" id="exhibitions">
       {/* Background glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-4xl h-[40rem] bg-indigo-500/5 blur-[120px] rounded-full pointer-events-none" />
 
@@ -66,10 +66,10 @@ const Exibition = () => {
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-[10px] font-semibold tracking-widest uppercase">
             Exclusive Spaces
           </div>
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.1]">
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.1] text-zinc-900 dark:text-white">
             Curated Exhibitions
           </h2>
-          <p className="text-white/60 text-lg font-light leading-relaxed">
+          <p className="text-zinc-600 dark:text-white/60 text-lg font-light leading-relaxed">
             Step into scheduled, immersive virtual gallery spaces crafted by top curators. Exclusive, time-limited art shows you can walk through from your browser.
           </p>
           {isCurator && (
@@ -85,7 +85,7 @@ const Exibition = () => {
 
         {/* ── Cards Grid ── */}
         {isLoading ? (
-          <div className="flex flex-col items-center justify-center gap-4 py-32 text-zinc-500 bg-white/5 rounded-[3rem] border border-white/5">
+          <div className="flex flex-col items-center justify-center gap-4 py-32 text-zinc-500 dark:text-zinc-500 bg-white/60 dark:bg-white/5 rounded-[3rem] border border-zinc-200 dark:border-white/5">
             <Loader2 className="w-10 h-10 animate-spin" />
             <p className="tracking-widest uppercase text-xs">Curating Spaces...</p>
           </div>
@@ -95,11 +95,11 @@ const Exibition = () => {
             <p className="text-sm opacity-60">Please try refreshing.</p>
           </div>
         ) : exhibitions.length === 0 ? (
-          <div className="flex flex-col items-center text-center text-white/50 py-32 border border-dashed border-white/10 rounded-[3rem] bg-zinc-950/50">
+          <div className="flex flex-col items-center text-center text-zinc-600 dark:text-white/50 py-32 border border-dashed border-zinc-300 dark:border-white/10 rounded-[3rem] bg-white/50 dark:bg-zinc-950/50">
             <p className="text-xl font-light mb-1">The Gallery Floor is Empty</p>
             <p className="text-sm opacity-60 max-w-sm mb-6">No scheduled exhibitions yet. Check back soon.</p>
             {isCurator && (
-              <Link to="/curator/select-exhibition-artworks" className="px-6 py-2.5 rounded-full bg-white/10 text-white text-xs font-semibold hover:bg-white/20 transition-colors tracking-widest uppercase">
+              <Link to="/curator/select-exhibition-artworks" className="px-6 py-2.5 rounded-full bg-zinc-900/10 text-zinc-900 text-xs font-semibold hover:bg-zinc-900/15 dark:bg-white/10 dark:text-white dark:hover:bg-white/20 transition-colors tracking-widest uppercase">
                 Create Genesis Exhibition
               </Link>
             )}
@@ -121,7 +121,7 @@ const Exibition = () => {
                 <motion.article
                   key={ex._id}
                   variants={fadeUp}
-                  className="group relative flex flex-col rounded-[2rem] border border-white/10 bg-zinc-900 overflow-hidden shadow-2xl aspect-[4/3]"
+                  className="group relative flex flex-col rounded-[2rem] border border-zinc-200 dark:border-white/10 bg-zinc-200 dark:bg-zinc-900 overflow-hidden shadow-2xl aspect-[4/3]"
                 >
                   <img
                     src={coverImage(ex)}

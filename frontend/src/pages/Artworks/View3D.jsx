@@ -19,8 +19,8 @@ const View3D = () => {
 
   if (isError || !artwork) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-zinc-950 text-white gap-6">
-        <p className="text-xl font-medium text-white/70">Artwork not found</p>
+      <div className="min-h-screen flex flex-col items-center justify-center bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-white gap-6">
+        <p className="text-xl font-medium text-zinc-600 dark:text-white/70">Artwork not found</p>
         <button 
           onClick={() => navigate("/")}
           className="px-8 py-3 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition-all text-sm font-medium"

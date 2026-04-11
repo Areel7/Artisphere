@@ -6,20 +6,20 @@ const Footer = () => {
   const navigate = useNavigate();
   return (
     <>
-    <footer className="relative z-10 border-t border-white/10 bg-zinc-950 pt-16 pb-8">
+    <footer className="relative z-10 border-t border-zinc-200 dark:border-white/10 bg-zinc-100/80 dark:bg-zinc-950 pt-16 pb-8">
         <div className="max-w-[90rem] mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
             <div className="col-span-1 md:col-span-2">
                <div className="flex items-center gap-2 mb-4">
-                <Box onClick={() => navigate('/')} className="w-6 h-6 text-white" />
-                <span className="text-lg font-bold tracking-widest uppercase">Artisphere</span>
+                <Box onClick={() => navigate('/')} className="w-6 h-6 text-zinc-900 dark:text-white" />
+                <span className="text-lg font-bold tracking-widest uppercase text-zinc-900 dark:text-white">Artisphere</span>
               </div>
-              <p className="text-white/50 max-w-sm font-light text-sm leading-relaxed mb-6">
+              <p className="text-zinc-600 dark:text-white/50 max-w-sm font-light text-sm leading-relaxed mb-6">
                 Interactive online art gallery. Browse, explore, interact, and experience art online.
               </p>
               <div className="flex items-center gap-4">
                 {[Instagram, Twitter, Github].map((Icon, i) => (
-                  <a key={i} href="#" className="text-white/40 hover:text-white transition-colors">
+                  <a key={i} href="#" className="text-zinc-500 hover:text-zinc-900 dark:text-white/40 dark:hover:text-white transition-colors">
                     <Icon className="w-5 h-5" />
                   </a>
                 ))}
@@ -27,9 +27,9 @@ const Footer = () => {
             </div>
             
             <div>
-              <h4 className="font-semibold mb-4 text-sm uppercase tracking-widest text-white/80">Platform</h4>
+              <h4 className="font-semibold mb-4 text-sm uppercase tracking-widest text-zinc-800 dark:text-white/80">Platform</h4>
               <ul className="space-y-3 text-sm">
-                <li><Link to="/search" className="text-white/50 hover:text-white transition-colors">Discover Art</Link></li>
+                <li><Link to="/search" className="text-zinc-600 hover:text-zinc-900 dark:text-white/50 dark:hover:text-white transition-colors">Discover Art</Link></li>
                 <li>
                   <button
                     onClick={(e) => {
@@ -44,27 +44,27 @@ const Footer = () => {
                         }, 300);
                       }
                     }}
-                    className="text-white/50 hover:text-white transition-colors"
+                    className="text-zinc-600 hover:text-zinc-900 dark:text-white/50 dark:hover:text-white transition-colors"
                   >
                     3D Exhibitions
                   </button>
                 </li>
-                <li><Link to="/curators" className="text-white/50 hover:text-white transition-colors">Curators</Link></li>
+                <li><Link to="/curators" className="text-zinc-600 hover:text-zinc-900 dark:text-white/50 dark:hover:text-white transition-colors">Curators</Link></li>
               </ul>
             </div>
 
             <div>
-              <h4 className="font-semibold mb-4 text-sm uppercase tracking-widest text-white/80">Company</h4>
+              <h4 className="font-semibold mb-4 text-sm uppercase tracking-widest text-zinc-800 dark:text-white/80">Company</h4>
               <ul className="space-y-3 text-sm flex flex-col items-start">
-                <li><Link to="/about" className="text-white/50 hover:text-white transition-colors">About Us</Link></li>
-                <li><Link to="/terms" className="text-white/50 hover:text-white transition-colors">Terms & Privacy</Link></li>
-                <li><Link to="/gdpr" className="text-white/50 hover:text-white transition-colors">GDPR Compliance</Link></li>
-                <li><Link to="/support" className="text-white/50 hover:text-white transition-colors">Support</Link></li>
+                <li><Link to="/about" className="text-zinc-600 hover:text-zinc-900 dark:text-white/50 dark:hover:text-white transition-colors">About Us</Link></li>
+                <li><Link to="/terms" className="text-zinc-600 hover:text-zinc-900 dark:text-white/50 dark:hover:text-white transition-colors">Terms & Privacy</Link></li>
+                <li><Link to="/gdpr" className="text-zinc-600 hover:text-zinc-900 dark:text-white/50 dark:hover:text-white transition-colors">GDPR Compliance</Link></li>
+                <li><Link to="/support" className="text-zinc-600 hover:text-zinc-900 dark:text-white/50 dark:hover:text-white transition-colors">Support</Link></li>
               </ul>
             </div>
           </div>
           
-          <div className="flex flex-col md:flex-row items-center justify-between pt-8 border-t border-white/10 text-white/40 text-xs">
+          <div className="flex flex-col md:flex-row items-center justify-between pt-8 border-t border-zinc-200 dark:border-white/10 text-zinc-500 dark:text-white/40 text-xs">
             <p>© 2026 Artisphere. All rights reserved.</p>
             <p className="mt-2 md:mt-0">Powered by WebGL & Stripe</p>
           </div>

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 import { useGetUserCartQuery } from "../../redux/api/cart";
 import { useCheckoutOrderMutation, useCreatePaymentIntentMutation } from "../../redux/api/order";
 import { CreditCard, Lock, CheckCircle2, Loader2 } from "lucide-react";
@@ -87,7 +88,10 @@ const CheckoutForm = ({ totalPrice, onProcessing, cartItems, navigate, checkoutO
 
 const Order = () => {
   const navigate = useNavigate();
-  const { data, isLoading: isCartLoading } = useGetUserCartQuery();
+  const userInfo = useSelector((state) => state.auth.userInfo);
+  const { data, isLoading: isCartLoading } = useGetUserCartQuery(undefined, {
+    skip: !userInfo?.token,
+  });
   const [checkoutOrder] = useCheckoutOrderMutation();
   const [createPaymentIntent] = useCreatePaymentIntentMutation();
 

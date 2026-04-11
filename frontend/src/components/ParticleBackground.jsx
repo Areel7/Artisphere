@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { useTheme } from "../context/ThemeContext.jsx";
 
 // Fix #2: Particle class defined at module scope, not inside useEffect
 class Particle {
@@ -21,7 +22,7 @@ class Particle {
     }
   }
 
-  draw(ctx, canvas) {
+  draw(ctx, canvas, isDark) {
     const scale = 1000 / this.z;
     const x2d = (this.x - canvas.width / 2) * scale + canvas.width / 2;
     const y2d = (this.y - canvas.height / 2) * scale + canvas.height / 2;
@@ -32,7 +33,10 @@ class Particle {
     if (x2d >= 0 && x2d <= canvas.width && y2d >= 0 && y2d <= canvas.height) {
       ctx.beginPath();
       ctx.arc(x2d, y2d, r, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(255, 255, 255, ${Math.max(0, 1 - this.z / 800)})`;
+      const alpha = Math.max(0, 1 - this.z / 800);
+      ctx.fillStyle = isDark
+        ? `rgba(255, 255, 255, ${alpha})`
+        : `rgba(80, 80, 90, ${alpha * 0.55})`;
       ctx.fill();
     }
   }
@@ -40,6 +44,9 @@ class Particle {
 
 const ParticleBackground = () => {
   const canvasRef = useRef(null);
+  const { theme } = useTheme();
+  const themeRef = useRef(theme);
+  themeRef.current = theme;
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -62,14 +69,17 @@ const ParticleBackground = () => {
     };
 
     const animate = () => {
+      const isDark = themeRef.current === "dark";
       // Fix #3: Clear canvas first, then apply a dense fade overlay for reliable trail rendering
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = "rgba(9, 9, 11, 0.85)";
+      ctx.fillStyle = isDark
+        ? "rgba(9, 9, 11, 0.85)"
+        : "rgba(250, 250, 250, 0.9)";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       particles.forEach((p) => {
         p.update();
-        p.draw(ctx, canvas);
+        p.draw(ctx, canvas, isDark);
       });
 
       animationFrameId = requestAnimationFrame(animate);
@@ -88,7 +98,7 @@ const ParticleBackground = () => {
   return (
     <canvas
       ref={canvasRef}
-      className="fixed inset-0 z-0 pointer-events-none bg-zinc-950"
+      className="fixed inset-0 z-0 pointer-events-none bg-zinc-50 dark:bg-zinc-950"
     />
   );
 };

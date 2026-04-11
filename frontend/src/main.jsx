@@ -3,6 +3,7 @@ import "./index.css";
 import App from "./App.jsx";
 import store from "./redux/store.js";
 import { Provider } from "react-redux";
+import { ThemeProvider } from "./context/ThemeContext.jsx";
 import {
   Route,
   RouterProvider,
@@ -91,6 +92,8 @@ const router = createBrowserRouter(
 
 createRoot(document.getElementById("root")).render(
   <Provider store={store}>
-    <RouterProvider router={router} />
+    <ThemeProvider>
+      <RouterProvider router={router} />
+    </ThemeProvider>
   </Provider>,
 );

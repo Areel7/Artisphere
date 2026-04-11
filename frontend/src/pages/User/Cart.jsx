@@ -13,9 +13,13 @@ import {
   useClearCartMutation,
 } from "../../redux/api/cart";
 import { toast } from "react-toastify";
+import { useSelector } from "react-redux";
 
 const Cart = () => {
-  const { data, isLoading, isError, refetch } = useGetUserCartQuery();
+  const userInfo = useSelector((state) => state.auth.userInfo);
+  const { data, isLoading, isError, refetch } = useGetUserCartQuery(undefined, {
+    skip: !userInfo?.token,
+  });
   const [removeCartItem, { isLoading: isRemoving }] = useRemoveCartItemMutation();
   const [clearCart, { isLoading: isClearing }] = useClearCartMutation();
   const navigate = useNavigate();
@@ -70,24 +74,24 @@ const Cart = () => {
   const { cartItems = [], totalPrice = 0 } = data || {};
 
   return (
-    <div className="min-h-screen text-zinc-100 p-6 pt-28">
+    <div className="min-h-screen text-zinc-900 dark:text-zinc-100 p-6 pt-28">
       <div className="max-w-5xl mx-auto flex flex-col lg:flex-row gap-8">
         {/* Cart Items Section */}
         <div className="flex-1">
           <div className="mb-8">
-            <h1 className="text-4xl font-light tracking-tighter text-white mb-2 flex items-center gap-3">
-              YOUR <span className="font-serif italic text-white/50">CART</span>
+            <h1 className="text-4xl font-light tracking-tighter text-zinc-900 dark:text-white mb-2 flex items-center gap-3">
+              YOUR <span className="font-serif italic text-zinc-500 dark:text-white/50">CART</span>
               <ShoppingCart className="w-8 h-8 text-violet-500 ml-2" />
             </h1>
-            <p className="text-zinc-500">
+            <p className="text-zinc-600 dark:text-zinc-500">
               {cartItems.length} {cartItems.length === 1 ? "item" : "items"} in your cart.
             </p>
           </div>
 
           {cartItems.length === 0 ? (
-            <div className="p-12 border border-dashed border-zinc-800 rounded-3xl flex flex-col items-center text-center">
-              <ShoppingCart className="w-16 h-16 text-zinc-800 mb-4" />
-              <h2 className="text-xl font-semibold mb-2">Your cart is empty</h2>
+            <div className="p-12 border border-dashed border-zinc-300 dark:border-zinc-800 rounded-3xl flex flex-col items-center text-center">
+              <ShoppingCart className="w-16 h-16 text-zinc-400 dark:text-zinc-800 mb-4" />
+              <h2 className="text-xl font-semibold mb-2 text-zinc-900 dark:text-white">Your cart is empty</h2>
               <p className="text-zinc-500 mb-6">Looks like you haven't added any artwork yet.</p>
               <Link
                 to="/"
@@ -104,7 +108,7 @@ const Cart = () => {
               {cartItems.map((item) => (
                 <div
                   key={item._id}
-                  className="flex items-center gap-6 p-4 rounded-2xl bg-zinc-900/40 border border-white/5 hover:border-white/10 transition-colors group relative overflow-hidden"
+                  className="flex items-center gap-6 p-4 rounded-2xl bg-white/80 border border-zinc-200 hover:border-zinc-300 dark:bg-zinc-900/40 dark:border-white/5 dark:hover:border-white/10 transition-colors group relative overflow-hidden shadow-sm dark:shadow-none"
                 >
                   <div className="shrink-0 relative overflow-hidden rounded-xl">
                     <img
@@ -122,8 +126,8 @@ const Cart = () => {
                     >
                       {item.artworkId.title}
                     </Link> */}
-                    <p className="text-2xl text-white/150 mt-1">{item.artworkId.title}</p>
-                    <p className="text-lg text-white/70 mt-1">${item.price}</p>
+                    <p className="text-2xl text-zinc-900 dark:text-white mt-1">{item.artworkId.title}</p>
+                    <p className="text-lg text-zinc-600 dark:text-white/70 mt-1">${item.price}</p>
                   </div>
 
                   <button
@@ -143,36 +147,29 @@ const Cart = () => {
         {/* Summary Section */}
         {cartItems.length > 0 && (
           <div className="w-full lg:w-[380px]">
-            <div
-              className="sticky top-28 p-8 rounded-3xl"
-              style={{
-                background: "linear-gradient(135deg, rgba(24,24,27,0.97) 0%, rgba(15,15,18,0.99) 100%)",
-                border: "1px solid rgba(255,255,255,0.07)",
-                boxShadow: "0 24px 60px rgba(0,0,0,0.4)",
-              }}
-            >
+            <div className="sticky top-28 p-8 rounded-3xl border border-zinc-200 bg-white/90 shadow-xl text-zinc-900 dark:border-white/10 dark:bg-gradient-to-br dark:from-zinc-900/97 dark:to-zinc-950/99 dark:text-white dark:shadow-[0_24px_60px_rgba(0,0,0,0.4)]">
               <h2 className="text-xl font-medium mb-6 flex items-center justify-between">
                 Order Summary
               </h2>
 
               <div className="space-y-4 mb-6">
-                <div className="flex justify-between text-zinc-400">
+                <div className="flex justify-between text-zinc-500 dark:text-zinc-400">
                   <span>Subtotal</span>
-                  <span className="text-white">${totalPrice}</span>
+                  <span className="text-zinc-900 dark:text-white">${totalPrice}</span>
                 </div>
-                <div className="flex justify-between text-zinc-400">
+                <div className="flex justify-between text-zinc-500 dark:text-zinc-400">
                   <span>Shipping</span>
-                  <span className="text-emerald-400 font-medium">Free</span>
+                  <span className="text-emerald-600 dark:text-emerald-400 font-medium">Free</span>
                 </div>
               </div>
 
-              <div className="h-px bg-zinc-800 mb-6" />
+              <div className="h-px bg-zinc-200 dark:bg-zinc-800 mb-6" />
 
               <div className="flex justify-between items-end mb-8">
                 <span className="text-sm font-semibold uppercase tracking-widest text-zinc-500">
                   Total
                 </span>
-                <span className="text-3xl font-light">${totalPrice}</span>
+                <span className="text-3xl font-light text-zinc-900 dark:text-white">{`$${totalPrice}`}</span>
               </div>
 
               <button 

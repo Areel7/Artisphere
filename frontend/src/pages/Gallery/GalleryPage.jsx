@@ -31,15 +31,15 @@ const GalleryPage = () => {
   return (
     <>
       <div
-        className="relative z-10 flex flex-col text-white"
+        className="relative z-10 flex flex-col text-zinc-900 dark:text-white"
         style={{ paddingTop: headerHeight, minHeight: 'calc(100vh - 100px)' }}
       >
 
       {/* ── Top bar ─────────────────────────────────────────────────────────── */}
-      <div className="flex-none flex items-center justify-between px-6 py-3 border-b border-white/5 bg-black/30 backdrop-blur-md">
+      <div className="flex-none flex items-center justify-between px-6 py-3 border-b border-zinc-200 dark:border-white/5 bg-white/85 dark:bg-black/30 backdrop-blur-md">
         <button
           onClick={() => navigate(-1)}
-          className="flex items-center gap-2 text-sm text-zinc-400 hover:text-white transition-colors group"
+          className="flex items-center gap-2 text-sm text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white transition-colors group"
         >
           <ArrowLeft
             size={15}
@@ -54,12 +54,12 @@ const GalleryPage = () => {
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-violet-400 opacity-60" />
             <span className="relative inline-flex rounded-full h-2 w-2 bg-violet-500" />
           </span>
-          <span className="text-xs font-bold uppercase tracking-widest text-zinc-300">
+          <span className="text-xs font-bold uppercase tracking-widest text-zinc-700 dark:text-zinc-300">
             3D Gallery
           </span>
         </div>
 
-        <div className="flex items-center gap-2 text-zinc-600 text-xs">
+        <div className="flex items-center gap-2 text-zinc-500 dark:text-zinc-600 text-xs">
           <Layers size={12} />
           {isLoading ? '…' : `${artworks?.length ?? 0} artworks`}
         </div>
@@ -78,7 +78,7 @@ const GalleryPage = () => {
         >
           Virtual Art Gallery
         </h1>
-        <p className="mt-2 text-zinc-500 text-xs max-w-sm mx-auto">
+        <p className="mt-2 text-zinc-600 dark:text-zinc-500 text-xs max-w-sm mx-auto">
           Orbit the space · Click any frame to explore in full 3D
         </p>
       </div>
@@ -86,12 +86,12 @@ const GalleryPage = () => {
       {/* ── 3D Canvas fills remaining height ────────────────────────────────── */}
       <div className="flex-1 px-4 pb-4 min-h-[600px] mb-10 flex flex-col">
         {isLoading ? (
-          <div className="flex-1 w-full rounded-2xl border border-white/5 bg-white/2 flex flex-col items-center justify-center gap-4">
-            <div className="w-12 h-12 rounded-full border-4 border-white/10 border-t-violet-400 animate-spin" />
-            <p className="text-zinc-500 text-sm animate-pulse">Loading artworks…</p>
+          <div className="flex-1 w-full rounded-2xl border border-zinc-200 dark:border-white/5 bg-zinc-100/50 dark:bg-white/2 flex flex-col items-center justify-center gap-4">
+            <div className="w-12 h-12 rounded-full border-4 border-zinc-200 dark:border-white/10 border-t-violet-500 dark:border-t-violet-400 animate-spin" />
+            <p className="text-zinc-600 dark:text-zinc-500 text-sm animate-pulse">Loading artworks…</p>
           </div>
         ) : error ? (
-          <div className="flex-1 w-full rounded-2xl border border-red-500/20 bg-white/2 flex items-center justify-center">
+          <div className="flex-1 w-full rounded-2xl border border-red-500/20 bg-zinc-50 dark:bg-white/2 flex items-center justify-center">
             <p className="text-red-400 text-sm">
               Failed to load artworks — {error?.message ?? 'Unknown error'}
             </p>

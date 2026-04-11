@@ -129,24 +129,25 @@ const CreateExhibition = () => {
   });
 
   const inputClasses =
-    "w-full bg-zinc-900/50 border border-zinc-800 rounded-xl py-3 px-11 text-zinc-100 placeholder-zinc-500 focus:ring-2 focus:ring-white/20 focus:border-white/40 outline-none";
+    "w-full bg-white dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 rounded-xl py-3 px-11 text-zinc-900 dark:text-zinc-100 placeholder-zinc-500 focus:ring-2 focus:ring-violet-500/25 dark:focus:ring-white/20 focus:border-violet-400/60 dark:focus:border-white/40 outline-none";
 
   const labelClasses =
-    "block text-xs font-medium text-zinc-500 uppercase tracking-wider mb-2 ml-1";
+    "block text-xs font-medium text-zinc-600 dark:text-zinc-500 uppercase tracking-wider mb-2 ml-1";
 
-  const iconClasses = "absolute left-3.5 top-[38px] text-zinc-600 h-5 w-5";
+  const iconClasses =
+    "absolute left-3.5 top-[38px] text-zinc-500 dark:text-zinc-600 h-5 w-5";
 
   const errorText = "text-rose-400 text-xs mt-1 ml-1";
 
   if (selectedIds.size === 0) {
     return (
-      <div className="min-h-screen text-zinc-100 flex items-center justify-center p-4 pt-24">
-        <div className="max-w-md w-full text-center space-y-6 bg-zinc-950 border border-zinc-800 rounded-3xl p-10">
+      <div className="min-h-screen text-zinc-900 dark:text-zinc-100 flex items-center justify-center p-4 pt-24">
+        <div className="max-w-md w-full text-center space-y-6 bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-3xl p-10 shadow-sm dark:shadow-none">
           <Images className="w-12 h-12 text-zinc-500 mx-auto" />
-          <h1 className="text-2xl font-light text-white">
+          <h1 className="text-2xl font-light text-zinc-900 dark:text-white">
             No artworks selected
           </h1>
-          <p className="text-zinc-500 text-sm">
+          <p className="text-zinc-600 dark:text-zinc-500 text-sm">
             Choose images for your exhibition on the curator-only selection
             page, then you can add title and dates here.
           </p>
@@ -158,7 +159,7 @@ const CreateExhibition = () => {
           </Link>
           <Link
             to="/"
-            className="block text-sm text-zinc-500 hover:text-white transition-colors"
+            className="block text-sm text-zinc-600 hover:text-zinc-900 dark:text-zinc-500 dark:hover:text-white transition-colors"
           >
             Back to home
           </Link>
@@ -168,30 +169,30 @@ const CreateExhibition = () => {
   }
 
   return (
-    <div className="min-h-screen text-zinc-100 flex items-center justify-center p-4 pb-32 pt-24">
+    <div className="min-h-screen text-zinc-900 dark:text-zinc-100 flex items-center justify-center p-4 pb-32 pt-24">
       <div className="max-w-3xl w-full">
         <div className="text-center mb-8">
-          <p className="text-xs uppercase tracking-widest text-zinc-500 mb-2">
+          <p className="text-xs uppercase tracking-widest text-zinc-600 dark:text-zinc-500 mb-2">
             Step 2 of 2
           </p>
-          <h1 className="text-4xl font-light tracking-tighter text-white">
+          <h1 className="text-4xl font-light tracking-tighter text-zinc-900 dark:text-white">
             EXHIBITION <span className="font-serif italic">details</span>
           </h1>
-          <p className="text-zinc-500 text-sm mt-2">
+          <p className="text-zinc-600 dark:text-zinc-500 text-sm mt-2">
             {selectedIds.size} artwork{selectedIds.size === 1 ? "" : "s"}{" "}
             selected.
             <Link
               to="/curator/select-exhibition-artworks"
               state={{ artworkIds: [...selectedIds] }}
-              className="text-white/80 hover:text-white underline underline-offset-2 ml-2"
+              className="text-violet-700 hover:text-violet-900 dark:text-white/80 dark:hover:text-white underline underline-offset-2 ml-2"
             >
               Change selection
             </Link>
           </p>
         </div>
 
-        <div className="mb-6 rounded-2xl border border-zinc-800 bg-zinc-900/30 p-4">
-          <p className="text-xs text-zinc-500 uppercase tracking-wider mb-3">
+        <div className="mb-6 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/80 dark:bg-zinc-900/30 p-4">
+          <p className="text-xs text-zinc-600 dark:text-zinc-500 uppercase tracking-wider mb-3">
             Selected images
           </p>
           {loadingArt ? (
@@ -206,7 +207,7 @@ const CreateExhibition = () => {
               {selectedArtworks.map((art) => (
                 <div
                   key={art._id}
-                  className="flex-shrink-0 w-28 rounded-lg overflow-hidden border border-white/10 bg-zinc-900/50"
+                  className="flex-shrink-0 w-28 rounded-lg overflow-hidden border border-zinc-200 dark:border-white/10 bg-white dark:bg-zinc-900/50"
                 >
                   <img
                     src={
@@ -218,10 +219,10 @@ const CreateExhibition = () => {
                     className="w-28 h-24 object-cover"
                   />
                   <div className="p-2">
-                    <p className="text-[11px] font-medium text-white line-clamp-2">
+                    <p className="text-[11px] font-medium text-zinc-900 dark:text-white line-clamp-2">
                       {artworkTitle(art)}
                     </p>
-                    <p className="text-[10px] text-zinc-400 truncate mt-0.5">
+                    <p className="text-[10px] text-zinc-600 dark:text-zinc-400 truncate mt-0.5">
                       {artistLabel(art) || "—"}
                     </p>
                   </div>
@@ -231,7 +232,7 @@ const CreateExhibition = () => {
           )}
         </div>
 
-        <div className="bg-zinc-950 border border-zinc-900 rounded-3xl p-8">
+        <div className="bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-900 rounded-3xl p-8 shadow-sm dark:shadow-none">
           <form onSubmit={formik.handleSubmit} className="space-y-6">
             <div className="relative">
               <label className={labelClasses}>Title</label>

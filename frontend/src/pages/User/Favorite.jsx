@@ -1,11 +1,16 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 import { useGetFavoritesQuery, useRemoveFavoriteMutation } from "../../redux/api/favorite";
 import { Heart, Trash2, ArrowRight, Loader2, AlertCircle } from "lucide-react";
 import { toast } from "react-toastify";
 
 const Favorite = () => {
-  const { data: favorites, isLoading, isError, refetch } = useGetFavoritesQuery();
+  const userInfo = useSelector((state) => state.auth.userInfo);
+  const { data: favorites, isLoading, isError, refetch } = useGetFavoritesQuery(
+    undefined,
+    { skip: !userInfo?.token },
+  );
   const [removeFavorite, { isLoading: isRemoving }] = useRemoveFavoriteMutation();
 
   const handleRemoveFavorite = async (artworkId) => {
@@ -42,24 +47,24 @@ const Favorite = () => {
   }
 
   return (
-    <div className="min-h-screen text-zinc-100 p-6 pt-28">
+    <div className="min-h-screen text-zinc-900 dark:text-zinc-100 p-6 pt-28">
       <div className="max-w-5xl mx-auto flex flex-col lg:flex-row gap-8">
         {/* Favorites List Section */}
         <div className="flex-1">
           <div className="mb-8">
-            <h1 className="text-4xl font-light tracking-tighter text-white mb-2 flex items-center gap-3">
-              YOUR <span className="font-serif italic text-white/50">FAVORITES</span>
+            <h1 className="text-4xl font-light tracking-tighter text-zinc-900 dark:text-white mb-2 flex items-center gap-3">
+              YOUR <span className="font-serif italic text-zinc-500 dark:text-white/50">FAVORITES</span>
               <Heart className="w-8 h-8 text-fuchsia-500 ml-2" />
             </h1>
-            <p className="text-zinc-500">
+            <p className="text-zinc-600 dark:text-zinc-500">
               {favorites?.length || 0} {(favorites?.length === 1) ? "item" : "items"} currently saved.
             </p>
           </div>
 
           {!favorites || favorites.length === 0 ? (
-            <div className="p-12 border border-dashed border-zinc-800 rounded-3xl flex flex-col items-center text-center">
-              <Heart className="w-16 h-16 text-zinc-800 mb-4" />
-              <h2 className="text-xl font-semibold mb-2">No favorites yet</h2>
+            <div className="p-12 border border-dashed border-zinc-300 dark:border-zinc-800 rounded-3xl flex flex-col items-center text-center">
+              <Heart className="w-16 h-16 text-zinc-400 dark:text-zinc-800 mb-4" />
+              <h2 className="text-xl font-semibold mb-2 text-zinc-900 dark:text-white">No favorites yet</h2>
               <p className="text-zinc-500 mb-6">Looks like you haven't liked any artwork yet.</p>
               <Link
                 to="/"
@@ -78,7 +83,7 @@ const Favorite = () => {
                 return (
                   <div
                     key={fav._id}
-                    className="flex flex-col p-4 rounded-2xl bg-zinc-900/40 border border-white/5 hover:border-white/10 transition-colors group relative overflow-hidden"
+                    className="flex flex-col p-4 rounded-2xl bg-white/90 dark:bg-zinc-900/40 border border-zinc-200 dark:border-white/5 hover:border-zinc-300 dark:hover:border-white/10 transition-colors group relative overflow-hidden shadow-sm dark:shadow-none"
                   >
                     <div className="relative overflow-hidden rounded-xl w-full h-48 mb-4">
                       <img
@@ -102,12 +107,12 @@ const Favorite = () => {
                     </div>
 
                     <div className="flex-1 flex flex-col">
-                      <h3 className="text-xl font-medium truncate text-white">{fav.artworkId.title}</h3>
-                      <p className="text-sm text-zinc-500 mt-1 mb-4">${fav.artworkId.price}</p>
+                      <h3 className="text-xl font-medium truncate text-zinc-900 dark:text-white">{fav.artworkId.title}</h3>
+                      <p className="text-sm text-zinc-600 dark:text-zinc-500 mt-1 mb-4">${fav.artworkId.price}</p>
                       
                       <Link
                         to={`/view-3d/${fav.artworkId._id}`}
-                        className="mt-auto w-full border border-white/10 text-white font-medium py-3 rounded-xl flex items-center justify-center gap-2 hover:bg-white/5 transition-all text-sm"
+                        className="mt-auto w-full border border-zinc-300 text-zinc-900 font-medium py-3 rounded-xl flex items-center justify-center gap-2 hover:bg-zinc-100 dark:border-white/10 dark:text-white dark:hover:bg-white/5 transition-all text-sm"
                       >
                         View Artwork
                         <ArrowRight className="w-4 h-4" />

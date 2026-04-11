@@ -9,21 +9,21 @@ const AllArtists = () => {
   return (
     <>
       <ParticleBackground />
-      <div className="min-h-screen relative z-10 w-full px-6 pt-32 pb-20">
+      <div className="min-h-screen relative z-10 w-full px-6 pt-32 pb-20 text-zinc-900 dark:text-white">
         <div className="max-w-[90rem] mx-auto">
           
           <div className="mb-12">
-            <h1 className="text-4xl md:text-5xl font-black text-white uppercase tracking-tight">
-              Our <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500">Artists</span>
+            <h1 className="text-4xl md:text-5xl font-black text-zinc-900 dark:text-white uppercase tracking-tight">
+              Our <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-500">Artists</span>
             </h1>
-            <p className="text-zinc-400 mt-4 max-w-2xl text-lg font-light">
+            <p className="text-zinc-600 dark:text-zinc-400 mt-4 max-w-2xl text-lg font-light">
               Discover the brilliant minds behind the mesmerizing 3D artworks on Artisphere.
             </p>
           </div>
 
           {isLoading ? (
-            <div className="flex flex-col items-center justify-center py-20 text-white/50">
-              <div className="w-12 h-12 border-4 border-white/10 border-t-blue-500 rounded-full animate-spin mb-4" />
+            <div className="flex flex-col items-center justify-center py-20 text-zinc-500 dark:text-white/50">
+              <div className="w-12 h-12 border-4 border-zinc-200 dark:border-white/10 border-t-blue-500 rounded-full animate-spin mb-4" />
               <p>Loading artists...</p>
             </div>
           ) : error ? (
@@ -33,35 +33,35 @@ const AllArtists = () => {
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {artists?.map((artist) => (
-                <div key={artist._id} className="bg-white/5 border border-white/10 p-6 rounded-3xl backdrop-blur-sm group hover:bg-white/10 transition-colors flex flex-col items-center text-center">
+                <div key={artist._id} className="bg-white/90 dark:bg-white/5 border border-zinc-200 dark:border-white/10 p-6 rounded-3xl backdrop-blur-sm group hover:bg-zinc-50 dark:hover:bg-white/10 transition-colors flex flex-col items-center text-center shadow-sm dark:shadow-none">
                   
-                  <div className="w-24 h-24 mb-4 rounded-full bg-gradient-to-tr from-indigo-500/30 to-purple-500/30 p-1 border border-white/10 relative overflow-hidden group-hover:border-white/30 transition-colors">
+                  <div className="w-24 h-24 mb-4 rounded-full bg-gradient-to-tr from-indigo-500/30 to-purple-500/30 p-1 border border-zinc-200 dark:border-white/10 relative overflow-hidden group-hover:border-zinc-400 dark:group-hover:border-white/30 transition-colors">
                     {artist.avatar ? (
                       <img src={artist.avatar} alt={artist.username} className="w-full h-full object-cover rounded-full" />
                     ) : (
-                      <div className="w-full h-full bg-black/40 rounded-full flex items-center justify-center">
-                        <UserIcon className="w-8 h-8 text-white/50" />
+                      <div className="w-full h-full bg-zinc-200/80 dark:bg-black/40 rounded-full flex items-center justify-center">
+                        <UserIcon className="w-8 h-8 text-zinc-500 dark:text-white/50" />
                       </div>
                     )}
                   </div>
                   
-                  <h3 className="text-xl font-bold text-white mb-2 uppercase tracking-wide">
+                  <h3 className="text-xl font-bold text-zinc-900 dark:text-white mb-2 uppercase tracking-wide">
                     {artist.username || artist.name || "Artist"}
                   </h3>
                   
-                  <div className="flex items-center gap-2 text-zinc-400 text-sm font-light">
+                  <div className="flex items-center gap-2 text-zinc-600 dark:text-zinc-400 text-sm font-light">
                     <Mail className="w-4 h-4" />
                     <span className="truncate max-w-[200px]">{artist.email}</span>
                   </div>
                   
-                  <button className="mt-8 px-6 py-2.5 w-full rounded-xl bg-white/10 hover:bg-white text-white hover:text-black font-semibold transition-all border border-white/5 text-sm uppercase tracking-wider">
+                  <button className="mt-8 px-6 py-2.5 w-full rounded-xl bg-zinc-900/90 hover:bg-zinc-800 text-white dark:bg-white/10 dark:hover:bg-white dark:text-white dark:hover:text-black font-semibold transition-all border border-zinc-300 dark:border-white/5 text-sm uppercase tracking-wider">
                     View Portfolio
                   </button>
                 </div>
               ))}
               
               {!artists?.length && (
-                <div className="col-span-full text-center py-20 text-zinc-500 border border-white/10 rounded-3xl border-dashed">
+                <div className="col-span-full text-center py-20 text-zinc-600 dark:text-zinc-500 border border-zinc-300 dark:border-white/10 rounded-3xl border-dashed">
                   No artists found.
                 </div>
               )}

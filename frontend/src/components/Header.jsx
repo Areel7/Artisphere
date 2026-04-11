@@ -14,6 +14,8 @@ import {
   LogOut,
   ChevronRight,
   Boxes,
+  Sun,
+  Moon,
 } from "lucide-react";
 import SignInandSignUp from "../pages/Auth/SignInandSignUp";
 import { Link, useNavigate } from "react-router-dom";
@@ -21,6 +23,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { logOut } from "../redux/features/auth/authSlice";
 import { useLogoutMutation } from "../redux/api/user";
 import { useGetUserCartQuery } from "../redux/api/cart";
+import { useTheme } from "../context/ThemeContext.jsx";
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -38,8 +41,11 @@ const Header = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [logoutApiCall] = useLogoutMutation();
-  const { data: cartData } = useGetUserCartQuery();
+  const { data: cartData } = useGetUserCartQuery(undefined, {
+    skip: !userInfo?.token,
+  });
   const cartItemCount = cartData?.cartItems?.length || 0;
+  const { theme, toggleTheme } = useTheme();
 
   const openAuth = (mode) => {
     setAuthMode(mode);
@@ -128,7 +134,7 @@ const Header = () => {
       <nav
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
           isScrolled
-            ? "bg-zinc-950/80 backdrop-blur-lg border-b border-white/5 py-4"
+            ? "bg-white/85 dark:bg-zinc-950/80 backdrop-blur-lg border-b border-zinc-200/80 dark:border-white/5 py-4"
             : "bg-transparent py-6"
         }`}
       >
@@ -136,14 +142,14 @@ const Header = () => {
           <div className="flex items-center gap-3 cursor-pointer group">
             <Box
               onClick={() => navigate("/")}
-              className="w-7 h-7 text-white group-hover:rotate-180 transition-transform duration-700"
+              className="w-7 h-7 text-zinc-900 dark:text-white group-hover:rotate-180 transition-transform duration-700"
             />
-            <span className="text-xl font-bold tracking-widest uppercase">
+            <span className="text-xl font-bold tracking-widest uppercase text-zinc-900 dark:text-white">
               Artisphere
             </span>
           </div>
 
-          <div className="hidden md:flex items-center gap-8 bg-white/5 px-8 py-3 rounded-full border border-white/5 backdrop-blur-md">
+          <div className="hidden md:flex items-center gap-8 bg-zinc-900/5 dark:bg-white/5 px-8 py-3 rounded-full border border-zinc-200/70 dark:border-white/5 backdrop-blur-md">
             {[
               { name: "Discovery", path: "/search" },
               { name: "3D Spaces", path: "/gallery" },
@@ -153,10 +159,10 @@ const Header = () => {
                 <Link
                   key={item.name}
                   to={item.path}
-                  className="text-xs font-semibold uppercase tracking-widest text-white/60 hover:text-white transition-colors relative group"
+                  className="text-xs font-semibold uppercase tracking-widest text-zinc-600 dark:text-white/60 hover:text-zinc-900 dark:hover:text-white transition-colors relative group"
                 >
                   {item.name}
-                  <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-0 h-[1px] bg-white transition-all duration-300 group-hover:w-full" />
+                  <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-0 h-[1px] bg-zinc-900 dark:bg-white transition-all duration-300 group-hover:w-full" />
                 </Link>
               ),
             )}
@@ -173,23 +179,35 @@ const Header = () => {
                   }, 300);
                 }
               }}
-              className="text-xs font-semibold uppercase tracking-widest text-white/60 hover:text-white transition-colors relative group"
+              className="text-xs font-semibold uppercase tracking-widest text-zinc-600 dark:text-white/60 hover:text-zinc-900 dark:hover:text-white transition-colors relative group"
             >
               Exhibitions
-              <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-0 h-[1px] bg-white transition-all duration-300 group-hover:w-full" />
+              <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-0 h-[1px] bg-zinc-900 dark:bg-white transition-all duration-300 group-hover:w-full" />
             </button>
           </div>
 
-          <div className="hidden md:flex items-center gap-6">
-            <button onClick={() => navigate("/search")} className="text-white/70 hover:text-white transition-colors">
+          <div className="hidden md:flex items-center gap-4">
+            <button
+              type="button"
+              onClick={toggleTheme}
+              className="rounded-full p-2.5 border border-zinc-200/90 bg-white/70 text-zinc-800 shadow-sm hover:bg-zinc-100 dark:border-white/15 dark:bg-white/10 dark:text-white dark:hover:bg-white/15 transition-colors"
+              aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+            >
+              {theme === "dark" ? (
+                <Sun className="w-5 h-5" />
+              ) : (
+                <Moon className="w-5 h-5" />
+              )}
+            </button>
+            <button onClick={() => navigate("/search")} className="text-zinc-600 hover:text-zinc-900 dark:text-white/70 dark:hover:text-white transition-colors">
               <Search className="w-5 h-5" />
             </button>
             <button
               onClick={() => navigate("/cart")}
-              className="text-white/70 hover:text-white transition-colors relative"
+              className="text-zinc-600 hover:text-zinc-900 dark:text-white/70 dark:hover:text-white transition-colors relative"
             >
               <ShoppingCart className="w-5 h-5" />
-              <span className="absolute -top-1.5 -right-2 bg-white text-black text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+              <span className="absolute -top-1.5 -right-2 bg-zinc-900 text-white dark:bg-white dark:text-black text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
                 {cartItemCount}
               </span>
             </button>
@@ -197,7 +215,7 @@ const Header = () => {
               <Link to="/auth/login">
                 <button
                   onClick={() => openAuth("signin")}
-                  className="text-sm font-medium text-white/80 hover:text-white transition-colors"
+                  className="text-sm font-medium text-zinc-700 hover:text-zinc-900 dark:text-white/80 dark:hover:text-white transition-colors"
                 >
                   Sign In
                 </button>
@@ -208,7 +226,7 @@ const Header = () => {
               <div className="relative" ref={profileDropdownRef}>
                 <button
                   onClick={() => setIsProfileDropdownOpen((prev) => !prev)}
-                  className="relative flex items-center justify-center w-9 h-9 rounded-full bg-white/10 border border-white/15 hover:bg-white/20 hover:border-white/30 transition-all duration-200 group"
+                  className="relative flex items-center justify-center w-9 h-9 rounded-full bg-zinc-200/80 border border-zinc-300 hover:bg-zinc-300/90 dark:bg-white/10 dark:border-white/15 dark:hover:bg-white/20 dark:hover:border-white/30 transition-all duration-200 group"
                 >
                   {userInfo.avatar ? (
                     <img
@@ -217,39 +235,34 @@ const Header = () => {
                       className="w-full h-full rounded-full object-cover"
                     />
                   ) : (
-                    <User className="w-4 h-4 text-white/80 group-hover:text-white transition-colors" />
+                    <User className="w-4 h-4 text-zinc-700 group-hover:text-zinc-900 dark:text-white/80 dark:group-hover:text-white transition-colors" />
                   )}
-                  <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-400 rounded-full border-2 border-zinc-950" />
+                  <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-400 rounded-full border-2 border-white dark:border-zinc-950" />
                 </button>
 
                 {/* Profile Dropdown */}
                 <div
-                  className={`absolute right-0 mt-3 w-64 origin-top-right transition-all duration-200 ${
+                  className={`absolute right-0 mt-3 w-64 origin-top-right transition-all duration-200 rounded-2xl border shadow-2xl backdrop-blur-xl border-zinc-200 bg-white/95 text-zinc-900 dark:border-white/10 dark:bg-gradient-to-br dark:from-zinc-900/97 dark:to-zinc-950/99 dark:text-white ${
                     isProfileDropdownOpen
                       ? "opacity-100 scale-100 translate-y-0 pointer-events-auto"
                       : "opacity-0 scale-95 -translate-y-2 pointer-events-none"
                   }`}
                   style={{
-                    background:
-                      "linear-gradient(135deg, rgba(24,24,27,0.97) 0%, rgba(15,15,18,0.99) 100%)",
-                    border: "1px solid rgba(255,255,255,0.08)",
-                    borderRadius: "16px",
                     boxShadow:
-                      "0 24px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.04) inset",
-                    backdropFilter: "blur(20px)",
+                      "0 24px 60px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.04) inset",
                   }}
                 >
                   {/* User Info Header */}
-                  <div className="px-4 pt-4 pb-3 border-b border-white/6">
+                  <div className="px-4 pt-4 pb-3 border-b border-zinc-200 dark:border-white/6">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-violet-500/30 to-fuchsia-500/30 border border-white/10 flex items-center justify-center flex-shrink-0">
-                        <User className="w-5 h-5 text-white/70" />
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-violet-500/25 to-fuchsia-500/25 border border-zinc-200 dark:border-white/10 flex items-center justify-center flex-shrink-0">
+                        <User className="w-5 h-5 text-zinc-600 dark:text-white/70" />
                       </div>
                       <div className="min-w-0">
-                        <p className="text-sm font-semibold text-white truncate">
+                        <p className="text-sm font-semibold text-zinc-900 dark:text-white truncate">
                           {userInfo.username || userInfo.name || "Artist"}
                         </p>
-                        <p className="text-xs text-white/40 truncate">
+                        <p className="text-xs text-zinc-500 dark:text-white/40 truncate">
                           {userInfo.email}
                         </p>
                       </div>
@@ -265,9 +278,9 @@ const Header = () => {
                           key={label}
                           to={to}
                           onClick={() => setIsProfileDropdownOpen(false)}
-                          className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/60 hover:text-white hover:bg-white/6 transition-all duration-150 group"
+                          className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100 dark:text-white/60 dark:hover:text-white dark:hover:bg-white/6 transition-all duration-150 group"
                         >
-                          <div className="w-8 h-8 rounded-lg bg-white/4 group-hover:bg-white/8 flex items-center justify-center transition-colors flex-shrink-0">
+                          <div className="w-8 h-8 rounded-lg bg-zinc-100 group-hover:bg-zinc-200 dark:bg-white/4 dark:group-hover:bg-white/8 flex items-center justify-center transition-colors flex-shrink-0">
                             <Icon className="w-4 h-4" />
                           </div>
                           <span className="text-sm font-medium flex-1">
@@ -279,14 +292,14 @@ const Header = () => {
                     })}
 
                     {/* Divider */}
-                    <div className="my-2 border-t border-white/6" />
+                    <div className="my-2 border-t border-zinc-200 dark:border-white/6" />
 
                     {/* Logout */}
                     <button
                       onClick={handleLogout}
-                      className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-red-400/80 hover:text-red-400 hover:bg-red-500/8 transition-all duration-150 group"
+                      className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-red-600/90 hover:text-red-700 hover:bg-red-500/10 dark:text-red-400/80 dark:hover:text-red-400 dark:hover:bg-red-500/8 transition-all duration-150 group"
                     >
-                      <div className="w-8 h-8 rounded-lg bg-red-500/5 group-hover:bg-red-500/12 flex items-center justify-center transition-colors flex-shrink-0">
+                      <div className="w-8 h-8 rounded-lg bg-red-500/10 group-hover:bg-red-500/15 dark:bg-red-500/5 dark:group-hover:bg-red-500/12 flex items-center justify-center transition-colors flex-shrink-0">
                         <LogOut className="w-4 h-4" />
                       </div>
                       <span className="text-sm font-medium flex-1 text-left">
@@ -303,7 +316,8 @@ const Header = () => {
           </div>
 
           <button
-            className="md:hidden text-white"
+            type="button"
+            className="md:hidden text-zinc-900 dark:text-white"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
             {isMobileMenuOpen ? (
@@ -317,11 +331,11 @@ const Header = () => {
 
       {/* Mobile Menu */}
       <div
-        className={`fixed inset-0 bg-zinc-950/95 backdrop-blur-xl z-40 transition-transform duration-500 flex flex-col items-center justify-center ${
+        className={`fixed inset-0 bg-zinc-50/98 dark:bg-zinc-950/95 backdrop-blur-xl z-40 transition-transform duration-500 flex flex-col items-center justify-center ${
           isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
-        <div className="flex flex-col items-center gap-8 text-2xl font-light">
+        <div className="flex flex-col items-center gap-8 text-2xl font-light text-zinc-800 dark:text-white">
             {[
               { name: "Discovery", path: "/artworks" },
               { name: "Exhibitions", path: "/#exhibitions" },
@@ -334,20 +348,32 @@ const Header = () => {
                 key={item.name}
                 href={item.path}
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="hover:text-white/60 transition-colors"
+                className="hover:text-zinc-500 dark:hover:text-white/60 transition-colors"
               >
                 {item.name}
               </a>
             ),
           )}
+          <button
+            type="button"
+            onClick={() => {
+              toggleTheme();
+            }}
+            className="flex items-center gap-2 rounded-full border border-zinc-200 px-4 py-2 text-base font-medium text-zinc-800 hover:bg-zinc-100 dark:border-white/15 dark:text-white dark:hover:bg-white/10"
+            aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+          >
+            {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+            {theme === "dark" ? "Light mode" : "Dark mode"}
+          </button>
           {userInfo ? (
-            <button>
+            <button type="button">
               <User className="w-5 h-5" />
             </button>
           ) : (
             <button
+              type="button"
               onClick={() => openAuth("signin")}
-              className="hover:text-white/60 transition-colors"
+              className="hover:text-zinc-500 dark:hover:text-white/60 transition-colors"
             >
               Sign In
             </button>
