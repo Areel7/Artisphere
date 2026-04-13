@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useGetFavoritesQuery, useRemoveFavoriteMutation } from "../../redux/api/favorite";
@@ -7,19 +7,24 @@ import { toast } from "react-toastify";
 
 const Favorite = () => {
   const userInfo = useSelector((state) => state.auth.userInfo);
+  const [removingIds, setRemovingIds] = useState(new Set());
   const { data: favorites, isLoading, isError, refetch } = useGetFavoritesQuery(
     undefined,
     { skip: !userInfo?.token },
   );
-  const [removeFavorite, { isLoading: isRemoving }] = useRemoveFavoriteMutation();
+  const [removeFavorite] = useRemoveFavoriteMutation();
 
   const handleRemoveFavorite = async (artworkId) => {
+    if (removingIds.has(artworkId)) return;
+    setRemovingIds((prev) => new Set(prev).add(artworkId));
     try {
       await removeFavorite({ artworkId }).unwrap();
       toast.success("Removed from favorites");
       refetch();
     } catch (err) {
       toast.error(err?.data?.errors?.[0]?.msg || "Failed to remove favorite");
+    } finally {
+      setRemovingIds((prev) => { const s = new Set(prev); s.delete(artworkId); return s; });
     }
   };
 
@@ -98,11 +103,13 @@ const Favorite = () => {
                           e.preventDefault();
                           handleRemoveFavorite(fav.artworkId._id);
                         }}
-                        disabled={isRemoving}
-                        className="absolute top-3 right-3 p-2.5 bg-black/40 backdrop-blur-md rounded-full text-white/70 hover:text-rose-500 hover:bg-black/60 transition-all z-10"
+                        disabled={removingIds.has(fav.artworkId._id)}
+                        className="absolute top-3 right-3 p-2.5 bg-black/40 backdrop-blur-md rounded-full text-white/70 hover:text-rose-500 hover:bg-black/60 transition-all z-10 disabled:opacity-50 disabled:cursor-not-allowed"
                         title="Remove from favorites"
                       >
-                        <Trash2 className="w-4 h-4" />
+                        {removingIds.has(fav.artworkId._id)
+                          ? <Loader2 className="w-4 h-4 animate-spin" />
+                          : <Trash2 className="w-4 h-4" />}
                       </button>
                     </div>
 

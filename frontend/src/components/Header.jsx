@@ -16,18 +16,21 @@ import {
   Boxes,
   Sun,
   Moon,
+  ArrowRight,
 } from "lucide-react";
 import SignInandSignUp from "../pages/Auth/SignInandSignUp";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { logOut } from "../redux/features/auth/authSlice";
 import { useLogoutMutation } from "../redux/api/user";
 import { useGetUserCartQuery } from "../redux/api/cart";
 import { useTheme } from "../context/ThemeContext.jsx";
+import { setArtFilter } from "../redux/features/artwork/artSlice";
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const searchInputRef = useRef(null);
 
   // Auth Modal State
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
@@ -38,8 +41,11 @@ const Header = () => {
   const profileDropdownRef = useRef(null);
 
   const { userInfo } = useSelector((state) => state.auth);
+  const { artFilter } = useSelector((state) => state.artworks);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
+  const isSearchPage = location.pathname === "/search";
   const [logoutApiCall] = useLogoutMutation();
   const { data: cartData } = useGetUserCartQuery(undefined, {
     skip: !userInfo?.token,
@@ -199,9 +205,41 @@ const Header = () => {
                 <Moon className="w-5 h-5" />
               )}
             </button>
-            <button onClick={() => navigate("/search")} className="text-zinc-600 hover:text-zinc-900 dark:text-white/70 dark:hover:text-white transition-colors">
-              <Search className="w-5 h-5" />
-            </button>
+            {/* Search: inline input on /search page, icon elsewhere */}
+            {isSearchPage ? (
+              <div className="relative flex items-center group">
+                <div className="absolute -inset-0.5 rounded-full bg-gradient-to-r from-violet-600/25 to-fuchsia-600/25 opacity-0 group-focus-within:opacity-100 blur-sm transition-opacity duration-300 pointer-events-none" />
+                <div className="relative flex items-center gap-2 pl-4 pr-3 py-2 rounded-full bg-zinc-100/80 dark:bg-white/6 border border-zinc-200 dark:border-white/10 backdrop-blur-md min-w-[220px] xl:min-w-[300px] transition-all">
+                  <Search className="w-3.5 h-3.5 text-zinc-400 dark:text-white/30 shrink-0 group-focus-within:text-violet-500 transition-colors" />
+                  <input
+                    ref={searchInputRef}
+                    type="text"
+                    autoFocus
+                    value={artFilter.searchTerm}
+                    onChange={(e) => dispatch(setArtFilter({ searchTerm: e.target.value }))}
+                    placeholder="Search artworks, artists…"
+                    className="flex-1 bg-transparent text-xs text-zinc-800 dark:text-white placeholder:text-zinc-400 dark:placeholder:text-white/30 outline-none"
+                  />
+                  {artFilter.searchTerm && (
+                    <button
+                      onClick={() => dispatch(setArtFilter({ searchTerm: "" }))}
+                      className="shrink-0 text-zinc-400 hover:text-zinc-700 dark:hover:text-white transition-colors"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  )}
+                </div>
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={() => navigate("/search")}
+                aria-label="Search"
+                className="text-zinc-600 hover:text-zinc-900 dark:text-white/70 dark:hover:text-white transition-colors"
+              >
+                <Search className="w-5 h-5" />
+              </button>
+            )}
             <button
               onClick={() => navigate("/cart")}
               className="text-zinc-600 hover:text-zinc-900 dark:text-white/70 dark:hover:text-white transition-colors relative"

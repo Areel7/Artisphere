@@ -10,8 +10,10 @@ const TiltCard = ({ artwork, handleDelete }) => {
   const cardRef = useRef(null);
   const [rotation, setRotation] = useState({ x: 0, y: 0 });
   const [isHovering, setIsHovering] = useState(false);
+  const [pendingCart, setPendingCart] = useState(false);
+  const [pendingFav, setPendingFav] = useState(false);
   const userInfo = useSelector((state) => state.auth.userInfo);
-  
+
   const [addToCart] = useAddToCartMutation();
   const { data: favorites } = useGetFavoritesQuery(undefined, {
     skip: !userInfo?.token,
@@ -23,24 +25,24 @@ const TiltCard = ({ artwork, handleDelete }) => {
   const isLiked = favorites?.some((fav) => fav.artworkId && fav.artworkId._id === artwork._id);
 
   const handleAddToCart = async (id) => {
-    if(!userInfo){
-      toast.error("Please login to add to cart");
-      return;
-    }
+    if (!userInfo) { toast.error("Please login to add to cart"); return; }
+    if (pendingCart) return;
+    setPendingCart(true);
     try {
       await addToCart({ artworkId: id }).unwrap();
       toast.success("Artwork added to cart");
     } catch (error) {
       toast.error(error?.data?.message || error?.data?.errors?.[0]?.msg || "Error");
+    } finally {
+      setPendingCart(false);
     }
   };
 
   const handleFavoriteToggle = async (e) => {
     e.preventDefault();
-    if(!userInfo){
-      toast.error("Please login to add to favorites");
-      return;
-    }
+    if (!userInfo) { toast.error("Please login to add to favorites"); return; }
+    if (pendingFav) return;
+    setPendingFav(true);
     try {
       if (isLiked) {
         await removeFavorite({ artworkId: artwork._id }).unwrap();
@@ -51,6 +53,8 @@ const TiltCard = ({ artwork, handleDelete }) => {
       }
     } catch (error) {
       toast.error(error?.data?.errors?.[0]?.msg || "Failed to update favorites");
+    } finally {
+      setPendingFav(false);
     }
   };
 
@@ -99,9 +103,10 @@ const TiltCard = ({ artwork, handleDelete }) => {
           <img
             src={`${import.meta.env.VITE_BASE_URL}${artwork.image}`}
             alt={artwork.title}
-            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 group-hover:opacity-60"
+            className="w-full h-full object-cover transition-all duration-700 group-hover:scale-110"
+            style={{ filter: isHovering ? "blur(2px) brightness(0.55)" : "blur(0px) brightness(1)" }}
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent opacity-80 group-hover:opacity-100 transition-opacity" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/50 to-black/10 opacity-80 group-hover:opacity-100 transition-opacity" />
         </div>
 
         {/* Top Badges (Lifted in 3D space) */}
@@ -109,11 +114,24 @@ const TiltCard = ({ artwork, handleDelete }) => {
           className="absolute top-4 left-4 right-4 flex justify-between items-start pointer-events-none"
           style={{ transform: "translateZ(40px)" }}
         >
-          <div className="flex gap-2">
-            {artwork.hasStory && (
-              <span className="bg-white/10 backdrop-blur-md px-2 py-1 rounded-md text-[10px] uppercase tracking-wider flex items-center gap-1 border border-white/10 text-white/90">
-                <Layers className="w-3 h-3" /> Story
-              </span>
+          <div className="flex flex-col gap-1">
+            {artwork.story && (
+              <>
+                <span className="bg-white/10 backdrop-blur-md px-2 py-1 rounded-md text-[10px] uppercase tracking-wider flex items-center gap-1 border border-white/10 text-white/90 self-start">
+                  <Layers className="w-3 h-3" /> Story
+                </span>{/* Story excerpt — fades in on hover */}
+          <p
+            className="text-white/70 text-xs italic leading-relaxed mb-2 line-clamp-2 transition-all duration-500"
+            style={{
+              opacity: isHovering ? 1 : 0,
+              transform: isHovering ? "translateY(0)" : "translateY(6px)",
+            }}
+          >
+            {artwork.story
+              ? artwork.story.split(".")[0].trim() + "."
+              : ""}
+          </p>
+              </>
             )}
           </div>
 
@@ -121,7 +139,8 @@ const TiltCard = ({ artwork, handleDelete }) => {
             ""
           ): (<button
               onClick={handleFavoriteToggle}
-              className="pointer-events-auto p-2 rounded-full bg-black/40 backdrop-blur-md hover:bg-white/20 transition-colors border border-white/10"
+              disabled={pendingFav}
+              className="pointer-events-auto p-2 rounded-full bg-black/40 backdrop-blur-md hover:bg-white/20 transition-colors border border-white/10 disabled:opacity-50"
             >
               <Heart
                 className={`w-4 h-4 transition-colors ${isLiked ? "fill-red-500 text-red-500" : "text-white"}`}
@@ -144,8 +163,10 @@ const TiltCard = ({ artwork, handleDelete }) => {
           className="absolute bottom-0 left-0 p-5 w-full pointer-events-none"
           style={{ transform: "translateZ(30px)" }}
         >
+          
+
           <p className="text-white/60 text-xs tracking-widest font-medium mb-1 uppercase">
-            {artwork.description}
+            {artwork.description?.slice(0, 40)}{artwork.description?.length > 40 ? "…" : ""}
           </p>
           <h3 className="text-xl font-bold text-white mb-1 line-clamp-1">
             {artwork.title}
@@ -171,7 +192,11 @@ const TiltCard = ({ artwork, handleDelete }) => {
                 <Trash className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
               </button>
             ) : (
-              <button onClick={() => handleAddToCart(artwork._id)} className="flex items-center gap-2 text-sm font-medium text-white/80 hover:text-white group/btn">
+              <button
+                onClick={() => handleAddToCart(artwork._id)}
+                disabled={pendingCart}
+                className="flex items-center gap-2 text-sm font-medium text-white/80 hover:text-white group/btn disabled:opacity-50"
+              >
                 Add to Cart
                 <ShoppingCart className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
               </button>

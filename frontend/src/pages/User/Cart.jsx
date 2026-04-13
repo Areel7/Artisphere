@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   ShoppingCart,
@@ -17,20 +17,25 @@ import { useSelector } from "react-redux";
 
 const Cart = () => {
   const userInfo = useSelector((state) => state.auth.userInfo);
+  const [removingIds, setRemovingIds] = useState(new Set());
   const { data, isLoading, isError, refetch } = useGetUserCartQuery(undefined, {
     skip: !userInfo?.token,
   });
-  const [removeCartItem, { isLoading: isRemoving }] = useRemoveCartItemMutation();
+  const [removeCartItem] = useRemoveCartItemMutation();
   const [clearCart, { isLoading: isClearing }] = useClearCartMutation();
   const navigate = useNavigate();
 
   const handleRemoveItem = async (id) => {
+    if (removingIds.has(id)) return;
+    setRemovingIds((prev) => new Set(prev).add(id));
     try {
       await removeCartItem(id).unwrap();
       toast.success("Item removed from cart");
       refetch();
     } catch (err) {
       toast.error(err?.data?.errors?.[0]?.msg || "Failed to remove item");
+    } finally {
+      setRemovingIds((prev) => { const s = new Set(prev); s.delete(id); return s; });
     }
   };
 
@@ -132,11 +137,13 @@ const Cart = () => {
 
                   <button
                     onClick={() => handleRemoveItem(item._id)}
-                    disabled={isRemoving}
-                    className="p-3 text-zinc-500 hover:text-rose-500 hover:bg-rose-500/10 rounded-xl transition-all mr-2"
+                    disabled={removingIds.has(item._id)}
+                    className="p-3 text-zinc-500 hover:text-rose-500 hover:bg-rose-500/10 rounded-xl transition-all mr-2 disabled:opacity-50 disabled:cursor-not-allowed"
                     title="Remove item"
                   >
-                    <Trash2 className="w-5 h-5" />
+                    {removingIds.has(item._id)
+                      ? <Loader2 className="w-5 h-5 animate-spin" />
+                      : <Trash2 className="w-5 h-5" />}
                   </button>
                 </div>
               ))}

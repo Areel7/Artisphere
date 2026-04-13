@@ -10,19 +10,22 @@ import {
   Send,
   AlertCircle,
   CheckCircle2,
+  Loader2
 } from "lucide-react";
 import { useCreateArtworkMutation, useUploadImageMutation } from "../../redux/api/artwork.js";
 
 const CreateArtwork = () => {
   const [status, setStatus] = useState({ message: "", type: "" });
 
-  const [createArtwork] = useCreateArtworkMutation();
-  const [uploadImage] = useUploadImageMutation();
+  const [createArtwork, { isLoading: isSubmitting }] = useCreateArtworkMutation();
+  const [uploadImage, { isLoading: isUploading }] = useUploadImageMutation();
+  const isPending = isSubmitting || isUploading;
 
   const formik = useFormik({
     initialValues: {
       title: "",
       description: "",
+      story: "",
       image: null,
       price: "",
       tags: "",
@@ -57,6 +60,7 @@ const CreateArtwork = () => {
 
         const artworkData = {
           title: values.title,
+          story: values.story,
           description: values.description,
           image: imageUrl,
           price: values.price,
@@ -119,6 +123,26 @@ const CreateArtwork = () => {
 
               {formik.touched.title && formik.errors.title && (
                 <p className={errorText}>{formik.errors.title}</p>
+              )}
+            </div>
+
+            {/* Story */}
+            <div className="relative">
+              <label className={labelClasses}>Story</label>
+              <AlignLeft className={iconClasses} />
+
+              <textarea
+                name="story"
+                rows="3"
+                placeholder="Describe the story behind the artwork..."
+                className={`${inputClasses} resize-none`}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.story}
+              />
+
+              {formik.touched.story && formik.errors.story && (
+                <p className={errorText}>{formik.errors.story}</p>
               )}
             </div>
 
@@ -224,10 +248,20 @@ const CreateArtwork = () => {
             {/* Submit */}
             <button
               type="submit"
-              className="w-full flex items-center justify-center gap-2 bg-white text-black font-bold py-4 rounded-xl hover:bg-zinc-200"
+              disabled={isPending || formik.isSubmitting}
+              className="w-full flex items-center justify-center gap-2 bg-white text-black font-bold py-4 rounded-xl hover:bg-zinc-200 disabled:opacity-60 disabled:cursor-not-allowed transition-opacity"
             >
-              CREATE ARTWORK
-              <Send size={18} />
+              {isPending ? (
+                <>
+                  <Loader2 size={18} className="animate-spin" />
+                  {isUploading ? "Uploading Image..." : "Creating Artwork..."}
+                </>
+              ) : (
+                <>
+                  CREATE ARTWORK
+                  <Send size={18} />
+                </>
+              )}
             </button>
           </form>
         </div>

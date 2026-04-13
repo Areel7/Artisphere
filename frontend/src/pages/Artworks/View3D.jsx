@@ -41,6 +41,7 @@ const View3D = () => {
         imageSrc={src}
         title={artworkTitle(artwork)}
         artistName={artistLabel(artwork) || undefined}
+        story={artwork.story || undefined}
         onClose={() => navigate(-1)}
       />
     </div>

@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setArtFilter } from "../redux/features/artwork/artSlice";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useEffect } from "react";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -25,6 +26,13 @@ const Artwork = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { artFilter } = useSelector((state) => state.artworks);
+
+  // Reset filter tag on unmount so returning to this section doesn't show stale state
+  useEffect(() => {
+    return () => {
+      dispatch(setArtFilter({ selectedTag: "" }));
+    };
+  }, [dispatch]);
 
   // Extract up to 4 popular tags dynamically safely
   const categories = artworks ? [...new Set(artworks.flatMap(a => a.tags || []).filter(Boolean))].slice(0, 4) : [];
@@ -48,7 +56,10 @@ const Artwork = () => {
           >
             <div className="max-w-2xl">
               <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 tracking-tight text-zinc-900 dark:text-white">
-                Personalized Discovery
+                Personalized &nbsp; 
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-600 to-fuchsia-600 dark:from-violet-400 dark:to-fuchsia-500">
+                Discovery
+              </span>
               </h2>
               <p className="text-zinc-600 dark:text-white/60 text-lg md:text-xl font-light">
                 Curated recommendations based on your taste. Explore high-res
@@ -81,11 +92,12 @@ const Artwork = () => {
             </div>
           </motion.div>
 
-          <motion.div 
+          <motion.div
+             key={artFilter.selectedTag}
              variants={staggerContainer}
              initial="hidden"
              whileInView="visible"
-             viewport={{ once: true, margin: "-100px" }}
+             viewport={{ once: false, margin: "-50px" }}
           >
             {isLoading ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 gap-y-12">

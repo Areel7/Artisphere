@@ -65,7 +65,7 @@ const HeroSection = () => {
 
             <motion.h1 variants={fadeUp} className="text-5xl sm:text-6xl md:text-7xl lg:text-[6rem] font-bold leading-[1.05] tracking-tight">
               Where art meets <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-zinc-800 via-zinc-500 to-zinc-400 dark:from-white dark:via-zinc-400 dark:to-zinc-600 italic">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-600 to-fuchsia-600 dark:from-violet-400 dark:to-fuchsia-500 italic">
                 engagement.
               </span>
             </motion.h1>

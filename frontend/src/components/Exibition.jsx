@@ -4,7 +4,8 @@ import { useSelector } from "react-redux";
 import { Play, PlusCircle, Loader2 } from "lucide-react";
 import { useGetExhibitionsQuery } from "../redux/api/exhibition.js";
 import { artistLabel, artworkTitle } from "../utils/artworkMeta.js";
-import { motion } from "framer-motion";
+import { motion } from "framer-motion"; // used: motion.div, motion.article
+
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -67,7 +68,10 @@ const Exibition = () => {
             Exclusive Spaces
           </div>
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.1] text-zinc-900 dark:text-white">
-            Curated Exhibitions
+            Curated &nbsp;
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-600 to-fuchsia-600 dark:from-violet-400 dark:to-fuchsia-500">
+              Exhibitions
+            </span>
           </h2>
           <p className="text-zinc-600 dark:text-white/60 text-lg font-light leading-relaxed">
             Step into scheduled, immersive virtual gallery spaces crafted by top curators. Exclusive, time-limited art shows you can walk through from your browser.
