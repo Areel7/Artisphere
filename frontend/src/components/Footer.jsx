@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Instagram, Twitter, Github } from "lucide-react";
+import { Instagram, Twitter, Github } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 
 const Footer = () => {
@@ -10,9 +10,33 @@ const Footer = () => {
         <div className="max-w-[90rem] mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
             <div className="col-span-1 md:col-span-2">
-               <div className="flex items-center gap-2 mb-4">
-                <Box onClick={() => navigate('/')} className="w-6 h-6 text-zinc-900 dark:text-white" />
-                <span className="text-lg font-bold tracking-widest uppercase text-zinc-900 dark:text-white">Artisphere</span>
+               <div className="flex items-center gap-1.5 mb-4 cursor-pointer group select-none" onClick={() => navigate('/')}>
+                {/* Stylised A lettermark */}
+                <svg
+                  width="30" height="30" viewBox="0 0 36 36" fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="flex-shrink-0 transition-transform duration-500 group-hover:scale-110"
+                >
+                  <defs>
+                    <linearGradient id="aGradHF" x1="0" y1="0" x2="1" y2="0">
+                      <stop offset="0%" stopColor="#7c3aed" />
+                      <stop offset="100%" stopColor="#d946ef" />
+                    </linearGradient>
+                    <linearGradient id="aGradVF" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#7c3aed" />
+                      <stop offset="100%" stopColor="#d946ef" />
+                    </linearGradient>
+                  </defs>
+                  <path d="M5 30L18 5L31 30" stroke="url(#aGradVF)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+                  <path d="M10.5 21H25.5" stroke="url(#aGradHF)" strokeWidth="2" strokeLinecap="round" />
+                  <circle cx="18" cy="5" r="2" fill="#d946ef" />
+                </svg>
+                <span
+                  style={{ fontFamily: "'Cinzel', serif" }}
+                  className="text-base font-semibold tracking-[0.15em] uppercase bg-gradient-to-r from-violet-600 via-fuchsia-500 to-violet-600 dark:from-violet-400 dark:via-fuchsia-400 dark:to-violet-400 bg-clip-text text-transparent"
+                >
+                  rtisphere
+                </span>
               </div>
               <p className="text-zinc-600 dark:text-white/50 max-w-sm font-light text-sm leading-relaxed mb-6">
                 Interactive online art gallery. Browse, explore, interact, and experience art online.

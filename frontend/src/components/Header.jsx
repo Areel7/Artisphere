@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import {
-  Box,
   Search,
   ShoppingCart,
   Menu,
@@ -144,13 +143,40 @@ const Header = () => {
         }`}
       >
         <div className="max-w-[90rem] mx-auto px-6 flex items-center justify-between">
-          <div className="flex items-center gap-3 cursor-pointer group">
-            <Box
-              onClick={() => navigate("/")}
-              className="w-7 h-7 text-zinc-900 dark:text-white group-hover:rotate-180 transition-transform duration-700"
-            />
-            <span className="text-xl font-bold tracking-widest uppercase text-zinc-900 dark:text-white">
-              Artisphere
+          {/* Brand Logo */}
+          <div
+            className="flex items-center gap-1.5 cursor-pointer group select-none"
+            onClick={() => navigate("/")}
+          >
+            {/* Stylised A lettermark */}
+            <svg
+              width="36" height="36" viewBox="0 0 36 36" fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              className="flex-shrink-0 transition-transform duration-500 group-hover:scale-110"
+            >
+              <defs>
+                <linearGradient id="aGradH" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%" stopColor="#7c3aed" />
+                  <stop offset="100%" stopColor="#d946ef" />
+                </linearGradient>
+                <linearGradient id="aGradV" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#7c3aed" />
+                  <stop offset="100%" stopColor="#d946ef" />
+                </linearGradient>
+              </defs>
+              {/* Left leg */}
+              <path d="M5 30L18 5L31 30" stroke="url(#aGradV)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+              {/* Crossbar */}
+              <path d="M10.5 21H25.5" stroke="url(#aGradH)" strokeWidth="2" strokeLinecap="round" />
+              {/* Apex dot */}
+              <circle cx="18" cy="5" r="2" fill="#d946ef" />
+            </svg>
+
+            <span
+              style={{ fontFamily: "'Cinzel', serif" }}
+              className="text-lg font-semibold tracking-[0.15em] uppercase bg-gradient-to-r from-violet-600 via-fuchsia-500 to-violet-600 dark:from-violet-400 dark:via-fuchsia-400 dark:to-violet-400 bg-clip-text text-transparent"
+            >
+              rtisphere
             </span>
           </div>
 
