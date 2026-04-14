@@ -2,3 +2,7 @@
 
 /* Class-based dark mode: <html class="dark"> — default script sets this from localStorage */
 @custom-variant dark (&:where(.dark, .dark *));
+
+html, body {
+  position: relative;
+}

@@ -38,6 +38,31 @@ export const exhibitionApiSlice = apiSlice.injectEndpoints({
       refetchOnFocus: true,
       providesTags: (_result, _err, id) => [{ type: "Exhibition", id }],
     }),
+    getMyCuratorExhibitions: builder.query({
+      query: () => ({
+        url: `${EXHIBITION_URL}/my/exhibitions`,
+        method: "GET",
+      }),
+      refetchOnMountOrArgChange: true,
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.map(({ _id }) => ({ type: "Exhibition", id: _id })),
+              { type: "Exhibition", id: "MY_LIST" },
+            ]
+          : [{ type: "Exhibition", id: "MY_LIST" }],
+    }),
+    deleteExhibition: builder.mutation({
+      query: (id) => ({
+        url: `${EXHIBITION_URL}/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: (_result, _err, id) => [
+        { type: "Exhibition", id },
+        { type: "Exhibition", id: "LIST" },
+        { type: "Exhibition", id: "MY_LIST" },
+      ],
+    }),
   }),
 });
 
@@ -45,4 +70,6 @@ export const {
   useCreateExhibitionMutation,
   useGetExhibitionsQuery,
   useGetExhibitionByIdQuery,
+  useGetMyCuratorExhibitionsQuery,
+  useDeleteExhibitionMutation,
 } = exhibitionApiSlice;

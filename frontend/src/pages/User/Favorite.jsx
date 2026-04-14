@@ -58,7 +58,9 @@ const Favorite = () => {
         <div className="flex-1">
           <div className="mb-8">
             <h1 className="text-4xl font-light tracking-tighter text-zinc-900 dark:text-white mb-2 flex items-center gap-3">
-              YOUR <span className="font-serif italic text-zinc-500 dark:text-white/50">FAVORITES</span>
+              YOUR <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-600 to-fuchsia-600 dark:from-violet-400 dark:to-fuchsia-500 italic">
+                FAVORITES.
+              </span>
               <Heart className="w-8 h-8 text-fuchsia-500 ml-2" />
             </h1>
             <p className="text-zinc-600 dark:text-zinc-500">

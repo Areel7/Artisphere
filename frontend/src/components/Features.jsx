@@ -21,7 +21,7 @@ const Features = () => {
   return (
     <>
       {/* Value Proposition / Features */}
-      <section className="py-16 border-y border-zinc-200/80 bg-white/40 dark:border-white/5 dark:bg-black/20 backdrop-blur-sm overflow-hidden text-zinc-900 dark:text-white">
+      <section className="mt-12 lg:mt-24 py-16 border-y border-zinc-200 bg-zinc-100/50 dark:border-white/5 dark:bg-black/20 backdrop-blur-sm overflow-hidden text-zinc-900 dark:text-white">
         <motion.div 
           className="max-w-[90rem] mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-8"
           variants={staggerContainer}
@@ -49,11 +49,11 @@ const Features = () => {
             <motion.div
               key={idx}
               variants={fadeUp}
-              className="flex flex-col gap-3 opacity-70 hover:opacity-100 transition-opacity p-6 rounded-2xl hover:bg-zinc-100/80 dark:hover:bg-white/5"
+              className="flex flex-col gap-3 opacity-90 hover:opacity-100 transition-all duration-300 p-6 rounded-2xl bg-transparent border border-transparent hover:bg-white hover:border-zinc-200 hover:shadow-xl dark:hover:bg-white/5 dark:hover:border-white/10 dark:hover:shadow-none"
             >
-              <feature.icon className="w-6 h-6 text-zinc-800 dark:text-white" />
-              <h4 className="font-semibold text-lg text-zinc-900 dark:text-white">{feature.title}</h4>
-              <p className="text-sm text-zinc-600 dark:text-white/60 font-light">{feature.desc}</p>
+              <feature.icon className="w-6 h-6 text-zinc-900 dark:text-white" />
+              <h4 className="font-bold text-lg text-zinc-900 dark:text-white">{feature.title}</h4>
+              <p className="text-sm text-zinc-600 dark:text-white/60 font-medium dark:font-light">{feature.desc}</p>
             </motion.div>
           ))}
         </motion.div>

@@ -69,7 +69,9 @@ const SelectExhibitionArtworks = () => {
             </Link>
             <h1 className="text-3xl md:text-4xl font-light tracking-tight text-zinc-900 dark:text-white">
               Select{" "}
-              <span className="font-serif italic">artworks</span>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-600 to-fuchsia-600 dark:from-violet-400 dark:to-fuchsia-500 italic">
+                artworks.
+              </span>
             </h1>
             <p className="text-zinc-600 dark:text-zinc-500 mt-2 max-w-xl">
               Tap images to include them in your exhibition. You’ll add title,

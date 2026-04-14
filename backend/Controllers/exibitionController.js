@@ -129,7 +129,7 @@ const getAllExibitions = async (req, res) => {
       .populate({
         path: "artworkIds",
         model: "ArtWork",
-        select: "title image artistId",
+        select: "title image story artistId",
       })
       .lean();
     await leanPopulateArtworkArtists(exibitions);
@@ -147,7 +147,7 @@ const getExibitionById = async (req, res) => {
       .populate({
         path: "artworkIds",
         model: "ArtWork",
-        select: "title image description price tags artistId",
+        select: "title image description story price tags artistId",
       })
       .lean();
     if (!exibition) {
@@ -196,9 +196,58 @@ const getExhibitionMessages = async (req, res) => {
   }
 };
 
+const getMyCuratorExhibitions = async (req, res) => {
+  try {
+    const exibitions = await Exibition.find({ curatorId: req.user._id })
+      .sort({ createdAt: -1 })
+      .populate("curatorId", "username")
+      .populate({
+        path: "artworkIds",
+        model: "ArtWork",
+        select: "title image story artistId",
+      })
+      .lean();
+    await leanPopulateArtworkArtists(exibitions);
+    res.status(200).json(exibitions);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ errors: [{ msg: "Server error" }] });
+  }
+};
+
+const deleteExhibition = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ errors: [{ msg: "Invalid exhibition id" }] });
+    }
+
+    const exibition = await Exibition.findById(id);
+    if (!exibition) {
+      return res.status(404).json({ errors: [{ msg: "Exhibition not found" }] });
+    }
+
+    // Only the curator who created it can delete it
+    if (String(exibition.curatorId) !== String(req.user._id)) {
+      return res
+        .status(403)
+        .json({ errors: [{ msg: "Not authorized to delete this exhibition" }] });
+    }
+
+    await Exibition.findByIdAndDelete(id);
+    res.status(200).json({ message: "Exhibition deleted successfully" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ errors: [{ msg: "Server error" }] });
+  }
+};
+
 export {
   createExibition,
   getAllExibitions,
   getExibitionById,
   getExhibitionMessages,
+  getMyCuratorExhibitions,
+  deleteExhibition,
 };

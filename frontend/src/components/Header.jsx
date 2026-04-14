@@ -123,7 +123,6 @@ const Header = () => {
           label: "Requests",
           to: "/curator/requests",
         },
-        { icon: Package, label: "My Orders", to: "/order-detail" },
       ].filter(Boolean)
     : [];
 

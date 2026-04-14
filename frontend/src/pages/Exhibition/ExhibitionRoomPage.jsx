@@ -192,6 +192,7 @@ const ExhibitionRoomPage = () => {
             imageSrc={imageOf(selectedArtwork)}
             title={artworkTitle(selectedArtwork)}
             artistName={artistLabel(selectedArtwork) || undefined}
+            story={selectedArtwork.story}
             onClose={() => setSelectedArtwork(null)}
           />
         )}

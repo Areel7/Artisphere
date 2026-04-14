@@ -110,8 +110,10 @@ const Profile = () => {
       <div className="w-full max-w-lg">
         {/* Heading */}
         <div className="text-center mb-10">
-          <h1 className="text-4xl font-light tracking-tighter text-white mb-1">
-            MY <span className="font-serif italic">PROFILE</span>
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-light mb-4 tracking-tight text-zinc-900 dark:text-white">
+            MY <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-600 to-fuchsia-600 dark:from-violet-400 dark:to-fuchsia-500 italic">
+                PROFILE.
+              </span>
           </h1>
           <p className="text-sm text-zinc-500">Manage your account details</p>
         </div>

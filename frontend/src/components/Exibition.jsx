@@ -50,7 +50,7 @@ const Exibition = () => {
   const exhibitions = useMemo(() => (Array.isArray(data) ? data : []), [data]);
 
   return (
-    <section className="relative py-20 md:py-28 px-6 bg-zinc-100/90 dark:bg-zinc-950 border-t border-zinc-200 dark:border-white/5 overflow-hidden text-zinc-900 dark:text-white" id="exhibitions">
+    <section className="relative py-20 md:py-28 px-6 bg-zinc-100/80 dark:bg-zinc-950/80 border-y border-zinc-200 dark:border-white/5 overflow-hidden text-zinc-900 dark:text-white backdrop-blur-md" id="exhibitions">
       {/* Background glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-4xl h-[40rem] bg-indigo-500/5 blur-[120px] rounded-full pointer-events-none" />
 
@@ -130,7 +130,7 @@ const Exibition = () => {
                   <img
                     src={coverImage(ex)}
                     alt={ex.title}
-                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
+                    className="absolute inset-0 w-full h-full object-cover transition-all duration-1000 group-hover:scale-105 group-hover:blur-sm"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent z-10" />
 
@@ -150,6 +150,11 @@ const Exibition = () => {
                     {/* Hover reveal — hidden on mobile (always shown on mobile) */}
                     <div className="grid grid-rows-[0fr] group-hover:grid-rows-[1fr] transition-[grid-template-rows] duration-500 ease-out overflow-hidden hidden sm:grid">
                       <div className="overflow-hidden">
+                        {ex.description && (
+                          <p className="text-white/80 text-sm leading-relaxed mt-4 italic line-clamp-2">
+                            {ex.description}
+                          </p>
+                        )}
                         {pieces.length > 0 && (
                           <div className="pt-4 mt-3 border-t border-white/20">
                             <p className="text-[9px] uppercase tracking-widest text-zinc-400 mb-2">Featured Artworks</p>

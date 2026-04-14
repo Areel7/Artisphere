@@ -98,8 +98,8 @@ const CreateArtwork = () => {
     <div className="min-h-screen text-zinc-100 flex items-center justify-center p-4">
       <div className="max-w-xl w-full">
         <div className="text-center mb-10">
-          <h1 className="text-4xl font-light tracking-tighter text-white mb-2">
-            COLLECTION <span className="font-serif italic">Entry</span>
+          <h1 className="text-4xl font-light tracking-tighter text-white mb-2 ">
+            COLLECTION <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-600 to-fuchsia-600 dark:from-violet-400 dark:to-fuchsia-500 italic">Entry</span>
           </h1>
         </div>
 

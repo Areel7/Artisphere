@@ -11,7 +11,9 @@ const GDPR = () => {
             <Lock className="w-7 h-7 text-zinc-800 dark:text-white" />
           </div>
           <div>
-            <h1 className="text-3xl md:text-4xl font-bold uppercase tracking-tight text-zinc-900 dark:text-white">GDPR Compliance</h1>
+            <h1 className="text-3xl md:text-4xl font-bold uppercase tracking-tight text-zinc-900 dark:text-white">GDPR <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-600 to-fuchsia-600 dark:from-violet-400 dark:to-fuchsia-500 italic">
+                Compliance
+              </span></h1>
             <p className="text-zinc-600 dark:text-zinc-400 mt-1">European Union Data Protection Standard</p>
           </div>
         </div>

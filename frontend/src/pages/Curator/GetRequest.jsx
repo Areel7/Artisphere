@@ -26,7 +26,7 @@ const GetRequests = () => {
           
           <div className="mb-12">
             <h1 className="text-4xl md:text-5xl font-black text-white uppercase tracking-tight">
-              Our <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500">Requests</span>
+              Our <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-600 to-fuchsia-600 dark:from-violet-400 dark:to-fuchsia-500 italic">Requests</span>
             </h1>
             <p className="text-zinc-400 mt-4 max-w-2xl text-lg font-light">
               Discover the brilliant minds behind the mesmerizing 3D artworks on Artisphere.

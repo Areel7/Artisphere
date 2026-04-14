@@ -33,8 +33,8 @@ const OrderDetail = () => {
     <div className="min-h-screen text-zinc-100 p-6 pt-28">
       <div className="max-w-4xl mx-auto">
         <div className="mb-10 text-center">
-          <h1 className="text-4xl font-light tracking-tighter text-white mb-2 flex items-center justify-center gap-3">
-            YOUR <span className="font-serif italic text-white/50">ORDERS</span>
+          <h1 className="text-3xl md:text-4xl font-light tracking-tighter text-zinc-900 dark:text-white mb-2 flex items-center justify-center gap-3">
+            YOUR <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-600 to-fuchsia-600 dark:from-violet-400 dark:to-fuchsia-500 italic">ORDERS</span>
             <PackageOpen className="w-8 h-8 text-violet-500" />
           </h1>
           <p className="text-zinc-500">View your complete order history spanning back to your first purchase.</p>

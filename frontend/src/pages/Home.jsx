@@ -5,6 +5,7 @@ import Features from "../components/Features";
 import Artwork from "../components/Artwork";
 import Exibition from "../components/Exibition";
 import Cta from "../components/Cta";
+import BentoGrid from "../components/BentoGrid";
 
 const Home = () => {
   const { scrollYProgress } = useScroll();
@@ -19,7 +20,7 @@ const Home = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.8, ease: "easeOut" }}
-      className="relative"
+      className="relative min-h-screen"
     >
       <motion.div
         className="fixed top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-indigo-500 via-fuchsia-500 to-violet-500 origin-left z-[100]"
@@ -30,6 +31,7 @@ const Home = () => {
       <Artwork />
       <Exibition />
       <Cta />
+      <BentoGrid />
     </motion.main>
   );
 };

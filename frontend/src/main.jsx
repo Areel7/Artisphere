@@ -32,6 +32,8 @@ import CuratorRoutes from "./pages/Curator/CuratorRoutes.jsx";
 import CreateExhibition from "./pages/Curator/CreateExhibition.jsx";
 import GetRequests from "./pages/Curator/GetRequest.jsx";
 import SelectExhibitionArtworks from "./pages/Curator/SelectExhibitionArtworks.jsx";
+import MyExhibitions from "./pages/Curator/MyExhibitions.jsx";
+
 
 //User Routes
 import PrivateRoutes from "./pages/Auth/PrivateRoutes.jsx";
@@ -85,6 +87,7 @@ const router = createBrowserRouter(
           element={<CreateExhibition />}
         />
         <Route path="curator/requests" element={<GetRequests />} />
+        <Route path="curator/my-exhibitions" element={<MyExhibitions />} />
       </Route>
     </Route>,
   ),
