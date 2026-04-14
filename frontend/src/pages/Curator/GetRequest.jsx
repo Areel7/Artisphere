@@ -25,7 +25,7 @@ const GetRequests = () => {
         <div className="max-w-[90rem] mx-auto">
           
           <div className="mb-12">
-            <h1 className="text-4xl md:text-5xl font-black text-white uppercase tracking-tight">
+            <h1 className="text-4xl md:text-5xl font-light dark:text-white text-black uppercase tracking-tight">
               Our <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-600 to-fuchsia-600 dark:from-violet-400 dark:to-fuchsia-500 italic">Requests</span>
             </h1>
             <p className="text-zinc-400 mt-4 max-w-2xl text-lg font-light">

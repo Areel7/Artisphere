@@ -1,7 +1,17 @@
 import { useEffect, useRef } from "react";
 import { useTheme } from "../context/ThemeContext.jsx";
 
-// Fix #2: Particle class defined at module scope, not inside useEffect
+// Vibrant light-mode palette: violet, fuchsia, indigo, rose, amber
+const LIGHT_COLORS = [
+  [139, 92,  246], // violet-500
+  [217, 70,  239], // fuchsia-500
+  [99,  102, 241], // indigo-500
+  [244, 63,  94],  // rose-500
+  [245, 158, 11],  // amber-500
+  [168, 85,  247], // purple-500
+];
+
+// Particle class defined at module scope, not inside useEffect
 class Particle {
   constructor(canvasWidth, canvasHeight) {
     this.canvasWidth = canvasWidth;
@@ -11,6 +21,8 @@ class Particle {
     this.z = Math.random() * 1000;
     this.size = Math.random() * 1.5 + 0.5;
     this.speedZ = Math.random() * 2 + 0.2;
+    // Pick a random color from the palette once at birth
+    this.colorIdx = Math.floor(Math.random() * LIGHT_COLORS.length);
   }
 
   update() {
@@ -19,6 +31,7 @@ class Particle {
       this.z = 1000;
       this.x = Math.random() * this.canvasWidth;
       this.y = Math.random() * this.canvasHeight;
+      this.colorIdx = Math.floor(Math.random() * LIGHT_COLORS.length);
     }
   }
 
@@ -27,16 +40,19 @@ class Particle {
     const x2d = (this.x - canvas.width / 2) * scale + canvas.width / 2;
     const y2d = (this.y - canvas.height / 2) * scale + canvas.height / 2;
 
-    // Fix #4: Cap radius to prevent unbounded growth when z approaches 0
+    // Cap radius to prevent unbounded growth when z approaches 0
     const r = Math.min(this.size * scale, 20);
 
     if (x2d >= 0 && x2d <= canvas.width && y2d >= 0 && y2d <= canvas.height) {
       ctx.beginPath();
       ctx.arc(x2d, y2d, r, 0, Math.PI * 2);
       const alpha = Math.max(0, 1 - this.z / 800);
-      ctx.fillStyle = isDark
-        ? `rgba(255, 255, 255, ${alpha})`
-        : `rgba(80, 80, 90, ${alpha * 0.55})`;
+      if (isDark) {
+        ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
+      } else {
+        const [red, green, blue] = LIGHT_COLORS[this.colorIdx];
+        ctx.fillStyle = `rgba(${red}, ${green}, ${blue}, ${alpha * 0.65})`;
+      }
       ctx.fill();
     }
   }
