@@ -100,7 +100,7 @@ const ExhibitionRoomPage = () => {
               {exhibition.title}
             </span>
             <span className="text-[10px] text-zinc-600 uppercase tracking-wider">
-              Exhibition 3D room
+              3D gallery room
             </span>
           </div>
 
@@ -112,7 +112,7 @@ const ExhibitionRoomPage = () => {
 
         <div className="flex-none px-8 pt-6 pb-3 text-center pointer-events-none select-none">
           <p className="text-zinc-500 text-xs max-w-md mx-auto">
-            Orbit the space · Click any frame for full 3D view
+            You are inside a virtual room · Click any frame for full 3D view
           </p>
         </div>
 
@@ -135,6 +135,7 @@ const ExhibitionRoomPage = () => {
               <div className="flex-1 w-full min-h-[420px] relative rounded-2xl overflow-hidden">
                 <div className="absolute inset-0">
                   <ThreeDGallery
+                    variant="interior"
                     artworks={artworks}
                     onSelect={(art) => setSelectedArtwork(art)}
                   />
