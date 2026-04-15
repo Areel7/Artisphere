@@ -25,6 +25,7 @@ import { useLogoutMutation } from "../redux/api/user";
 import { useGetUserCartQuery } from "../redux/api/cart";
 import { useTheme } from "../context/ThemeContext.jsx";
 import { setArtFilter } from "../redux/features/artwork/artSlice";
+import { getAvatarColor } from "../utils/avatarColors.js";
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -298,7 +299,11 @@ const Header = () => {
                       className="w-full h-full rounded-full object-cover"
                     />
                   ) : (
-                    <User className="w-4 h-4 text-zinc-700 group-hover:text-zinc-900 dark:text-white/80 dark:group-hover:text-white transition-colors" />
+                    <div className={`w-full h-full rounded-full flex items-center justify-center bg-gradient-to-tr ${getAvatarColor(userInfo.username || userInfo.name)}`}>
+                      <span className="text-sm font-bold text-white uppercase drop-shadow-sm">
+                        {(userInfo.username || userInfo.name || "U").charAt(0)}
+                      </span>
+                    </div>
                   )}
                   <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-400 rounded-full border-2 border-white dark:border-zinc-950" />
                 </button>

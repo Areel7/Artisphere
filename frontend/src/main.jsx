@@ -44,6 +44,7 @@ import OrderDetail from "./pages/User/OrderDetail.jsx";
 import Favorite from "./pages/User/Favorite.jsx";
 import AllArtWorks from "./pages/Artworks/AllArtWorks.jsx";
 import GalleryPage from "./pages/Gallery/GalleryPage.jsx";
+import ArtistPortfolio from "./pages/User/ArtistPortfolio.jsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -60,6 +61,7 @@ const router = createBrowserRouter(
       <Route path="/view-3d/:id" element={<View3D />} />
       <Route path="/exhibition/:id/room" element={<ExhibitionRoomPage />} />
       <Route path="/curators" element={<AllCurators />} />
+      <Route path="/artist/:id" element={<ArtistPortfolio />} />
 
       <Route path="" element={<PrivateRoutes />}>
         <Route path="/profile" element={<Profile />} />

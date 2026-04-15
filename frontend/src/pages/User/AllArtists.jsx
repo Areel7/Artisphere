@@ -2,9 +2,12 @@ import React from 'react';
 import { useGetArtistsQuery } from '../../redux/api/user';
 import { User as UserIcon, Mail } from 'lucide-react';
 import ParticleBackground from '../../components/ParticleBackground';
+import { useNavigate } from 'react-router-dom';
+import { getAvatarColor } from '../../utils/avatarColors';
 
 const AllArtists = () => {
   const { data: artists, isLoading, error } = useGetArtistsQuery();
+  const navigate = useNavigate();
 
   return (
     <>
@@ -41,8 +44,10 @@ const AllArtists = () => {
                     {artist.avatar ? (
                       <img src={artist.avatar} alt={artist.username} className="w-full h-full object-cover rounded-full" />
                     ) : (
-                      <div className="w-full h-full bg-zinc-200/80 dark:bg-black/40 rounded-full flex items-center justify-center">
-                        <UserIcon className="w-8 h-8 text-zinc-500 dark:text-white/50" />
+                      <div className={`w-full h-full rounded-full flex items-center justify-center bg-gradient-to-tr ${getAvatarColor(artist.username || artist.name)}`}>
+                        <span className="text-4xl font-bold text-white uppercase drop-shadow-md">
+                          {(artist.username || artist.name || "A").charAt(0)}
+                        </span>
                       </div>
                     )}
                   </div>
@@ -56,7 +61,10 @@ const AllArtists = () => {
                     <span className="truncate max-w-[200px]">{artist.email}</span>
                   </div>
                   
-                  <button className="mt-8 px-6 py-2.5 w-full rounded-xl bg-zinc-900/90 hover:bg-zinc-800 text-white dark:bg-white/10 dark:hover:bg-white dark:text-white dark:hover:text-black font-semibold transition-all border border-zinc-300 dark:border-white/5 text-sm uppercase tracking-wider">
+                  <button 
+                    onClick={() => navigate(`/artist/${artist._id}`, { state: { artist } })}
+                    className="mt-8 px-6 py-2.5 w-full rounded-xl bg-zinc-900/90 hover:bg-zinc-800 text-white dark:bg-white/10 dark:hover:bg-white dark:text-white dark:hover:text-black font-semibold transition-all border border-zinc-300 dark:border-white/5 text-sm uppercase tracking-wider"
+                  >
                     View Portfolio
                   </button>
                 </div>
