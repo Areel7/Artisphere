@@ -20,6 +20,11 @@ const userSchema = new mongoose.Schema(
       enum: ["artist", "visitor", "curator"],
       default: "visitor",
     },
+    recentlyViewedArtworks: {
+      type: [mongoose.Schema.Types.ObjectId],
+      ref: "ArtWork",
+      default: [],
+    },
   },
   { timestamps: true },
 );

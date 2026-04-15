@@ -150,4 +150,5 @@ export {
   getSingleArtWork,
   updateArtWork,
   getArtWorksByArtistId,
+  fillStory,
 };

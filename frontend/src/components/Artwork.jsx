@@ -11,11 +11,16 @@ import {
 } from "lucide-react";
 import TiltCard from "./TiltCard";
 import { useGetAllArtworksQuery } from "../redux/api/artwork";
+import { useGetRecentlyViewedQuery } from "../redux/api/user";
 import { useDispatch, useSelector } from "react-redux";
 import { setArtFilter } from "../redux/features/artwork/artSlice";
 import { useNavigate } from "react-router-dom";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useEffect, useRef } from "react";
+import {
+  getRecentlyViewedArtworkIds,
+  setRecentlyViewedArtworkIds,
+} from "../utils/recentlyViewed.js";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -103,6 +108,9 @@ const Artwork = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { artFilter } = useSelector((state) => state.artworks);
+  const userInfo = useSelector((state) => state.auth.userInfo);
+  const { data: serverRecent, isSuccess: serverRecentReady } =
+    useGetRecentlyViewedQuery(undefined, { skip: !userInfo?.token });
   const sliderSectionRef = useRef(null);
 
   // Reset filter on unmount
@@ -112,6 +120,13 @@ const Artwork = () => {
     };
   }, [dispatch]);
 
+  useEffect(() => {
+    if (!userInfo?.token || !serverRecentReady || !Array.isArray(serverRecent)) {
+      return;
+    }
+    setRecentlyViewedArtworkIds(serverRecent.map((a) => a._id));
+  }, [userInfo?.token, serverRecentReady, serverRecent]);
+
   // Extract up to 4 popular tags
   const categories = artworks
     ? [...new Set(artworks.flatMap((a) => a.tags || []).filter(Boolean))].slice(
@@ -120,12 +135,39 @@ const Artwork = () => {
       )
     : [];
 
-  // Filter artworks
-  const filteredArtworks = artworks?.filter(
-    (artwork) =>
-      artFilter.selectedTag === "" ||
-      artwork.tags?.includes(artFilter.selectedTag),
+  const recentlyViewedIds = getRecentlyViewedArtworkIds();
+  const localRecentArtworks = recentlyViewedIds
+    .map((id) =>
+      artworks?.find((art) => String(art._id) === String(id)),
+    )
+    .filter(Boolean)
+    .slice(0, 5);
+  const recentlyViewedArtworks =
+    userInfo?.token && serverRecentReady
+      ? (serverRecent || []).slice(0, 5)
+      : localRecentArtworks;
+
+  const recentlyViewedTagSet = new Set(
+    recentlyViewedArtworks.flatMap((art) => art.tags || []),
   );
+
+  // Filter artworks
+  const filteredArtworks = artworks
+    ?.filter(
+      (artwork) =>
+        artFilter.selectedTag === "" ||
+        artwork.tags?.includes(artFilter.selectedTag),
+    )
+    .slice()
+    .sort((a, b) => {
+      if (artFilter.selectedTag !== "" || recentlyViewedTagSet.size === 0) {
+        return 0;
+      }
+      const aMatch = (a.tags || []).some((tag) => recentlyViewedTagSet.has(tag));
+      const bMatch = (b.tags || []).some((tag) => recentlyViewedTagSet.has(tag));
+      if (aMatch === bMatch) return 0;
+      return aMatch ? -1 : 1;
+    });
 
   // Scroll-driven transform — moves strip right→left as section enters viewport
   const { scrollYProgress } = useScroll({
@@ -205,6 +247,55 @@ const Artwork = () => {
               </button>
             </div>
           </motion.div>
+
+          {recentlyViewedArtworks.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+              className="mb-12 p-5 md:p-6 rounded-3xl border border-zinc-200 dark:border-white/10 bg-white dark:bg-zinc-900/40"
+            >
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-base md:text-lg font-semibold text-zinc-900 dark:text-white">
+                  You also viewed
+                </h3>
+                <span className="text-xs uppercase tracking-widest text-zinc-500 dark:text-white/50">
+                  Last {recentlyViewedArtworks.length}
+                </span>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+                {recentlyViewedArtworks.map((art) => (
+                  <button
+                    key={art._id}
+                    type="button"
+                    onClick={() => navigate(`/view-3d/${art._id}`)}
+                    className="group text-left overflow-hidden rounded-2xl border border-zinc-200 dark:border-white/10 bg-zinc-50/80 dark:bg-zinc-900 hover:border-violet-400/50 transition-colors"
+                  >
+                    <div className="aspect-[4/3] overflow-hidden">
+                      <img
+                        src={
+                          art.image?.startsWith("http")
+                            ? art.image
+                            : `${import.meta.env.VITE_BASE_URL}${art.image}`
+                        }
+                        alt={art.title}
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      />
+                    </div>
+                    <div className="p-3">
+                      <p className="text-xs uppercase tracking-widest text-zinc-500 dark:text-white/40 mb-1">
+                        {art.artistId?.username || "Unknown Artist"}
+                      </p>
+                      <p className="text-sm font-semibold text-zinc-900 dark:text-white line-clamp-1">
+                        {art.title}
+                      </p>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </motion.div>
+          )}
 
           {/* Artwork grid */}
           <motion.div

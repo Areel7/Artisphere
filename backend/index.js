@@ -28,6 +28,20 @@ connectDB();
 
 const app = express();
 
+function isAllowedCorsOrigin(origin) {
+  if (origin === process.env.FRONTEND_URL) return true;
+  if (origin.endsWith(".vercel.app")) return true;
+  try {
+    const { protocol, hostname } = new URL(origin);
+    const okProto = protocol === "http:" || protocol === "https:";
+    if (okProto && (hostname === "localhost" || hostname === "127.0.0.1"))
+      return true;
+  } catch {
+    /* ignore */
+  }
+  return false;
+}
+
 //Middleware
 app.use(express.json());
 app.use(cookieParser());
@@ -37,14 +51,7 @@ const corsOptions = {
   origin: (origin, callback) => {
     // Allow requests with no origin (mobile apps, curl, Postman)
     if (!origin) return callback(null, true);
-
-    const allowed =
-      origin === process.env.FRONTEND_URL ||
-      origin === "http://localhost:5173" ||
-      origin === "http://127.0.0.1:5173" ||
-      origin.endsWith(".vercel.app");
-
-    if (allowed) return callback(null, true);
+    if (isAllowedCorsOrigin(origin)) return callback(null, true);
     return callback(new Error(`CORS blocked: ${origin}`));
   },
 };
@@ -72,12 +79,7 @@ const io = new Server(httpServer, {
   cors: {
     origin: (origin, callback) => {
       if (!origin) return callback(null, true);
-      const allowed =
-        origin === process.env.FRONTEND_URL ||
-        origin === "http://localhost:5173" ||
-        origin === "http://127.0.0.1:5173" ||
-        origin.endsWith(".vercel.app");
-      if (allowed) return callback(null, true);
+      if (isAllowedCorsOrigin(origin)) return callback(null, true);
       return callback(new Error(`CORS blocked: ${origin}`));
     },
     credentials: true,

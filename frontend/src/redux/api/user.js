@@ -48,6 +48,29 @@ export const userApiSlice = apiSlice.injectEndpoints({
         method: "GET",
       }),
     }),
+    getRecentlyViewed: builder.query({
+      query: () => ({
+        url: `${USER_URL}/recently-viewed`,
+        method: "GET",
+      }),
+      providesTags: [{ type: "RecentlyViewed", id: "LIST" }],
+    }),
+    recordRecentlyViewed: builder.mutation({
+      query: (artworkId) => ({
+        url: `${USER_URL}/recently-viewed`,
+        method: "POST",
+        body: { artworkId },
+      }),
+      invalidatesTags: [{ type: "RecentlyViewed", id: "LIST" }],
+    }),
+    syncRecentlyViewed: builder.mutation({
+      query: (body) => ({
+        url: `${USER_URL}/recently-viewed/sync`,
+        method: "PUT",
+        body,
+      }),
+      invalidatesTags: [{ type: "RecentlyViewed", id: "LIST" }],
+    }),
   }),
 });
 
@@ -59,4 +82,8 @@ export const {
   useUpdateProfileMutation,
   useGetArtistsQuery,
   useGetCuratorsQuery,
+  useGetRecentlyViewedQuery,
+  useLazyGetRecentlyViewedQuery,
+  useRecordRecentlyViewedMutation,
+  useSyncRecentlyViewedMutation,
 } = userApiSlice;

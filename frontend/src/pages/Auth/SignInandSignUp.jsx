@@ -3,7 +3,17 @@ import { X, User, Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setCredentials } from "../../redux/features/auth/authSlice.js";
-import { useLoginMutation, useRegisterMutation } from "../../redux/api/user";
+import {
+  useLoginMutation,
+  useRegisterMutation,
+  useLazyGetRecentlyViewedQuery,
+  useSyncRecentlyViewedMutation,
+} from "../../redux/api/user";
+import {
+  getRecentlyViewedArtworkIds,
+  mergeRecentlyViewedIds,
+  setRecentlyViewedArtworkIds,
+} from "../../utils/recentlyViewed.js";
 import { toast } from "react-toastify";
 import Loader from "../../components/Loader.jsx";
 import * as Yup from "yup";
@@ -100,6 +110,24 @@ const SignInandSignUp = ({
   const [login, { isLoading: loginLoading }] = useLoginMutation();
 
   const [register, { isLoading: registerLoading }] = useRegisterMutation();
+  const [fetchRecentlyViewed] = useLazyGetRecentlyViewedQuery();
+  const [syncRecentlyViewed] = useSyncRecentlyViewedMutation();
+
+  const mergeGuestHistoryToAccount = async () => {
+    const local = getRecentlyViewedArtworkIds();
+    if (!local.length) return;
+    try {
+      const serverList = await fetchRecentlyViewed().unwrap();
+      const merged = mergeRecentlyViewedIds(
+        local,
+        (serverList || []).map((a) => a._id),
+      );
+      await syncRecentlyViewed({ ids: merged }).unwrap();
+      setRecentlyViewedArtworkIds(merged);
+    } catch {
+      /* keep local only if network fails */
+    }
+  };
 
 
   const { search } = useLocation();
@@ -168,6 +196,7 @@ const SignInandSignUp = ({
       try {
         const res = await register({ username: username.trim(), email: email.trim(), password }).unwrap();
         dispatch(setCredentials({ ...res }));
+        await mergeGuestHistoryToAccount();
         navigate(redirect);
         toast.success("Registration Successful");
         setIsAuthModalOpen(false);
@@ -178,6 +207,7 @@ const SignInandSignUp = ({
       try {
         const res = await login({ email: email.trim(), password }).unwrap();
         dispatch(setCredentials({ ...res }));
+        await mergeGuestHistoryToAccount();
         navigate(redirect);
         toast.success("Login Successful");
         setIsAuthModalOpen(false);

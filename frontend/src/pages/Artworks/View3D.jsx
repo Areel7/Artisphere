@@ -1,13 +1,26 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 import { useGetSingleArtworkQuery } from "../../redux/api/artwork";
+import { useRecordRecentlyViewedMutation } from "../../redux/api/user";
 import { artistLabel, artworkTitle } from "../../utils/artworkMeta.js";
+import { addRecentlyViewedArtworkId } from "../../utils/recentlyViewed.js";
 import ThreeDModal from "../../components/ThreeDModal";
 
 const View3D = () => {
   const { id } = useParams();
   const { data: artwork, isLoading, isError } = useGetSingleArtworkQuery(id);
   const navigate = useNavigate();
+  const userInfo = useSelector((state) => state.auth.userInfo);
+  const [recordRecentlyViewed] = useRecordRecentlyViewedMutation();
+
+  useEffect(() => {
+    if (!artwork?._id) return;
+    addRecentlyViewedArtworkId(artwork._id);
+    if (userInfo?.token) {
+      recordRecentlyViewed(artwork._id).unwrap().catch(() => {});
+    }
+  }, [artwork?._id, userInfo?.token, recordRecentlyViewed]);
 
   if (isLoading) {
     return (
