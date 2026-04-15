@@ -118,7 +118,19 @@ const ThreeDGallery = ({ artworks = [], onSelect, variant = "cosmos" }) => {
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(52, W / H, 0.08, 120);
-    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    
+    let renderer;
+    try {
+      renderer = new THREE.WebGLRenderer({ 
+        antialias: true, 
+        powerPreference: "high-performance" 
+      });
+    } catch (err) {
+      console.error("WebGL Context Error:", err);
+      setLoadError("WebGL context limit reached or unsupported hardware. Please refresh the page.");
+      return;
+    }
+    
     renderer.setSize(W, H);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.shadowMap.enabled = true;
@@ -725,12 +737,16 @@ const ThreeDGallery = ({ artworks = [], onSelect, variant = "cosmos" }) => {
       renderer.domElement.removeEventListener("pointermove", onPointerMove);
       renderer.domElement.removeEventListener("click", onClick);
       if (frameIdRef.current) cancelAnimationFrame(frameIdRef.current);
-      controls.dispose();
-      renderer.dispose();
-      starsRef.current = null;
-      if (mount && renderer.domElement.parentNode === mount) {
-        mount.removeChild(renderer.domElement);
+      controls?.dispose();
+      if (renderer) {
+        renderer.dispose();
+        // Crucial fix: releases the WebGL context back to the browser immediately
+        renderer.forceContextLoss();
+        if (mount && renderer.domElement && renderer.domElement.parentNode === mount) {
+          mount.removeChild(renderer.domElement);
+        }
       }
+      starsRef.current = null;
     };
   }, [isLoaded, artworks, variant]);
 
