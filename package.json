@@ -8,7 +8,8 @@
     "frontend": "cd frontend && npm run dev",
     "backend": "nodemon backend/index.js",
     "build": "npm install",
-    "start": "node backend/index.js"
+    "start": "node backend/index.js",
+    "create-superadmin": "node backend/scripts/createSuperAdmin.js"
   },
   "author": "",
   "license": "ISC",

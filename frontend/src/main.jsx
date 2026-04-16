@@ -8,6 +8,7 @@ import {
   Route,
   RouterProvider,
   createRoutesFromElements,
+  Navigate,
 } from "react-router-dom";
 import { createBrowserRouter } from "react-router-dom";
 
@@ -45,6 +46,13 @@ import Favorite from "./pages/User/Favorite.jsx";
 import AllArtWorks from "./pages/Artworks/AllArtWorks.jsx";
 import GalleryPage from "./pages/Gallery/GalleryPage.jsx";
 import ArtistPortfolio from "./pages/User/ArtistPortfolio.jsx";
+
+import SuperAdminRoutes from "./pages/Admin/SuperAdminRoutes.jsx";
+import AdminLayout from "./pages/Admin/AdminLayout.jsx";
+import AdminUsers from "./pages/Admin/AdminUsers.jsx";
+import AdminArtworks from "./pages/Admin/AdminArtworks.jsx";
+import AdminExhibitions from "./pages/Admin/AdminExhibitions.jsx";
+import AdminAnalytics from "./pages/Admin/AdminAnalytics.jsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -90,6 +98,16 @@ const router = createBrowserRouter(
         />
         <Route path="curator/requests" element={<GetRequests />} />
         <Route path="curator/my-exhibitions" element={<MyExhibitions />} />
+      </Route>
+
+      <Route element={<SuperAdminRoutes />}>
+        <Route path="admin" element={<AdminLayout />}>
+          <Route index element={<Navigate to="users" replace />} />
+          <Route path="users" element={<AdminUsers />} />
+          <Route path="artworks" element={<AdminArtworks />} />
+          <Route path="exhibitions" element={<AdminExhibitions />} />
+          <Route path="analytics" element={<AdminAnalytics />} />
+        </Route>
       </Route>
     </Route>,
   ),

@@ -87,4 +87,34 @@ const createPaymentIntent = async (req, res) => {
   }
 };
 
-export { proceedToCheckout, getUserOrders, createPaymentIntent };
+const getAllOrdersForAdmin = async (req, res) => {
+  try {
+    const orders = await Order.find()
+      .populate("userId", "username email role")
+      .populate({
+        path: "artworkId",
+        select: "title price image",
+      })
+      .sort({ createdAt: -1 })
+      .lean();
+
+    const completed = orders.filter((o) => o.paymentStatus === "completed");
+    const revenue = completed.reduce((acc, o) => acc + (Number(o.amount) || 0), 0);
+    const pending = orders.filter((o) => o.paymentStatus === "pending").length;
+
+    res.status(200).json({
+      orders,
+      summary: {
+        totalOrders: orders.length,
+        completedOrders: completed.length,
+        pendingOrders: pending,
+        totalRevenue: revenue,
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ errors: [{ msg: "Server error fetching orders" }] });
+  }
+};
+
+export { proceedToCheckout, getUserOrders, createPaymentIntent, getAllOrdersForAdmin };

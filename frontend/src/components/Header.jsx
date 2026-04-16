@@ -16,6 +16,7 @@ import {
   Sun,
   Moon,
   ArrowRight,
+  LayoutDashboard,
 } from "lucide-react";
 import SignInandSignUp from "../pages/Auth/SignInandSignUp";
 import { Link, useNavigate, useLocation } from "react-router-dom";
@@ -95,6 +96,11 @@ const Header = () => {
   const profileMenuItems = userInfo
     ? [
         { icon: User, label: "My Profile", to: "/profile" },
+        userInfo.role === "superadmin" && {
+          icon: LayoutDashboard,
+          label: "Dashboard",
+          to: "/admin",
+        },
         { icon: Heart, label: "Favorites", to: "/favorites" },
         { icon: Image, label: "All Artworks", to: "/artworks" },
         { icon: Boxes, label: "3D Gallery", to: "/gallery" },
@@ -434,9 +440,41 @@ const Header = () => {
             {theme === "dark" ? "Light mode" : "Dark mode"}
           </button>
           {userInfo ? (
-            <button type="button">
-              <User className="w-5 h-5" />
-            </button>
+            <div className="flex flex-col items-center gap-3 text-lg">
+              <Link
+                to="/profile"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="hover:text-zinc-500 dark:hover:text-white/60 transition-colors"
+              >
+                My Profile
+              </Link>
+              {userInfo.role === "superadmin" && (
+                <Link
+                  to="/admin"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="hover:text-zinc-500 dark:hover:text-white/60 transition-colors"
+                >
+                  Dashboard
+                </Link>
+              )}
+              <Link
+                to="/favorites"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="hover:text-zinc-500 dark:hover:text-white/60 transition-colors"
+              >
+                Favorites
+              </Link>
+              <button
+                type="button"
+                onClick={() => {
+                  setIsMobileMenuOpen(false);
+                  handleLogout();
+                }}
+                className="text-red-600 dark:text-red-400 text-lg"
+              >
+                Log out
+              </button>
+            </div>
           ) : (
             <button
               type="button"

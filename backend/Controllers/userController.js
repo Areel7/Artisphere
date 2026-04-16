@@ -108,16 +108,6 @@ const logoutUser = async (req, res) => {
   }
 };
 
-const getAllUsers = async (req, res) => {
-  try {
-    const users = await User.find().select("-password");
-    res.status(200).json(users);
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ errors: [{ msg: "Server error" }] });
-  }
-};
-
 const getCurrentUserProfile = async (req, res) => {
   try {
     const user = await User.findById(req.user._id).select("-password");
@@ -261,7 +251,6 @@ export {
   createUser,
   loginUser,
   logoutUser,
-  getAllUsers,
   getCurrentUserProfile,
   updateCurrentUserProfile,
   getArtists,

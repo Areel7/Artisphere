@@ -20,6 +20,7 @@ import favoriteRoutes from "./Routes/favoriteRoutes.js";
 import cartRoutes from "./Routes/cartRoutes.js";
 import orderRoutes from "./Routes/orderRoutes.js";
 import requestRoutes from "./Routes/requestRoutes.js";
+import adminRoutes from "./Routes/adminRoutes.js";
 
 //Configuration — load the root .env regardless of executing directory
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
@@ -71,6 +72,7 @@ app.use("/api/favorites", favoriteRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/requests", requestRoutes);
+app.use("/api/admin", adminRoutes);
 
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 

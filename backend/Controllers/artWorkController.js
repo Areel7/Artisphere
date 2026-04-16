@@ -63,7 +63,8 @@ const deleteArtWork = async (req, res) => {
     }
     if (
       artwork.artistId.toString() === req.user._id.toString() ||
-      req.user.role === "curator"
+      req.user.role === "curator" ||
+      req.user.role === "superadmin"
     ) {
       await artwork.deleteOne();
       res.json({ msg: "Artwork removed" });
@@ -110,7 +111,10 @@ const updateArtWork = async (req, res) => {
     if (!artwork) {
       return res.status(404).json({ errors: [{ msg: "Artwork not found" }] });
     }
-    if (artwork.artistId.toString() === req.user._id.toString()) {
+    if (
+      artwork.artistId.toString() === req.user._id.toString() ||
+      req.user.role === "superadmin"
+    ) {
       artwork.title = req.body.title || artwork.title;
       artwork.description = req.body.description || artwork.description;
       artwork.story = req.body.story !== undefined ? req.body.story : artwork.story;
