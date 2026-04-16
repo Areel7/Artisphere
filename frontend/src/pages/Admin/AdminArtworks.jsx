@@ -116,7 +116,11 @@ const AdminArtworks = () => {
                   <td className="px-4 py-2 w-20">
                     {a.image ? (
                       <img
-                        src={a.image}
+                        src={
+                          a.image?.startsWith("http")
+                            ? a.image
+                            : `${import.meta.env.VITE_BASE_URL || ""}${a.image}`
+                        }
                         alt=""
                         className="w-14 h-14 rounded-lg object-cover border border-zinc-200 dark:border-white/10"
                       />

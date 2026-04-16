@@ -1,5 +1,14 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { useGetAdminOrdersQuery } from "../../redux/api/admin.js";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
 
 const fmtMoney = (n) =>
   new Intl.NumberFormat(undefined, { style: "currency", currency: "USD" }).format(
@@ -8,6 +17,25 @@ const fmtMoney = (n) =>
 
 const AdminAnalytics = () => {
   const { data, isLoading, isError, refetch } = useGetAdminOrdersQuery();
+
+  const chartData = useMemo(() => {
+    const orders = data?.orders || [];
+    if (!orders.length) return [];
+    
+    const revenueByDate = {};
+    orders.forEach((o) => {
+      if (o.paymentStatus === "completed" && o.createdAt) {
+        const dateObj = new Date(o.createdAt);
+        const dateStr = dateObj.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+        revenueByDate[dateStr] = (revenueByDate[dateStr] || 0) + (o.amount || 0);
+      }
+    });
+
+    return Object.entries(revenueByDate).map(([date, amount]) => ({
+      date,
+      amount,
+    }));
+  }, [data]);
 
   if (isLoading) {
     return (
@@ -67,6 +95,51 @@ const AdminAnalytics = () => {
           </div>
         ))}
       </div>
+
+      {chartData.length > 0 && (
+        <div className="rounded-2xl border border-zinc-200 dark:border-white/10 bg-white/90 dark:bg-zinc-900/70 p-6">
+          <h2 className="text-sm font-semibold text-zinc-900 dark:text-white mb-6">
+            Revenue Over Time
+          </h2>
+          <div className="h-[300px] w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={chartData} margin={{ top: 5, right: 0, left: 0, bottom: 5 }}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#52525b" strokeOpacity={0.2} />
+                <XAxis 
+                  dataKey="date" 
+                  axisLine={false} 
+                  tickLine={false} 
+                  tick={{ fontSize: 12, fill: '#71717a' }} 
+                  dy={10}
+                />
+                <YAxis 
+                  axisLine={false} 
+                  tickLine={false} 
+                  tickFormatter={(val) => `$${val}`}
+                  tick={{ fontSize: 12, fill: '#71717a' }}
+                />
+                <Tooltip
+                  cursor={{ fill: '#a1a1aa', opacity: 0.1 }}
+                  contentStyle={{ 
+                    backgroundColor: '#18181b', 
+                    border: '1px solid #27272a',
+                    borderRadius: '12px',
+                    color: '#fff',
+                  }}
+                  itemStyle={{ color: '#a78bfa' }}
+                  formatter={(value) => [fmtMoney(value), "Revenue"]}
+                />
+                <Bar 
+                  dataKey="amount" 
+                  fill="#8b5cf6" 
+                  radius={[4, 4, 0, 0]} 
+                  maxBarSize={50}
+                />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+      )}
 
       <div className="rounded-2xl border border-zinc-200 dark:border-white/10 overflow-hidden bg-white/90 dark:bg-zinc-900/70">
         <div className="px-4 py-3 border-b border-zinc-200 dark:border-white/8">
