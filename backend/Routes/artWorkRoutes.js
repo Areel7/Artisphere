@@ -1,9 +1,5 @@
 import express from "express";
-import {
-  protect,
-  artist,
-  artistAndCurator,
-} from "../Middlewares/authMiddleware.js";
+import { protect, artist } from "../Middlewares/authMiddleware.js";
 import {
   createArtWork,
   deleteArtWork,
@@ -19,9 +15,9 @@ router
   .route("/")
   .post(protect, artist, createArtWork)
   .get(getAllArtWorks);
-router.route("/delete/:id").delete(protect, artistAndCurator, deleteArtWork);
+router.route("/delete/:id").delete(protect, deleteArtWork);
 router.route("/:id").get(getSingleArtWork);
-router.route("/update/:id").put(protect, artist, updateArtWork);
+router.route("/update/:id").put(protect, updateArtWork);
 router.route("/artist/:id").get(protect, getArtWorksByArtistId);
 
 export default router;

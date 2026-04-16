@@ -14,7 +14,7 @@ const router = express.Router();
 router.post("/", protect, curator, createExibition);
 router.get("/", getAllExibitions);
 router.get("/my/exhibitions", protect, curator, getMyCuratorExhibitions);
-router.delete("/:id", protect, curator, deleteExhibition);
+router.delete("/:id", protect, deleteExhibition);
 router.get("/:id/messages", getExhibitionMessages);
 router.get("/:id", getExibitionById);
 

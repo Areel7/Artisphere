@@ -41,7 +41,7 @@ async function leanPopulateArtworkArtists(exhibitionRowOrRows) {
   }
 }
 
-const normalizeArtworkIds = (raw) => {
+export const normalizeArtworkIds = (raw) => {
   if (raw == null) return [];
   if (Array.isArray(raw)) {
     return [...new Set(raw.map((id) => String(id).trim()).filter(Boolean))];
@@ -228,8 +228,11 @@ const deleteExhibition = async (req, res) => {
       return res.status(404).json({ errors: [{ msg: "Exhibition not found" }] });
     }
 
-    // Only the curator who created it can delete it
-    if (String(exibition.curatorId) !== String(req.user._id)) {
+    const isSuper = req.user.role === "superadmin";
+    if (
+      String(exibition.curatorId) !== String(req.user._id) &&
+      !isSuper
+    ) {
       return res
         .status(403)
         .json({ errors: [{ msg: "Not authorized to delete this exhibition" }] });
@@ -243,6 +246,85 @@ const deleteExhibition = async (req, res) => {
   }
 };
 
+const superAdminUpdateExhibition = async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ errors: [{ msg: "Invalid exhibition id" }] });
+    }
+    const exibition = await Exibition.findById(id);
+    if (!exibition) {
+      return res.status(404).json({ errors: [{ msg: "Exhibition not found" }] });
+    }
+
+    const { title, description, startDate, endDate, artworkIds } = req.body;
+
+    if (title != null && String(title).trim()) {
+      exibition.title = String(title).trim();
+    }
+    if (description != null && String(description).trim()) {
+      exibition.description = String(description).trim();
+    }
+    if (startDate != null) {
+      const start = new Date(startDate);
+      if (Number.isNaN(start.getTime())) {
+        return res.status(400).json({ errors: [{ msg: "Invalid start date" }] });
+      }
+      exibition.startDate = start;
+    }
+    if (endDate != null) {
+      const end = new Date(endDate);
+      if (Number.isNaN(end.getTime())) {
+        return res.status(400).json({ errors: [{ msg: "Invalid end date" }] });
+      }
+      exibition.endDate = end;
+    }
+    if (exibition.endDate <= exibition.startDate) {
+      return res
+        .status(400)
+        .json({ errors: [{ msg: "End date must be after start date" }] });
+    }
+
+    if (artworkIds != null) {
+      const ids = normalizeArtworkIds(artworkIds);
+      if (ids.length === 0) {
+        return res.status(400).json({
+          errors: [{ msg: "Select at least one artwork" }],
+        });
+      }
+      for (const oid of ids) {
+        if (!mongoose.Types.ObjectId.isValid(oid)) {
+          return res
+            .status(400)
+            .json({ errors: [{ msg: `Invalid artwork id: ${oid}` }] });
+        }
+      }
+      const found = await ArtWork.countDocuments({ _id: { $in: ids } });
+      if (found !== ids.length) {
+        return res.status(400).json({
+          errors: [{ msg: "One or more selected artworks were not found" }],
+        });
+      }
+      exibition.artworkIds = ids;
+    }
+
+    await exibition.save();
+    const updated = await Exibition.findById(id)
+      .populate("curatorId", "username")
+      .populate({
+        path: "artworkIds",
+        model: "ArtWork",
+        select: "title image description story price tags artistId",
+      })
+      .lean();
+    await leanPopulateArtworkArtists(updated);
+    res.status(200).json(updated);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ errors: [{ msg: "Server error" }] });
+  }
+};
+
 export {
   createExibition,
   getAllExibitions,
@@ -250,4 +332,5 @@ export {
   getExhibitionMessages,
   getMyCuratorExhibitions,
   deleteExhibition,
+  superAdminUpdateExhibition,
 };

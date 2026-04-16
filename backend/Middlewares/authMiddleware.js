@@ -59,4 +59,13 @@ const artistAndCurator = (req, res, next) => {
   next();
 };
 
-export { protect, curator, artist, artistAndCurator };
+const superadmin = (req, res, next) => {
+  if (!req.user || req.user.role !== "superadmin") {
+    return res
+      .status(403)
+      .json({ errors: [{ msg: "Not authorized as a super admin" }] });
+  }
+  next();
+};
+
+export { protect, curator, artist, artistAndCurator, superadmin };

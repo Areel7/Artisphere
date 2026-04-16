@@ -17,7 +17,7 @@ const userSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      enum: ["artist", "visitor", "curator"],
+      enum: ["artist", "visitor", "curator", "superadmin"],
       default: "visitor",
     },
     recentlyViewedArtworks: {
