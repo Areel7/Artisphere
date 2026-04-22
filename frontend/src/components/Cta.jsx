@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import SignInandSignUp from "../pages/Auth/SignInandSignUp";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { useCreateRequestMutation } from "../redux/api/request.js"
+import { useApplyAsRoleMutation } from "../redux/api/request.js";
 import { toast } from "react-toastify";
 import { motion } from "framer-motion";
 
@@ -16,17 +16,23 @@ const Cta = () => {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [authMode, setAuthMode] = useState("signup");
   const userInfo = useSelector((state) => state.auth.userInfo);
-  const [createRequest] = useCreateRequestMutation();
-
-
-
+  const [applyAsRole, { isLoading: applying }] = useApplyAsRoleMutation();
 
   const handleApplyAsArtist = async () => {
+    if (applying) return;
     try {
-      await createRequest({}).unwrap();
-      toast.success("Request sent successfully");
+      const res = await applyAsRole("artist").unwrap();
+      toast.success(
+        res.msg ||
+          "Application submitted! A superadmin will review and activate your artist account.",
+        { autoClose: 6000 },
+      );
     } catch (error) {
-      toast.error(error?.data?.message || "already send request");
+      const msg =
+        error?.data?.errors?.[0]?.msg ||
+        error?.data?.message ||
+        "Something went wrong. Please try again.";
+      toast.error(msg);
     }
   };
 
@@ -102,8 +108,8 @@ const Cta = () => {
               collector seeking the next masterpiece.
             </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-               <button onClick={handleApplyAsArtist} className="w-full sm:w-auto px-8 py-4 border-2 border-zinc-200 bg-white text-zinc-900 rounded-full font-bold shadow-sm hover:border-zinc-900 hover:bg-zinc-50 dark:border-white/20 dark:bg-transparent dark:text-white dark:hover:bg-white/5 transition-all duration-300">
-                Apply as Artist
+               <button onClick={handleApplyAsArtist} disabled={applying} className="w-full sm:w-auto px-8 py-4 border-2 border-zinc-200 bg-white text-zinc-900 rounded-full font-bold shadow-sm hover:border-zinc-900 hover:bg-zinc-50 dark:border-white/20 dark:bg-transparent dark:text-white dark:hover:bg-white/5 transition-all duration-300 disabled:opacity-60 disabled:pointer-events-none">
+                {applying ? "Submitting…" : "Apply as Artist"}
               </button>
             </div>
           </motion.div>

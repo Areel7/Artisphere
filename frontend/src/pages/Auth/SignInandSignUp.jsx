@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { X, User, Mail, Lock, Eye, EyeOff } from "lucide-react";
+import { X, User, Mail, Lock, Eye, EyeOff, ChevronDown } from "lucide-react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setCredentials } from "../../redux/features/auth/authSlice.js";
@@ -9,6 +9,7 @@ import {
   useLazyGetRecentlyViewedQuery,
   useSyncRecentlyViewedMutation,
 } from "../../redux/api/user";
+import { useCreateRequestMutation } from "../../redux/api/request";
 import {
   getRecentlyViewedArtworkIds,
   mergeRecentlyViewedIds,
@@ -51,7 +52,6 @@ const signUpSchema = Yup.object({
 
 /**
  * Flattens Yup ValidationError (including nested `inner`) into { [fieldPath]: message }.
- * Does not rely on ValidationError.isError — some bundlers/runtime edge cases fail that check.
  */
 function flattenYupValidationError(err) {
   const acc = {};
@@ -89,6 +89,12 @@ function getApiErrorMessage(error) {
   return "Something went wrong. Please try again.";
 }
 
+const ROLE_OPTIONS = [
+  { value: "visitor", label: "Visitor", description: "Browse & collect art" },
+  { value: "artist", label: "Artist", description: "Showcase your artworks" },
+  { value: "curator", label: "Curator", description: "Manage exhibitions" },
+];
+
 const SignInandSignUp = ({
   isAuthModalOpen,
   setIsAuthModalOpen,
@@ -99,6 +105,8 @@ const SignInandSignUp = ({
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [selectedRole, setSelectedRole] = useState("visitor");
+  const [isRoleDropdownOpen, setIsRoleDropdownOpen] = useState(false);
   const [fieldErrors, setFieldErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -108,10 +116,12 @@ const SignInandSignUp = ({
   const dispatch = useDispatch();
 
   const [login, { isLoading: loginLoading }] = useLoginMutation();
-
   const [register, { isLoading: registerLoading }] = useRegisterMutation();
+  const [createRequest, { isLoading: requestLoading }] = useCreateRequestMutation();
   const [fetchRecentlyViewed] = useLazyGetRecentlyViewedQuery();
   const [syncRecentlyViewed] = useSyncRecentlyViewedMutation();
+
+  const isLoading = loginLoading || registerLoading || requestLoading;
 
   const mergeGuestHistoryToAccount = async () => {
     const local = getRecentlyViewedArtworkIds();
@@ -128,7 +138,6 @@ const SignInandSignUp = ({
       /* keep local only if network fails */
     }
   };
-
 
   const { search } = useLocation();
   const sp = new URLSearchParams(search);
@@ -148,6 +157,8 @@ const SignInandSignUp = ({
     setShowPassword(false);
     setShowConfirmPassword(false);
     setAcceptedTerms(false);
+    setSelectedRole("visitor");
+    setIsRoleDropdownOpen(false);
   }, [authMode, isAuthModalOpen]);
 
   const runValidation = async () => {
@@ -193,8 +204,34 @@ const SignInandSignUp = ({
     if (!ok) return;
 
     if (authMode === "signup") {
+      // Artist / Curator → send application request, no immediate login
+      if (selectedRole === "artist" || selectedRole === "curator") {
+        try {
+          const res = await createRequest({
+            username: username.trim(),
+            email: email.trim(),
+            password,
+            role: selectedRole,
+          }).unwrap();
+          toast.success(
+            res.msg ||
+              `Application submitted! A superadmin will review and activate your ${selectedRole} account.`,
+            { autoClose: 6000 },
+          );
+          setIsAuthModalOpen(false);
+        } catch (error) {
+          toast.error(getApiErrorMessage(error));
+        }
+        return;
+      }
+
+      // Visitor → register normally
       try {
-        const res = await register({ username: username.trim(), email: email.trim(), password }).unwrap();
+        const res = await register({
+          username: username.trim(),
+          email: email.trim(),
+          password,
+        }).unwrap();
         dispatch(setCredentials({ ...res }));
         await mergeGuestHistoryToAccount();
         navigate(redirect);
@@ -216,6 +253,8 @@ const SignInandSignUp = ({
       }
     }
   };
+
+  const selectedRoleOption = ROLE_OPTIONS.find((r) => r.value === selectedRole);
 
   return (
     <>
@@ -252,42 +291,109 @@ const SignInandSignUp = ({
                   {fieldErrors.form}
                 </p>
               )}
+
+              {/* ─── Sign-up only fields ─── */}
               {authMode === "signup" && (
-                <div>
-                  <label
-                    htmlFor="auth-username"
-                    className="block text-[10px] uppercase tracking-widest text-zinc-500 dark:text-white/50 mb-2 font-semibold"
-                  >
-                    Full Name
-                  </label>
-                  <div className="relative">
-                    <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400 dark:text-white/40" />
-                    <input
-                      id="auth-username"
-                      name="username"
-                      autoComplete="name"
-                      value={username}
-                      onChange={(e) => {
-                        setUsername(e.target.value);
-                        clearFieldError("username");
-                      }}
-                      type="text"
-                      aria-invalid={Boolean(fieldErrors.username)}
-                      className={`w-full bg-zinc-50 dark:bg-white/5 border rounded-lg pl-12 pr-4 py-3.5 text-zinc-900 dark:text-white focus:outline-none focus:bg-white dark:focus:bg-white/10 transition-colors text-sm ${
-                        fieldErrors.username
-                          ? "border-rose-500 focus:border-rose-500"
-                          : "border-zinc-200 dark:border-white/10 focus:border-violet-500/50 dark:focus:border-white/50"
-                      }`}
-                      placeholder="John Doe"
-                    />
+                <>
+                  {/* Role Selector */}
+                  <div>
+                    <label className="block text-[10px] uppercase tracking-widest text-zinc-500 dark:text-white/50 mb-2 font-semibold">
+                      I am a
+                    </label>
+                    <div className="relative">
+                      <button
+                        type="button"
+                        id="auth-role-selector"
+                        onClick={() => setIsRoleDropdownOpen((v) => !v)}
+                        className="w-full flex items-center justify-between bg-zinc-50 dark:bg-white/5 border border-zinc-200 dark:border-white/10 rounded-lg px-4 py-3.5 text-sm text-zinc-900 dark:text-white focus:outline-none hover:border-violet-500/50 dark:hover:border-white/30 transition-colors"
+                      >
+                        <span className="flex flex-col items-start text-left">
+                          <span className="font-medium">{selectedRoleOption?.label}</span>
+                          <span className="text-[11px] text-zinc-500 dark:text-white/40">
+                            {selectedRoleOption?.description}
+                          </span>
+                        </span>
+                        <ChevronDown
+                          className={`w-4 h-4 text-zinc-400 transition-transform duration-200 ${
+                            isRoleDropdownOpen ? "rotate-180" : ""
+                          }`}
+                        />
+                      </button>
+
+                      {isRoleDropdownOpen && (
+                        <div className="absolute z-10 mt-1 w-full rounded-xl border border-zinc-200 dark:border-white/10 bg-white dark:bg-zinc-900 shadow-xl overflow-hidden">
+                          {ROLE_OPTIONS.map((opt) => (
+                            <button
+                              key={opt.value}
+                              type="button"
+                              onClick={() => {
+                                setSelectedRole(opt.value);
+                                setIsRoleDropdownOpen(false);
+                              }}
+                              className={`w-full flex flex-col items-start px-4 py-3 text-sm transition-colors hover:bg-zinc-50 dark:hover:bg-white/5 ${
+                                selectedRole === opt.value
+                                  ? "bg-violet-50 dark:bg-violet-500/10 text-violet-700 dark:text-violet-400"
+                                  : "text-zinc-800 dark:text-white/80"
+                              }`}
+                            >
+                              <span className="font-medium">{opt.label}</span>
+                              <span className="text-[11px] text-zinc-500 dark:text-white/40">
+                                {opt.description}
+                              </span>
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Info banner for artist/curator */}
+                    {(selectedRole === "artist" || selectedRole === "curator") && (
+                      <p className="mt-2 text-[11px] leading-relaxed text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-400/10 border border-amber-200 dark:border-amber-400/20 rounded-lg px-3 py-2">
+                        ⚠️ Artist &amp; Curator accounts require superadmin approval.
+                        You'll be able to log in once your request is accepted.
+                      </p>
+                    )}
                   </div>
-                  {fieldErrors.username && (
-                    <p className="text-rose-600 dark:text-rose-400 text-xs mt-1.5 ml-0.5">
-                      {fieldErrors.username}
-                    </p>
-                  )}
-                </div>
+
+                  {/* Username */}
+                  <div>
+                    <label
+                      htmlFor="auth-username"
+                      className="block text-[10px] uppercase tracking-widest text-zinc-500 dark:text-white/50 mb-2 font-semibold"
+                    >
+                      Full Name
+                    </label>
+                    <div className="relative">
+                      <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400 dark:text-white/40" />
+                      <input
+                        id="auth-username"
+                        name="username"
+                        autoComplete="name"
+                        value={username}
+                        onChange={(e) => {
+                          setUsername(e.target.value);
+                          clearFieldError("username");
+                        }}
+                        type="text"
+                        aria-invalid={Boolean(fieldErrors.username)}
+                        className={`w-full bg-zinc-50 dark:bg-white/5 border rounded-lg pl-12 pr-4 py-3.5 text-zinc-900 dark:text-white focus:outline-none focus:bg-white dark:focus:bg-white/10 transition-colors text-sm ${
+                          fieldErrors.username
+                            ? "border-rose-500 focus:border-rose-500"
+                            : "border-zinc-200 dark:border-white/10 focus:border-violet-500/50 dark:focus:border-white/50"
+                        }`}
+                        placeholder="John Doe"
+                      />
+                    </div>
+                    {fieldErrors.username && (
+                      <p className="text-rose-600 dark:text-rose-400 text-xs mt-1.5 ml-0.5">
+                        {fieldErrors.username}
+                      </p>
+                    )}
+                  </div>
+                </>
               )}
+
+              {/* Email */}
               <div>
                 <label
                   htmlFor="auth-email"
@@ -323,6 +429,8 @@ const SignInandSignUp = ({
                   </p>
                 )}
               </div>
+
+              {/* Password */}
               <div>
                 <label
                   htmlFor="auth-password"
@@ -370,6 +478,8 @@ const SignInandSignUp = ({
                   </p>
                 )}
               </div>
+
+              {/* Confirm Password (signup only) */}
               {authMode === "signup" && (
                 <div>
                   <label
@@ -422,6 +532,8 @@ const SignInandSignUp = ({
                   )}
                 </div>
               )}
+
+              {/* Terms (signup only) */}
               {authMode === "signup" && (
                 <div className="space-y-1.5">
                   <div className="flex items-start gap-3">
@@ -467,14 +579,19 @@ const SignInandSignUp = ({
                   )}
                 </div>
               )}
+
               <button
                 type="submit"
-                disabled={loginLoading || registerLoading}
+                disabled={isLoading}
                 className="w-full py-4 mt-2 bg-white text-black rounded-lg font-bold hover:bg-zinc-200 transition-colors disabled:opacity-60 disabled:pointer-events-none"
               >
-                {authMode === "signin" ? "Sign In" : "Create Account"}
+                {authMode === "signin"
+                  ? "Sign In"
+                  : selectedRole === "visitor"
+                  ? "Create Account"
+                  : `Submit ${selectedRole.charAt(0).toUpperCase() + selectedRole.slice(1)} Application`}
               </button>
-              {(loginLoading || registerLoading) && <Loader />}
+              {isLoading && <Loader />}
             </form>
 
             <div className="mt-8 text-center border-t border-zinc-200 dark:border-white/10 pt-6">

@@ -6,13 +6,16 @@ import {
   Building2,
   BarChart3,
   Shield,
+  ClipboardList,
 } from "lucide-react";
 
 const nav = [
   { to: "/admin/users", label: "Users", icon: Users },
   { to: "/admin/artworks", label: "Artworks", icon: Image },
   { to: "/admin/exhibitions", label: "Exhibitions", icon: Building2 },
+  { to: "/admin/requests", label: "Requests", icon: ClipboardList },
   { to: "/admin/analytics", label: "Analytics", icon: BarChart3 },
+
 ];
 
 const AdminLayout = () => {

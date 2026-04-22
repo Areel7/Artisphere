@@ -53,6 +53,7 @@ import AdminUsers from "./pages/Admin/AdminUsers.jsx";
 import AdminArtworks from "./pages/Admin/AdminArtworks.jsx";
 import AdminExhibitions from "./pages/Admin/AdminExhibitions.jsx";
 import AdminAnalytics from "./pages/Admin/AdminAnalytics.jsx";
+import AdminRequests from "./pages/Admin/AdminRequests.jsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -107,6 +108,7 @@ const router = createBrowserRouter(
           <Route path="artworks" element={<AdminArtworks />} />
           <Route path="exhibitions" element={<AdminExhibitions />} />
           <Route path="analytics" element={<AdminAnalytics />} />
+          <Route path="requests" element={<AdminRequests />} />
         </Route>
       </Route>
     </Route>,

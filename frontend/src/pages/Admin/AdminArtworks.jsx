@@ -7,7 +7,12 @@ import {
 } from "../../redux/api/artwork.js";
 
 const AdminArtworks = () => {
-  const { data: artworks, isLoading, isError, refetch } = useGetAllArtworksQuery();
+  const {
+    data: artworks,
+    isLoading,
+    isError,
+    refetch,
+  } = useGetAllArtworksQuery();
   const [updateArtwork, { isLoading: updating }] = useUpdateArtworkMutation();
   const [deleteArtwork, { isLoading: deleting }] = useDeleteArtworkMutation();
 
@@ -73,7 +78,9 @@ const AdminArtworks = () => {
 
   if (isLoading) {
     return (
-      <p className="text-zinc-500 dark:text-white/50 text-sm">Loading artworks…</p>
+      <p className="text-zinc-500 dark:text-white/50 text-sm">
+        Loading artworks…
+      </p>
     );
   }
   if (isError) {
@@ -112,7 +119,10 @@ const AdminArtworks = () => {
             </thead>
             <tbody className="divide-y divide-zinc-200 dark:divide-white/8">
               {(artworks || []).map((a) => (
-                <tr key={a._id} className="hover:bg-zinc-50/80 dark:hover:bg-white/[0.03]">
+                <tr
+                  key={a._id}
+                  className="hover:bg-zinc-50/80 dark:hover:bg-white/[0.03]"
+                >
                   <td className="px-4 py-2 w-20">
                     {a.image ? (
                       <img
@@ -169,7 +179,9 @@ const AdminArtworks = () => {
               Title
               <input
                 value={form.title}
-                onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, title: e.target.value }))
+                }
                 className="mt-1 w-full rounded-xl border border-zinc-200 dark:border-white/10 bg-white dark:bg-zinc-950 px-3 py-2 text-sm"
               />
             </label>
@@ -188,7 +200,9 @@ const AdminArtworks = () => {
               Story
               <textarea
                 value={form.story}
-                onChange={(e) => setForm((f) => ({ ...f, story: e.target.value }))}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, story: e.target.value }))
+                }
                 rows={4}
                 className="mt-1 w-full rounded-xl border border-zinc-200 dark:border-white/10 bg-white dark:bg-zinc-950 px-3 py-2 text-sm"
               />
@@ -197,7 +211,9 @@ const AdminArtworks = () => {
               Price (USD)
               <input
                 value={form.price}
-                onChange={(e) => setForm((f) => ({ ...f, price: e.target.value }))}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, price: e.target.value }))
+                }
                 className="mt-1 w-full rounded-xl border border-zinc-200 dark:border-white/10 bg-white dark:bg-zinc-950 px-3 py-2 text-sm"
               />
             </label>
@@ -205,7 +221,9 @@ const AdminArtworks = () => {
               Tags (comma-separated)
               <input
                 value={form.tags}
-                onChange={(e) => setForm((f) => ({ ...f, tags: e.target.value }))}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, tags: e.target.value }))
+                }
                 className="mt-1 w-full rounded-xl border border-zinc-200 dark:border-white/10 bg-white dark:bg-zinc-950 px-3 py-2 text-sm"
               />
             </label>
