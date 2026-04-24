@@ -3,6 +3,8 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import { ArrowLeft, Layers } from "lucide-react";
 import { useGetExhibitionByIdQuery } from "../../redux/api/exhibition.js";
 import { artistLabel, artworkTitle } from "../../utils/artworkMeta.js";
+import { buildShareLinks, copyShareLink } from "../../utils/socialShare.js";
+import SocialShareToolbar from "../../components/SocialShareToolbar.jsx";
 import ThreeDGallery from "../../components/ThreeDGallery.jsx";
 import ThreeDModal from "../../components/ThreeDModal.jsx";
 import ExhibitionChatPanel from "../../components/ExhibitionChatPanel.jsx";
@@ -12,6 +14,7 @@ const ExhibitionRoomPage = () => {
   const navigate = useNavigate();
   const [selectedArtwork, setSelectedArtwork] = useState(null);
   const [headerHeight, setHeaderHeight] = useState(73);
+  const [copiedExhibition, setCopiedExhibition] = useState(false);
 
   const { data: exhibition, isLoading, isError, error } =
     useGetExhibitionByIdQuery(id, { skip: !id });
@@ -41,6 +44,26 @@ const ExhibitionRoomPage = () => {
         ? art.image
         : `${import.meta.env.VITE_BASE_URL}${art.image}`
       : null;
+
+  const exhibitionShareUrl =
+    typeof window !== "undefined" ? window.location.href : "";
+  const exhibitionShareLinks = useMemo(
+    () =>
+      buildShareLinks({
+        url: exhibitionShareUrl,
+        text: exhibition?.title
+          ? `Explore "${exhibition.title}" on Artisphere`
+          : "Explore this exhibition on Artisphere",
+      }),
+    [exhibitionShareUrl, exhibition?.title],
+  );
+
+  const handleCopyExhibitionLink = async () => {
+    const ok = await copyShareLink(exhibitionShareUrl);
+    if (!ok) return;
+    setCopiedExhibition(true);
+    setTimeout(() => setCopiedExhibition(false), 1800);
+  };
 
   if (isLoading) {
     return (
@@ -104,9 +127,17 @@ const ExhibitionRoomPage = () => {
             </span>
           </div>
 
-          <div className="flex items-center gap-2 text-zinc-600 text-xs">
-            <Layers size={12} />
-            {artworks.length} pieces
+          <div className="flex flex-wrap items-center justify-end gap-2 sm:gap-3 shrink-0 max-w-[min(100%,22rem)] sm:max-w-none">
+            <SocialShareToolbar
+              links={exhibitionShareLinks}
+              copied={copiedExhibition}
+              onCopy={handleCopyExhibitionLink}
+              compact
+            />
+            <div className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.04] px-2.5 py-1 text-zinc-500 text-[11px] font-medium tabular-nums">
+              <Layers size={12} className="text-zinc-600" />
+              <span>{artworks.length} pieces</span>
+            </div>
           </div>
         </div>
 
@@ -194,6 +225,7 @@ const ExhibitionRoomPage = () => {
             title={artworkTitle(selectedArtwork)}
             artistName={artistLabel(selectedArtwork) || undefined}
             story={selectedArtwork.story}
+            shareUrl={`${window.location.origin}/view-3d/${selectedArtwork._id}`}
             onClose={() => setSelectedArtwork(null)}
           />
         )}
