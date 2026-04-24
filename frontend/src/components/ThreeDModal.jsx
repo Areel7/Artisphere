@@ -1,14 +1,17 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { RotateCw, ZoomIn, X, BookOpen } from 'lucide-react';
 import ParticleBackground from './ParticleBackground';
+import SocialShareToolbar from "./SocialShareToolbar.jsx";
+import { buildShareLinks, copyShareLink } from "../utils/socialShare.js";
 
-const ThreeDModal = ({ imageSrc, onClose, title, artistName, story }) => {
+const ThreeDModal = ({ imageSrc, onClose, title, artistName, story, shareUrl }) => {
   const [showStory, setShowStory] = useState(false);
   const mountRef = useRef(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [autoRotate, setAutoRotate] = useState(true);
   const [headerHeight, setHeaderHeight] = useState(73);
+  const [copied, setCopied] = useState(false);
 
   const sceneRef = useRef(null);
   const cameraRef = useRef(null);
@@ -16,6 +19,19 @@ const ThreeDModal = ({ imageSrc, onClose, title, artistName, story }) => {
   const meshRef = useRef(null);
   const controlsRef = useRef(null);
   const frameIdRef = useRef(null);
+  const copyTimeoutRef = useRef(null);
+
+  const activeShareUrl =
+    shareUrl || (typeof window !== "undefined" ? window.location.href : "");
+
+  const shareLinks = useMemo(
+    () =>
+      buildShareLinks({
+        url: activeShareUrl,
+        text: title ? `Check out "${title}" on Artisphere` : "Check this on Artisphere",
+      }),
+    [activeShareUrl, title],
+  );
 
   // Measure header height dynamically
   useEffect(() => {
@@ -40,7 +56,10 @@ const ThreeDModal = ({ imageSrc, onClose, title, artistName, story }) => {
   // Lock body scroll
   useEffect(() => {
     document.body.style.overflow = 'hidden';
-    return () => { document.body.style.overflow = ''; };
+    return () => {
+      document.body.style.overflow = '';
+      if (copyTimeoutRef.current) clearTimeout(copyTimeoutRef.current);
+    };
   }, []);
 
   const loadScript = (src) => new Promise((resolve, reject) => {
@@ -195,6 +214,14 @@ const ThreeDModal = ({ imageSrc, onClose, title, artistName, story }) => {
     }
   };
 
+  const handleCopyLink = async () => {
+    const ok = await copyShareLink(activeShareUrl);
+    if (!ok) return;
+    setCopied(true);
+    if (copyTimeoutRef.current) clearTimeout(copyTimeoutRef.current);
+    copyTimeoutRef.current = setTimeout(() => setCopied(false), 1800);
+  };
+
   return (
     <>
       <ParticleBackground />
@@ -267,6 +294,17 @@ const ThreeDModal = ({ imageSrc, onClose, title, artistName, story }) => {
             >
               <ZoomIn size={14} />
             </button>
+
+            {/* Divider */}
+            <div className="w-px h-5 bg-white/10" />
+
+            <SocialShareToolbar
+              links={shareLinks}
+              copied={copied}
+              onCopy={handleCopyLink}
+              showLabel
+              className="max-sm:scale-[0.92] max-sm:origin-right"
+            />
 
             {/* Divider */}
             <div className="w-px h-5 bg-white/10" />
