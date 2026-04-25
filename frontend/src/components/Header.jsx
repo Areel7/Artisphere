@@ -99,7 +99,7 @@ const Header = () => {
         userInfo.role === "superadmin" && {
           icon: LayoutDashboard,
           label: "Dashboard",
-          to: "/admin",
+          to: "/admin/dashboard",
         },
         { icon: Heart, label: "Favorites", to: "/favorites" },
         { icon: Image, label: "All Artworks", to: "/artworks" },
@@ -450,7 +450,7 @@ const Header = () => {
               </Link>
               {userInfo.role === "superadmin" && (
                 <Link
-                  to="/admin"
+                  to="/admin/dashboard"
                   onClick={() => setIsMobileMenuOpen(false)}
                   className="hover:text-zinc-500 dark:hover:text-white/60 transition-colors"
                 >

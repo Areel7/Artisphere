@@ -102,7 +102,7 @@ const router = createBrowserRouter(
       </Route>
 
       <Route element={<SuperAdminRoutes />}>
-        <Route path="admin" element={<AdminLayout />}>
+        <Route path="admin/dashboard" element={<AdminLayout />}>
           <Route index element={<Navigate to="users" replace />} />
           <Route path="users" element={<AdminUsers />} />
           <Route path="artworks" element={<AdminArtworks />} />

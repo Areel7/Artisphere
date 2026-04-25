@@ -245,7 +245,7 @@ const SignInandSignUp = ({
         const res = await login({ email: email.trim(), password }).unwrap();
         dispatch(setCredentials({ ...res }));
         await mergeGuestHistoryToAccount();
-        navigate(redirect);
+        navigate(res.role === "superadmin" ? "/admin/dashboard" : redirect);
         toast.success("Login Successful");
         setIsAuthModalOpen(false);
       } catch (error) {
