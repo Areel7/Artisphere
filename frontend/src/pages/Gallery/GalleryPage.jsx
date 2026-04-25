@@ -1,18 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Layers } from "lucide-react";
-import { useGetAllArtworksQuery } from "../../redux/api/artwork";
-import { artistLabel, artworkTitle } from "../../utils/artworkMeta.js";
-import ThreeDGallery from "../../components/ThreeDGallery";
-import ThreeDModal from "../../components/ThreeDModal";
+import { ArrowLeft, Box } from "lucide-react";
+import FBXViewer from "../../components/FBXViewer";
 
 const GalleryPage = () => {
-  const { data: artworks, isLoading, error } = useGetAllArtworksQuery();
-  const [selectedArtwork, setSelectedArtwork] = useState(null);
   const [headerHeight, setHeaderHeight] = useState(73);
   const navigate = useNavigate();
 
-  // Match the same nav-height detection used in ThreeDModal
   useEffect(() => {
     const nav = document.querySelector("nav");
     if (!nav) return;
@@ -25,9 +19,6 @@ const GalleryPage = () => {
     ro.observe(nav);
     return () => ro.disconnect();
   }, []);
-
-  const imageOf = (art) =>
-    art?.image ? `${import.meta.env.VITE_BASE_URL}${art.image}` : null;
 
   return (
     <>
@@ -49,7 +40,6 @@ const GalleryPage = () => {
           </button>
 
           <div className="flex items-center gap-2.5">
-            {/* Animated galaxy pulse indicator */}
             <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-violet-400 opacity-60" />
               <span className="relative inline-flex rounded-full h-2 w-2 bg-violet-500" />
@@ -60,8 +50,8 @@ const GalleryPage = () => {
           </div>
 
           <div className="flex items-center gap-2 text-zinc-500 dark:text-zinc-600 text-xs">
-            <Layers size={12} />
-            {isLoading ? "…" : `${artworks?.length ?? 0} artworks`}
+            <Box size={12} />
+            FBX Model View
           </div>
         </div>
 
@@ -83,52 +73,18 @@ const GalleryPage = () => {
             </span>
           </h1>
           <p className="mt-2 text-zinc-600 dark:text-zinc-500 text-xs max-w-sm mx-auto">
-            Orbit the space · Click any frame to explore in full 3D
+            Drag to orbit · Scroll to zoom · Explore in full 3D
           </p>
         </div>
 
-        {/* ── 3D Canvas fills remaining height ────────────────────────────────── */}
+        {/* ── FBX Viewer fills remaining height ───────────────────────────────── */}
         <div className="flex-1 px-4 pb-4 min-h-[600px] mb-10 flex flex-col">
-          {isLoading ? (
-            <div className="flex-1 w-full rounded-2xl border border-zinc-200 dark:border-white/5 bg-zinc-100/50 dark:bg-white/2 flex flex-col items-center justify-center gap-4">
-              <div className="w-12 h-12 rounded-full border-4 border-zinc-200 dark:border-white/10 border-t-violet-500 dark:border-t-violet-400 animate-spin" />
-              <p className="text-zinc-600 dark:text-zinc-500 text-sm animate-pulse">
-                Loading artworks…
-              </p>
+          <div className="flex-1 w-full relative">
+            <div className="absolute inset-0">
+              <FBXViewer />
             </div>
-          ) : error ? (
-            <div className="flex-1 w-full rounded-2xl border border-red-500/20 bg-zinc-50 dark:bg-white/2 flex items-center justify-center">
-              <p className="text-red-400 text-sm">
-                Failed to load artworks — {error?.message ?? "Unknown error"}
-              </p>
-            </div>
-          ) : (
-            <div className="flex-1 w-full relative">
-              <div className="absolute inset-0">
-                <ThreeDGallery
-                  artworks={artworks ?? []}
-                  onSelect={(art) => setSelectedArtwork(art)}
-                />
-              </div>
-            </div>
-          )}
+          </div>
         </div>
-
-        {/* ── Footer hint ───────────────────────────────────────────────────────
-      <div className="flex-none text-center py-2.5 text-zinc-700 text-xs border-t border-white/5">
-        Drag to orbit &nbsp;·&nbsp; Scroll to zoom &nbsp;·&nbsp; Click artwork to view in 3D
-      </div> */}
-
-        {/* ── 3D detail modal ─────────────────────────────────────────────────── */}
-        {selectedArtwork && (
-          <ThreeDModal
-            imageSrc={imageOf(selectedArtwork)}
-            title={artworkTitle(selectedArtwork)}
-            artistName={artistLabel(selectedArtwork) || undefined}
-            story={selectedArtwork.story}
-            onClose={() => setSelectedArtwork(null)}
-          />
-        )}
       </div>
     </>
   );
