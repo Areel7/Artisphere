@@ -72,6 +72,8 @@ const CreateExhibition = () => {
       description: "",
       startDate: "",
       endDate: "",
+      auctionEnabled: false,
+      auctionDurationMinutes: 15,
     },
 
     validationSchema: Yup.object({
@@ -88,6 +90,19 @@ const CreateExhibition = () => {
       endDate: Yup.date()
         .required("End date is required")
         .min(Yup.ref("startDate"), "End date must be after start date"),
+
+      auctionEnabled: Yup.boolean(),
+
+      auctionDurationMinutes: Yup.number()
+        .optional()
+        .when("auctionEnabled", {
+          is: true,
+          then: (schema) =>
+            schema
+              .min(1, "At least 1 minute")
+              .max(10080, "Max 7 days (10080 minutes)")
+              .required("Set auction duration"),
+        }),
     }),
 
     onSubmit: async (values, { resetForm }) => {
@@ -108,6 +123,10 @@ const CreateExhibition = () => {
           startDate: values.startDate,
           endDate: values.endDate,
           artworkIds: [...selectedIds],
+          auctionEnabled: Boolean(values.auctionEnabled),
+          auctionDurationMinutes: values.auctionEnabled
+            ? Number(values.auctionDurationMinutes)
+            : undefined,
         }).unwrap();
 
         sessionStorage.removeItem(STORAGE_KEY);
@@ -269,6 +288,52 @@ const CreateExhibition = () => {
 
               {formik.touched.description && formik.errors.description && (
                 <p className={errorText}>{formik.errors.description}</p>
+              )}
+            </div>
+
+            <div className="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/20 p-4 space-y-3">
+              <label className="flex items-start gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  name="auctionEnabled"
+                  checked={formik.values.auctionEnabled}
+                  onChange={formik.handleChange}
+                  className="mt-1 rounded border-zinc-400 text-violet-600 focus:ring-violet-500/30"
+                />
+                <span>
+                  <span className="block text-sm font-medium text-zinc-900 dark:text-white">
+                    Enable live auctions in the exhibition room
+                  </span>
+                  <span className="block text-xs text-zinc-600 dark:text-zinc-500 mt-1">
+                    Bidders join in real time. If nobody outbids within 10 seconds
+                    after the latest bid, that bidder wins the piece. Otherwise
+                    bidding continues until the time limit you set (from the
+                    first bid on each artwork).
+                  </span>
+                </span>
+              </label>
+              {formik.values.auctionEnabled && (
+                <div className="relative pl-7">
+                  <label className={labelClasses}>
+                    Max bidding time per artwork (minutes)
+                  </label>
+                  <input
+                    type="number"
+                    name="auctionDurationMinutes"
+                    min={1}
+                    max={10080}
+                    className={`${inputClasses.replace("px-11", "px-4")}`}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    value={formik.values.auctionDurationMinutes}
+                  />
+                  {formik.touched.auctionDurationMinutes &&
+                    formik.errors.auctionDurationMinutes && (
+                      <p className={errorText}>
+                        {formik.errors.auctionDurationMinutes}
+                      </p>
+                    )}
+                </div>
               )}
             </div>
 

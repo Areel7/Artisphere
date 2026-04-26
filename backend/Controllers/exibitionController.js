@@ -59,9 +59,27 @@ export const normalizeArtworkIds = (raw) => {
   return [];
 };
 
+function parseAuctionOptions(body) {
+  const enabled = Boolean(body?.auctionEnabled);
+  const rawMin = body?.auctionDurationMinutes;
+  const minutes =
+    rawMin == null || rawMin === ""
+      ? 15
+      : Number(rawMin);
+  return { enabled, minutes };
+}
+
 const createExibition = async (req, res) => {
   try {
-    const { title, description, startDate, endDate, artworkIds } = req.body;
+    const {
+      title,
+      description,
+      startDate,
+      endDate,
+      artworkIds,
+      auctionEnabled,
+      auctionDurationMinutes,
+    } = req.body;
 
     if (!title?.trim() || !description?.trim()) {
       return res
@@ -105,6 +123,22 @@ const createExibition = async (req, res) => {
       });
     }
 
+    const { enabled: auctionOn, minutes: auctionMinutes } = parseAuctionOptions(
+      { auctionEnabled, auctionDurationMinutes },
+    );
+    if (auctionOn) {
+      if (!Number.isFinite(auctionMinutes) || auctionMinutes < 1) {
+        return res.status(400).json({
+          errors: [{ msg: "Auction duration must be at least 1 minute" }],
+        });
+      }
+      if (auctionMinutes > 10080) {
+        return res.status(400).json({
+          errors: [{ msg: "Auction duration cannot exceed 10080 minutes (7 days)" }],
+        });
+      }
+    }
+
     const exibition = new Exibition({
       title: title.trim(),
       description: description.trim(),
@@ -112,6 +146,9 @@ const createExibition = async (req, res) => {
       endDate: end,
       curatorId: req.user._id,
       artworkIds: ids,
+      auctionEnabled: auctionOn,
+      auctionDurationMinutes: auctionOn ? Math.floor(auctionMinutes) : 15,
+      auctionSales: [],
     });
     await exibition.save();
     res.status(201).json(exibition);
@@ -257,7 +294,15 @@ const superAdminUpdateExhibition = async (req, res) => {
       return res.status(404).json({ errors: [{ msg: "Exhibition not found" }] });
     }
 
-    const { title, description, startDate, endDate, artworkIds } = req.body;
+    const {
+      title,
+      description,
+      startDate,
+      endDate,
+      artworkIds,
+      auctionEnabled,
+      auctionDurationMinutes,
+    } = req.body;
 
     if (title != null && String(title).trim()) {
       exibition.title = String(title).trim();
@@ -306,6 +351,19 @@ const superAdminUpdateExhibition = async (req, res) => {
         });
       }
       exibition.artworkIds = ids;
+    }
+
+    if (auctionEnabled != null) {
+      exibition.auctionEnabled = Boolean(auctionEnabled);
+    }
+    if (auctionDurationMinutes != null && auctionDurationMinutes !== "") {
+      const m = Number(auctionDurationMinutes);
+      if (!Number.isFinite(m) || m < 1 || m > 10080) {
+        return res.status(400).json({
+          errors: [{ msg: "Auction duration must be between 1 and 10080 minutes" }],
+        });
+      }
+      exibition.auctionDurationMinutes = Math.floor(m);
     }
 
     await exibition.save();
