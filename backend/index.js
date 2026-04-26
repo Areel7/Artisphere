@@ -7,6 +7,7 @@ import cors from "cors";
 import path from "path";
 import { fileURLToPath } from "url";
 import { attachExhibitionChat } from "./sockets/exhibitionChatSocket.js";
+import { attachExhibitionAuction } from "./sockets/exhibitionAuction.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -89,6 +90,7 @@ const io = new Server(httpServer, {
   },
 });
 attachExhibitionChat(io);
+attachExhibitionAuction(io);
 
 httpServer.listen(PORT, () =>
   console.log(`Server is running on port ${PORT} (HTTP + Socket.IO)`),
