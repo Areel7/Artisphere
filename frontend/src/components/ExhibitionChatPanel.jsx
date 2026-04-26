@@ -9,15 +9,21 @@ function apiOrigin() {
   return "http://localhost:3000";
 }
 
-export default function ExhibitionChatPanel({ exhibitionId }) {
+export default function ExhibitionChatPanel({
+  exhibitionId,
+  socket: sharedSocket,
+  connected: sharedConnected,
+  tall = true,
+}) {
   const { userInfo } = useSelector((s) => s.auth);
   const token = userInfo?.token;
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
-  const [connected, setConnected] = useState(false);
   const [sendError, setSendError] = useState("");
+  const [localConnected, setLocalConnected] = useState(false);
   const socketRef = useRef(null);
   const listRef = useRef(null);
+  const connected = sharedSocket ? !!sharedConnected : localConnected;
 
   const scrollBottom = useCallback(() => {
     const el = listRef.current;
@@ -46,6 +52,27 @@ export default function ExhibitionChatPanel({ exhibitionId }) {
   }, [exhibitionId]);
 
   useEffect(() => {
+    if (sharedSocket != null) {
+      socketRef.current = sharedSocket;
+      const onChat = (msg) => {
+        if (!msg?._id) return;
+        setMessages((prev) => {
+          if (prev.some((m) => m._id === msg._id)) return prev;
+          return [...prev, msg];
+        });
+      };
+      sharedSocket.on("chat_message", onChat);
+      return () => {
+        sharedSocket.off("chat_message", onChat);
+        socketRef.current = null;
+      };
+    }
+
+    if (sharedSocket === null) {
+      socketRef.current = null;
+      return;
+    }
+
     const url = apiOrigin();
     const socket = io(url, {
       auth: token ? { token } : {},
@@ -54,12 +81,12 @@ export default function ExhibitionChatPanel({ exhibitionId }) {
     socketRef.current = socket;
 
     const onConnect = () => {
-      setConnected(true);
+      setLocalConnected(true);
       socket.emit("join_exhibition", exhibitionId);
     };
 
     socket.on("connect", onConnect);
-    socket.on("disconnect", () => setConnected(false));
+    socket.on("disconnect", () => setLocalConnected(false));
     socket.on("chat_message", (msg) => {
       if (!msg?._id) return;
       setMessages((prev) => {
@@ -71,11 +98,12 @@ export default function ExhibitionChatPanel({ exhibitionId }) {
     if (socket.connected) onConnect();
 
     return () => {
+      setLocalConnected(false);
       socket.emit("leave_exhibition", exhibitionId);
       socket.disconnect();
       socketRef.current = null;
     };
-  }, [exhibitionId, token]);
+  }, [exhibitionId, token, sharedSocket]);
 
   useEffect(() => {
     scrollBottom();
@@ -100,8 +128,14 @@ export default function ExhibitionChatPanel({ exhibitionId }) {
     setInput("");
   };
 
+  const heightClass = tall
+    ? "h-[420px] md:h-[520px] xl:h-[min(70vh,680px)]"
+    : "min-h-[240px] flex-1 max-h-[min(52vh,560px)]";
+
   return (
-    <div className="flex flex-col rounded-2xl border border-white/10 bg-zinc-950/95 backdrop-blur-md overflow-hidden h-[420px] md:h-[520px] xl:h-[min(70vh,680px)] shadow-xl">
+    <div
+      className={`flex flex-col rounded-2xl border border-white/10 bg-zinc-950/95 backdrop-blur-md overflow-hidden shadow-xl ${heightClass}`}
+    >
       <div className="flex items-center justify-between px-4 py-3 border-b border-white/10 bg-black/40">
         <div className="flex items-center gap-2 min-w-0">
           <MessageCircle className="w-4 h-4 text-violet-400 shrink-0" />
