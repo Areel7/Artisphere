@@ -1,17 +1,22 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 import { ArrowLeft, Layers } from "lucide-react";
 import { useGetExhibitionByIdQuery } from "../../redux/api/exhibition.js";
+import { useExhibitionRoomSocket } from "../../hooks/useExhibitionRoomSocket.js";
 import { artistLabel, artworkTitle } from "../../utils/artworkMeta.js";
 import { buildShareLinks, copyShareLink } from "../../utils/socialShare.js";
 import SocialShareToolbar from "../../components/SocialShareToolbar.jsx";
 import ThreeDGallery from "../../components/ThreeDGallery.jsx";
 import ThreeDModal from "../../components/ThreeDModal.jsx";
 import ExhibitionChatPanel from "../../components/ExhibitionChatPanel.jsx";
+import ExhibitionAuctionPanel from "../../components/ExhibitionAuctionPanel.jsx";
 
 const ExhibitionRoomPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { userInfo } = useSelector((s) => s.auth);
+  const { socket, connected } = useExhibitionRoomSocket(id, userInfo?.token);
   const [selectedArtwork, setSelectedArtwork] = useState(null);
   const [headerHeight, setHeaderHeight] = useState(73);
   const [copiedExhibition, setCopiedExhibition] = useState(false);
@@ -24,6 +29,12 @@ const ExhibitionRoomPage = () => {
     if (!Array.isArray(raw)) return [];
     return raw.filter((a) => a && a.image);
   }, [exhibition]);
+
+  const auctionSoldIds = useMemo(() => {
+    const rows = exhibition?.auctionSales;
+    if (!Array.isArray(rows)) return new Set();
+    return new Set(rows.map((s) => String(s.artworkId)));
+  }, [exhibition?.auctionSales]);
 
   useEffect(() => {
     const nav = document.querySelector("nav");
@@ -175,8 +186,24 @@ const ExhibitionRoomPage = () => {
             )}
           </div>
 
-          <div className="w-full xl:w-[380px] shrink-0 flex flex-col">
-            <ExhibitionChatPanel exhibitionId={id} />
+          <div className="w-full xl:w-[380px] shrink-0 flex flex-col gap-3 xl:max-h-[min(92vh,900px)] min-h-0">
+            {exhibition.auctionEnabled ? (
+              <ExhibitionAuctionPanel
+                exhibitionId={id}
+                exhibition={exhibition}
+                artworks={artworks}
+                socket={socket}
+                connected={connected}
+              />
+            ) : null}
+            <div className="flex-1 min-h-[280px] min-w-0 flex flex-col">
+              <ExhibitionChatPanel
+                exhibitionId={id}
+                socket={socket}
+                connected={connected}
+                tall={!exhibition.auctionEnabled}
+              />
+            </div>
           </div>
         </div>
 
@@ -193,7 +220,7 @@ const ExhibitionRoomPage = () => {
                     onClick={() => setSelectedArtwork(art)}
                     className="w-full text-left rounded-xl overflow-hidden border border-white/10 bg-zinc-900/40 hover:border-violet-500/40 hover:bg-zinc-900/70 transition-colors"
                   >
-                    <div className="aspect-square bg-zinc-800">
+                    <div className="aspect-square bg-zinc-800 relative">
                       {art.image ? (
                         <img
                           src={imageOf(art)}
@@ -201,6 +228,11 @@ const ExhibitionRoomPage = () => {
                           className="w-full h-full object-cover"
                         />
                       ) : null}
+                      {auctionSoldIds.has(String(art._id)) && (
+                        <span className="absolute top-2 right-2 px-2 py-0.5 rounded-md bg-emerald-600/90 text-[10px] font-bold uppercase tracking-wide text-white shadow">
+                          Sold
+                        </span>
+                      )}
                     </div>
                     <div className="p-3">
                       <p className="text-sm font-medium text-white line-clamp-2">
